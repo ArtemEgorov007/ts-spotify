@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { LandingPage } from '@/modules/auth/LandingPage';
 import { AppShellLayout } from '@/app/layout/AppShellLayout';
 import { HomePage } from '@/modules/shell/HomePage';
@@ -10,7 +10,7 @@ import { AuthSessionSync } from '@/app/providers/AuthSessionSync';
 
 export function AppRouter() {
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthSessionSync>
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -40,6 +40,6 @@ export function AppRouter() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthSessionSync>
-    </BrowserRouter>
+    </HashRouter>
   );
 }

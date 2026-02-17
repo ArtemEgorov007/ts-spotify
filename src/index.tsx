@@ -6,18 +6,21 @@ import './index.css';
 
 const domain = import.meta.env.VITE_AUTH0_DOMAIN;
 const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
+const baseUrl = import.meta.env.BASE_URL || '/';
 
 function resolveRedirectUri() {
   const envRedirectUri = import.meta.env.VITE_AUTH0_REDIRECT_URI;
+  const fallbackRedirectUri = new URL(baseUrl, window.location.origin).toString();
+
   if (!envRedirectUri) {
-    return window.location.origin;
+    return fallbackRedirectUri;
   }
 
   try {
     const envOrigin = new URL(envRedirectUri).origin;
-    return envOrigin === window.location.origin ? envRedirectUri : window.location.origin;
+    return envOrigin === window.location.origin ? envRedirectUri : fallbackRedirectUri;
   } catch {
-    return window.location.origin;
+    return fallbackRedirectUri;
   }
 }
 
@@ -29,8 +32,8 @@ if (!domain || !clientId) {
 
 const onRedirectCallback = (appState?: AppState) => {
   const returnTo = appState?.returnTo || '/app';
-  window.history.replaceState({}, document.title, returnTo);
-  window.dispatchEvent(new PopStateEvent('popstate'));
+  const route = returnTo.startsWith('/') ? returnTo : `/${returnTo}`;
+  window.history.replaceState({}, document.title, `${window.location.pathname}#${route}`);
 };
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

@@ -98,6 +98,21 @@ button {
   padding-block: 12px;
 }
 
+.auth-divider {
+  margin: 14px 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.vk-auth-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2px;
+}
+
 .landing-error {
   margin: 12px 0 0;
   color: #f1b2b2;

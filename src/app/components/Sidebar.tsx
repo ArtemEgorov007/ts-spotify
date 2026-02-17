@@ -3,14 +3,21 @@ import { observer } from 'mobx-react-lite';
 import { useAuth0 } from '@auth0/auth0-react';
 import { musicPlatformStore } from '@/store/store';
 import { AdminIcon, HomeIcon, LibraryIcon, SearchIcon } from '@/shared/icons/Icons';
+import { clearVkSession } from '@/modules/auth/vkSession';
 
 export const Sidebar = observer(function Sidebar() {
   const navigate = useNavigate();
-  const { logout } = useAuth0();
+  const { logout, isAuthenticated } = useAuth0();
 
   const onLogout = () => {
     musicPlatformStore.clearAuthUser();
-    logout({ logoutParams: { returnTo: window.location.origin } });
+    clearVkSession();
+
+    if (isAuthenticated) {
+      logout({ logoutParams: { returnTo: window.location.origin } });
+      return;
+    }
+
     navigate('/');
   };
 
