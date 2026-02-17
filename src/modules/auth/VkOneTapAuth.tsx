@@ -124,33 +124,6 @@ async function loadProfileByTokens(VKID: any, exchangeData: unknown) {
   return null;
 }
 
-function resolveIdentity(exchangeData: unknown, profileData: unknown, payload: VkPayload) {
-  const root = asRecord(data);
-  const idToken = typeof root.id_token === 'string' ? root.id_token : '';
-  const jwtPayload = idToken ? decodeJwtPayload(idToken) : {};
-  const user = asRecord(root.user);
-  const profile = asRecord(root.profile);
-  const response = asRecord(root.response);
-  const responseUser = asRecord(response.user);
-  const nestedData = asRecord(root.data);
-  const nestedDataUser = asRecord(nestedData.user);
-  const payloadUser = asRecord(payload.user);
-
-  const sources = [user, profile, responseUser, nestedDataUser, jwtPayload, root, response, nestedData, payloadUser];
-
-  const firstName = pickString(sources, ['first_name', 'firstName']);
-  const lastName = pickString(sources, ['last_name', 'lastName']);
-  const fullName = `${firstName} ${lastName}`.trim();
-  const email = pickString(sources, ['email', 'mail']) || (typeof payload.email === 'string' ? payload.email.trim() : '');
-
-  const username =
-    fullName ||
-    pickString(sources, ['name', 'display_name', 'displayName', 'nickname', 'screen_name', 'screenName', 'login']) ||
-    (email.includes('@') ? email.split('@')[0] : '') ||
-    'Пользователь';
-
-  return { username, email };
-}
 
 export function VkOneTapAuth({ onSuccess }: VkOneTapAuthProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
