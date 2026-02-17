@@ -53,7 +53,78 @@ function pickString(objects: Record<string, unknown>[], keys: string[]) {
   return '';
 }
 
-function resolveIdentity(data: unknown, payload: VkPayload) {
+function buildIdentity(exchangeData: unknown, profileData: unknown, payload: VkPayload) {
+  const profileRoot = asRecord(profileData);
+  const profileUser = asRecord(profileRoot.user);
+  const profileResponse = asRecord(profileRoot.response);
+  const profileResponseUser = asRecord(profileResponse.user);
+
+  const exchangeRoot = asRecord(exchangeData);
+  const idToken = typeof exchangeRoot.id_token === 'string' ? exchangeRoot.id_token : '';
+  const jwtPayload = idToken ? decodeJwtPayload(idToken) : {};
+  const user = asRecord(exchangeRoot.user);
+  const profile = asRecord(exchangeRoot.profile);
+  const response = asRecord(exchangeRoot.response);
+  const responseUser = asRecord(response.user);
+  const nestedData = asRecord(exchangeRoot.data);
+  const nestedDataUser = asRecord(nestedData.user);
+  const payloadUser = asRecord(payload.user);
+
+  const sources = [
+    profileUser,
+    profileResponseUser,
+    profileRoot,
+    profileResponse,
+    user,
+    profile,
+    responseUser,
+    nestedDataUser,
+    jwtPayload,
+    exchangeRoot,
+    response,
+    nestedData,
+    payloadUser,
+  ];
+
+  const firstName = pickString(sources, ['first_name', 'firstName', 'given_name']);
+  const lastName = pickString(sources, ['last_name', 'lastName', 'family_name']);
+  const fullName = `${firstName} ${lastName}`.trim();
+  const email = pickString(sources, ['email', 'mail']) || (typeof payload.email === 'string' ? payload.email.trim() : '');
+
+  const username =
+    fullName ||
+    pickString(sources, ['name', 'display_name', 'displayName', 'nickname', 'screen_name', 'screenName', 'login']) ||
+    (email.includes('@') ? email.split('@')[0] : '') ||
+    'Пользователь';
+
+  return { username, email };
+}
+
+async function loadProfileByTokens(VKID: any, exchangeData: unknown) {
+  const root = asRecord(exchangeData);
+  const accessToken = pickString([root, asRecord(root.response), asRecord(root.data)], ['access_token']);
+  const idToken = pickString([root, asRecord(root.response), asRecord(root.data)], ['id_token']);
+
+  if (accessToken && VKID?.Auth?.userInfo) {
+    try {
+      return await VKID.Auth.userInfo(accessToken);
+    } catch {
+      // Fallback to publicInfo if userInfo is unavailable for token/scope.
+    }
+  }
+
+  if (idToken && VKID?.Auth?.publicInfo) {
+    try {
+      return await VKID.Auth.publicInfo(idToken);
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
+}
+
+function resolveIdentity(exchangeData: unknown, profileData: unknown, payload: VkPayload) {
   const root = asRecord(data);
   const idToken = typeof root.id_token === 'string' ? root.id_token : '';
   const jwtPayload = idToken ? decodeJwtPayload(idToken) : {};
@@ -130,9 +201,11 @@ export function VkOneTapAuth({ onSuccess }: VkOneTapAuthProps) {
           })
           .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, (payload: VkPayload) => {
             VKID.Auth.exchangeCode(payload.code, payload.device_id)
-              .then((data: unknown) => {
+              .then(async (exchangeData: unknown) => {
+                const profileData = await loadProfileByTokens(VKID, exchangeData);
+
                 if (!cancelled) {
-                  onSuccess(resolveIdentity(data, payload));
+                  onSuccess(buildIdentity(exchangeData, profileData, payload));
                 }
               })
               .catch((vkError: unknown) => {
