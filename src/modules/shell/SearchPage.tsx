@@ -4,13 +4,14 @@ export function SearchPage() {
   return (
     <section>
       <h2 className="section-title">Поиск</h2>
-      <div className="search-box">Заглушка поиска: треки, альбомы, артисты, подкасты...</div>
+      <p className="section-subtitle">Треки, артисты и плейлисты.</p>
+      <div className="search-box">Поле поиска появится на следующем этапе.</div>
       <div className="tag-row">
         <span>Поп</span>
         <span>Чилл</span>
         <span>Фокус</span>
-        <span>Тренировка</span>
-        <span>Электроника</span>
+        <span>Бег</span>
+        <span>Электро</span>
       </div>
 
       <div className="results-list">

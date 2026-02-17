@@ -9,8 +9,17 @@ import { musicPlatformStore } from '@/store/store';
 export const LandingPage = observer(function LandingPage() {
   const navigate = useNavigate();
   const { loginWithRedirect, isLoading, isAuthenticated, error } = useAuth0();
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
   const onLogin = () => {
+    if (isLocalhost) {
+      const localUser = { username: 'local-user', email: 'local@ts-spotify.dev', authMethod: 'local' as const };
+      saveVkSession(localUser);
+      musicPlatformStore.applyAuthUser(localUser.username, localUser.email, localUser.authMethod);
+      navigate('/app', { replace: true });
+      return;
+    }
+
     void loginWithRedirect({ appState: { returnTo: '/app' } });
   };
 
@@ -29,18 +38,21 @@ export const LandingPage = observer(function LandingPage() {
   return (
     <main className="landing-page">
       <section className="auth-hero">
-        <p className="auth-hero-kicker">Музыкальная платформа</p>
-        <h1>Войти в ts-spotify</h1>
-        <p>Продолжай в аккаунте, чтобы открыть библиотеку, поиск и плеер.</p>
+        <p className="auth-hero-kicker">ts-spotify</p>
+        <h1>Вход</h1>
+        <p>Открой музыку, подборки и библиотеку.</p>
 
         <button type="button" className="btn btn-primary auth-login-btn" onClick={onLogin} disabled={isLoading}>
-          {isLoading ? 'Открываем вход...' : 'Войти'}
+          {isLocalhost ? 'Войти в демо' : isLoading ? 'Открываем вход...' : 'Войти'}
         </button>
 
-        <div className="auth-divider">или</div>
-        <VkOneTapAuth onSuccess={onVkSuccess} />
-
-        {error ? <p className="landing-error">{error.message}</p> : null}
+        {!isLocalhost ? (
+          <>
+            <div className="auth-divider">или</div>
+            <VkOneTapAuth onSuccess={onVkSuccess} />
+            {error ? <p className="landing-error">{error.message}</p> : null}
+          </>
+        ) : null}
       </section>
     </main>
   );

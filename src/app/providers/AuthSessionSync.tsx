@@ -25,7 +25,7 @@ export function AuthSessionSync({ children }: PropsWithChildren) {
 
     const vkSession = loadVkSession();
     if (vkSession) {
-      musicPlatformStore.applyAuthUser(vkSession.username, vkSession.email, 'vk');
+      musicPlatformStore.applyAuthUser(vkSession.username, vkSession.email, vkSession.authMethod || 'vk');
       return;
     }
 

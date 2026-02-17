@@ -42,8 +42,7 @@ export function VkOneTapAuth({ onSuccess }: VkOneTapAuthProps) {
   const [error, setError] = useState('');
 
   const appId = Number(import.meta.env.VITE_VK_APP_ID || 0);
-  const redirectUrl =
-    import.meta.env.VITE_VK_REDIRECT_URI || new URL(import.meta.env.BASE_URL || '/', window.location.origin).toString();
+  const redirectUrl = new URL(import.meta.env.BASE_URL || '/', window.location.origin).toString();
   const hasHttpsOrigin = window.location.protocol === 'https:';
 
   useEffect(() => {
