@@ -7,6 +7,8 @@ type VkOneTapAuthProps = {
 type VkPayload = {
   code: string;
   device_id: string;
+  user?: unknown;
+  email?: unknown;
 };
 
 const VK_SDK_URL = 'https://unpkg.com/@vkid/sdk@<3.0.0/dist-sdk/umd/index.js';
@@ -15,23 +17,48 @@ function getWindowSdk() {
   return (window as Window & { VKIDSDK?: any }).VKIDSDK;
 }
 
-function resolveIdentity(data: any) {
-  const user = data?.user ?? data?.profile ?? {};
-  const firstName = typeof user.first_name === 'string' ? user.first_name : '';
-  const lastName = typeof user.last_name === 'string' ? user.last_name : '';
-  const fullName = `${firstName} ${lastName}`.trim();
+function asRecord(value: unknown): Record<string, unknown> {
+  return value !== null && typeof value === 'object' ? (value as Record<string, unknown>) : {};
+}
 
-  const email =
-    (typeof user.email === 'string' && user.email) ||
-    (typeof data?.email === 'string' && data.email) ||
-    '';
+function pickString(objects: Record<string, unknown>[], keys: string[]) {
+  for (const object of objects) {
+    for (const key of keys) {
+      const raw = object[key];
+      if (typeof raw === 'string') {
+        const value = raw.trim();
+        if (value) {
+          return value;
+        }
+      }
+    }
+  }
+
+  return '';
+}
+
+function resolveIdentity(data: unknown, payload: VkPayload) {
+  const root = asRecord(data);
+  const user = asRecord(root.user);
+  const profile = asRecord(root.profile);
+  const response = asRecord(root.response);
+  const responseUser = asRecord(response.user);
+  const nestedData = asRecord(root.data);
+  const nestedDataUser = asRecord(nestedData.user);
+  const payloadUser = asRecord(payload.user);
+
+  const sources = [user, profile, responseUser, nestedDataUser, root, response, nestedData, payloadUser];
+
+  const firstName = pickString(sources, ['first_name', 'firstName']);
+  const lastName = pickString(sources, ['last_name', 'lastName']);
+  const fullName = `${firstName} ${lastName}`.trim();
+  const email = pickString(sources, ['email', 'mail']) || (typeof payload.email === 'string' ? payload.email.trim() : '');
 
   const username =
     fullName ||
-    (typeof user.name === 'string' && user.name) ||
-    (typeof user.nickname === 'string' && user.nickname) ||
+    pickString(sources, ['name', 'display_name', 'displayName', 'nickname', 'screen_name', 'screenName', 'login']) ||
     (email.includes('@') ? email.split('@')[0] : '') ||
-    'VK пользователь';
+    'Пользователь';
 
   return { username, email };
 }
@@ -87,7 +114,7 @@ export function VkOneTapAuth({ onSuccess }: VkOneTapAuthProps) {
             VKID.Auth.exchangeCode(payload.code, payload.device_id)
               .then((data: unknown) => {
                 if (!cancelled) {
-                  onSuccess(resolveIdentity(data));
+                  onSuccess(resolveIdentity(data, payload));
                 }
               })
               .catch((vkError: unknown) => {

@@ -19,7 +19,6 @@ export const TopBar = observer(function TopBar() {
     <header className="topbar">
       <div>
         <p className="topbar-label">Раздел</p>
-        <h1 className="topbar-title">{currentTitle}</h1>
       </div>
       <button type="button" className="role-chip role-chip-button" onClick={goToAdmin}>
         <span className="role-chip-full">{roleLabel}</span>

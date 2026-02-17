@@ -792,7 +792,7 @@ select {
 @media (max-width: 900px) {
   .app-shell-layout {
     grid-template-columns: 1fr;
-    padding-bottom: 168px;
+    padding-bottom: 156px;
   }
 
   .sidebar {
@@ -801,7 +801,7 @@ select {
     right: 0;
     top: auto;
     bottom: 0;
-    height: 65px;
+    height: 74px;
     z-index: 30;
     border-top: 1px solid var(--line);
     border-right: none;
@@ -871,9 +871,9 @@ select {
     grid-template-columns: 1fr auto;
     left: 8px;
     right: 8px;
-    bottom: 70px;
-    height: 75px;
-    min-height: 62px;
+    bottom: 82px;
+    height: 58px;
+    min-height: 58px;
     padding: 8px 10px;
     gap: 8px;
     border: 1px solid var(--line);

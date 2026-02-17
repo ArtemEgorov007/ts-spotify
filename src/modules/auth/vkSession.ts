@@ -18,9 +18,18 @@ export function loadVkSession(): VkSession | null {
 
   try {
     const parsed = JSON.parse(raw) as Partial<VkSession>;
+    const email = typeof parsed.email === 'string' ? parsed.email.trim() : '';
+    const rawUsername = typeof parsed.username === 'string' ? parsed.username.trim() : '';
+    const normalizedUsername =
+      rawUsername && rawUsername.toLowerCase() !== 'vk пользователь'
+        ? rawUsername
+        : email.includes('@')
+          ? email.split('@')[0]
+          : '';
+
     return {
-      username: typeof parsed.username === 'string' ? parsed.username : '',
-      email: typeof parsed.email === 'string' ? parsed.email : '',
+      username: normalizedUsername,
+      email,
       authMethod: parsed.authMethod === 'local' ? 'local' : 'vk',
     };
   } catch {
