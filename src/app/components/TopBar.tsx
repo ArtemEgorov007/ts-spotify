@@ -1,11 +1,10 @@
 import { observer } from 'mobx-react-lite';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { musicPlatformStore } from '@/store/store';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 
 export const TopBar = observer(function TopBar() {
   const navigate = useNavigate();
-  const location = useLocation();
   const goToAdmin = () => navigate('/admin');
   const roleLabel = musicPlatformStore.roleChipLabel;
   const roleInitial = (roleLabel.trim().charAt(0) || 'Г').toUpperCase();
