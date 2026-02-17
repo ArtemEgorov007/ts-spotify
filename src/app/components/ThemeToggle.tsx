@@ -1,4 +1,5 @@
 import { useTheme } from '@/app/providers/ThemeProvider';
+import { SunIcon, MoonIcon } from '@/shared/icons/Icons';
 
 type ThemeToggleProps = {
   compact?: boolean;
@@ -8,7 +9,6 @@ export function ThemeToggle({ compact = false }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme();
   const nextThemeLabel = theme === 'dark' ? 'Светлая' : 'Тёмная';
   const nextThemeLabelAccusative = theme === 'dark' ? 'светлую' : 'тёмную';
-  const icon = theme === 'dark' ? '☀' : '◐';
 
   return (
     <button
@@ -18,7 +18,8 @@ export function ThemeToggle({ compact = false }: ThemeToggleProps) {
       aria-label={`Переключить тему на ${nextThemeLabelAccusative}`}
       title={`Переключить тему на ${nextThemeLabelAccusative}`}
     >
-      {compact ? icon : `${icon} ${nextThemeLabel}`}
+      {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+      {!compact && <span>{nextThemeLabel}</span>}
     </button>
   );
 }
