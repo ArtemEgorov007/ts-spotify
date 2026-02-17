@@ -20,8 +20,14 @@ export function loadVkSession(): VkSession | null {
     const parsed = JSON.parse(raw) as Partial<VkSession>;
     const email = typeof parsed.email === 'string' ? parsed.email.trim() : '';
     const rawUsername = typeof parsed.username === 'string' ? parsed.username.trim() : '';
+    const lowerUsername = rawUsername.toLowerCase();
+    const isFallbackName =
+      !rawUsername ||
+      lowerUsername === 'vk пользователь' ||
+      lowerUsername === 'пользователь' ||
+      lowerUsername === 'user';
     const normalizedUsername =
-      rawUsername && rawUsername.toLowerCase() !== 'vk пользователь'
+      !isFallbackName
         ? rawUsername
         : email.includes('@')
           ? email.split('@')[0]
