@@ -281,6 +281,16 @@ select {
   align-items: center;
 }
 
+.topbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-mobile-theme {
+  display: none;
+}
+
 .topbar-label {
   margin: 0;
   color: var(--muted);
@@ -843,6 +853,14 @@ select {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+  }
+
+  .topbar-controls {
+    gap: 8px;
+  }
+
+  .topbar-mobile-theme {
+    display: block;
   }
 
   .topbar-title {
