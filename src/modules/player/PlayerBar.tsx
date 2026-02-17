@@ -31,7 +31,7 @@ export const PlayerBar = observer(function PlayerBar() {
             <button type="button" className="player-icon-btn player-mobile-play" onClick={() => musicPlatformStore.togglePlayback()} aria-label={musicPlatformStore.isPlaying ? 'Пауза' : 'Воспроизвести'}>
               {musicPlatformStore.isPlaying ? <PauseIcon /> : <PlayIcon />}
             </button>
-            <button type="button" className="player-icon-btn player-desktop-only" aria-label="Нравится">
+            <button type="button" className="player-icon-btn" aria-label="Нравится">
               <HeartIcon />
             </button>
           </>

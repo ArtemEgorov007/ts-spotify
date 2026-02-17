@@ -1066,16 +1066,6 @@ select {
   }
 
   .player-mobile-play {
-    display: grid;
-    place-items: center;
-  }
-
-  .player-mobile-play svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  .player-desktop-only {
     display: none;
   }
 
@@ -1092,6 +1082,16 @@ select {
   .player-icon-btn svg {
     width: 16px;
     height: 16px;
+  }
+
+  .player-mobile-play {
+    display: grid;
+    place-items: center;
+  }
+
+  .player-mobile-play svg {
+    width: 24px;
+    height: 24px;
   }
 
   .auth-hero {
