@@ -959,7 +959,7 @@ select {
 @media (max-width: 900px) {
   .app-shell-layout {
     grid-template-columns: 1fr;
-    padding-bottom: 156px;
+    padding-bottom: 140px;
   }
 
   .sidebar {
@@ -1046,13 +1046,14 @@ select {
     grid-template-columns: 1fr;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: 74px;
     height: 64px;
     padding: 0 12px;
     gap: 0;
     border: none;
     border-top: 1px solid var(--line);
     border-radius: 0;
+    z-index: 20;
   }
 
   .player-left {
