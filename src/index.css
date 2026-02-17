@@ -739,6 +739,10 @@ select {
   justify-content: flex-end;
 }
 
+.player-mobile-play {
+  display: none;
+}
+
 .player-volume {
   display: flex;
   align-items: center;
@@ -1065,12 +1069,18 @@ select {
     height: 48px;
   }
 
-  .player-mobile-play {
+  .player-center {
     display: none;
   }
 
-  .player-center,
   .player-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .player-right .player-volume,
+  .player-right .volume-slider {
     display: none;
   }
 
@@ -1085,8 +1095,9 @@ select {
   }
 
   .player-mobile-play {
-    display: grid;
+    display: grid !important;
     place-items: center;
+    margin-left: auto;
   }
 
   .player-mobile-play svg {
