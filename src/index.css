@@ -1065,6 +1065,20 @@ select {
     height: 48px;
   }
 
+  .player-mobile-play {
+    display: grid;
+    place-items: center;
+  }
+
+  .player-mobile-play svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .player-desktop-only {
+    display: none;
+  }
+
   .player-center,
   .player-right {
     display: none;
