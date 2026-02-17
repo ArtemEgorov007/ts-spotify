@@ -1,6 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 import { Track } from '@/types/music.types';
 
+type AuthMethod = 'none' | 'auth0' | 'vk';
+
 class MusicPlatformStore {
   queue: Track[] = [];
   currentTrack: Track | null = null;
@@ -9,23 +11,30 @@ class MusicPlatformStore {
 
   username = '';
   email = '';
+  authMethod: AuthMethod = 'none';
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  applyAuthUser(username: string, email: string) {
+  applyAuthUser(username: string, email: string, authMethod: AuthMethod) {
     this.username = username;
     this.email = email;
+    this.authMethod = authMethod;
   }
 
   get roleChipLabel() {
     return this.email || this.username || 'Гость';
   }
 
+  get isAuthenticated() {
+    return this.authMethod !== 'none';
+  }
+
   clearAuthUser() {
     this.username = '';
     this.email = '';
+    this.authMethod = 'none';
     this.isPlaying = false;
   }
 

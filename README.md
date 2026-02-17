@@ -31,6 +31,8 @@
 VITE_AUTH0_DOMAIN=your-domain.auth0.com
 VITE_AUTH0_CLIENT_ID=your-client-id
 VITE_AUTH0_REDIRECT_URI=http://localhost:33000
+VITE_VK_APP_ID=your-vk-app-id
+VITE_VK_REDIRECT_URI=http://localhost:33000
 ```
 
 В Auth0 приложении:
@@ -38,6 +40,23 @@ VITE_AUTH0_REDIRECT_URI=http://localhost:33000
 - `Allowed Callback URLs`: `http://localhost:33000`
 - `Allowed Logout URLs`: `http://localhost:33000`
 - `Allowed Web Origins`: `http://localhost:33000`
+
+Для GitHub Pages добавь:
+
+- `Allowed Callback URLs`: `https://artemegorov007.github.io/ts-spotify/`
+- `Allowed Logout URLs`: `https://artemegorov007.github.io/ts-spotify/`
+- `Allowed Web Origins`: `https://artemegorov007.github.io`
+
+## VK ID
+
+- На странице входа подключён OneTap-виджет VK.
+- После успешного входа создаётся локальная сессия VK и открывается `/app`.
+- Выход очищает локальную VK-сессию.
+- Для работы VK ID нужен `https` origin и такой же `redirectUrl` в настройках приложения VK.
+
+Для GitHub Pages укажи redirect:
+
+- `https://artemegorov007.github.io/ts-spotify/`
 
 ## Команды
 
@@ -51,3 +70,9 @@ npm run preview
 ## Alias
 
 - `@/*` -> `src/*`
+
+## GitHub Pages
+
+- Роутинг работает через `HashRouter`.
+- В workflow уже настроена сборка и деплой `dist` в Pages.
+- Базовый путь для Pages: `/ts-spotify/`.

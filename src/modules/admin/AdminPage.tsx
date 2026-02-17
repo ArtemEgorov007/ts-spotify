@@ -1,15 +1,23 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { musicPlatformStore } from '@/store/store';
+import { clearVkSession } from '@/modules/auth/vkSession';
 
 export function AdminPage() {
   const navigate = useNavigate();
-  const { logout: logoutAuth0 } = useAuth0();
+  const { logout: logoutAuth0, isAuthenticated } = useAuth0();
 
   const goToApp = () => navigate('/app');
   const handleLogout = () => {
     musicPlatformStore.clearAuthUser();
-    logoutAuth0({ logoutParams: { returnTo: window.location.origin } });
+    clearVkSession();
+
+    if (isAuthenticated) {
+      logoutAuth0({ logoutParams: { returnTo: window.location.origin } });
+      return;
+    }
+
+    navigate('/');
   };
 
   return (
