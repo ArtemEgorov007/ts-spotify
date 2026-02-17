@@ -1047,11 +1047,12 @@ select {
   }
 
   .player-bar {
-    grid-template-columns: 1fr;
+    display: flex;
+    justify-content: space-between;
     left: 0;
     right: 0;
     bottom: 74px;
-    height: 100px;
+    height: 75px;
     padding: 0 12px;
     gap: 0;
     border: none;
@@ -1067,10 +1068,6 @@ select {
   .player-cover {
     width: 48px;
     height: 48px;
-  }
-
-  .player-left .player-icon-btn {
-    display: none;
   }
 
   .player-center {
