@@ -21,6 +21,22 @@ function asRecord(value: unknown): Record<string, unknown> {
   return value !== null && typeof value === 'object' ? (value as Record<string, unknown>) : {};
 }
 
+function decodeJwtPayload(token: string): Record<string, unknown> {
+  try {
+    const [, payloadPart] = token.split('.');
+    if (!payloadPart) {
+      return {};
+    }
+
+    const normalized = payloadPart.replace(/-/g, '+').replace(/_/g, '/');
+    const padding = '='.repeat((4 - (normalized.length % 4)) % 4);
+    const json = atob(normalized + padding);
+    return asRecord(JSON.parse(json));
+  } catch {
+    return {};
+  }
+}
+
 function pickString(objects: Record<string, unknown>[], keys: string[]) {
   for (const object of objects) {
     for (const key of keys) {
@@ -39,6 +55,8 @@ function pickString(objects: Record<string, unknown>[], keys: string[]) {
 
 function resolveIdentity(data: unknown, payload: VkPayload) {
   const root = asRecord(data);
+  const idToken = typeof root.id_token === 'string' ? root.id_token : '';
+  const jwtPayload = idToken ? decodeJwtPayload(idToken) : {};
   const user = asRecord(root.user);
   const profile = asRecord(root.profile);
   const response = asRecord(root.response);
@@ -47,7 +65,7 @@ function resolveIdentity(data: unknown, payload: VkPayload) {
   const nestedDataUser = asRecord(nestedData.user);
   const payloadUser = asRecord(payload.user);
 
-  const sources = [user, profile, responseUser, nestedDataUser, root, response, nestedData, payloadUser];
+  const sources = [user, profile, responseUser, nestedDataUser, jwtPayload, root, response, nestedData, payloadUser];
 
   const firstName = pickString(sources, ['first_name', 'firstName']);
   const lastName = pickString(sources, ['last_name', 'lastName']);
