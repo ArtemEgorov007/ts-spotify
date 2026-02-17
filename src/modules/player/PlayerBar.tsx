@@ -28,6 +28,9 @@ export const PlayerBar = observer(function PlayerBar() {
               <strong className="player-track-title">{track.title}</strong>
               <span className="player-track-artist">{track.artist}</span>
             </div>
+            <button type="button" className="player-icon-btn" aria-label="Нравится">
+              <HeartIcon />
+            </button>
           </>
         ) : (
           <span className="player-no-track">Выбери трек для начала воспроизведения</span>
@@ -87,9 +90,6 @@ export const PlayerBar = observer(function PlayerBar() {
         </div>
         <button type="button" className="player-icon-btn player-mobile-play" onClick={() => musicPlatformStore.togglePlayback()} aria-label={musicPlatformStore.isPlaying ? 'Пауза' : 'Воспроизвести'}>
           {musicPlatformStore.isPlaying ? <PauseIcon /> : <PlayIcon />}
-        </button>
-        <button type="button" className="player-icon-btn" aria-label="Нравится">
-          <HeartIcon />
         </button>
       </div>
     </footer>
