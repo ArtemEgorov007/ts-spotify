@@ -69,14 +69,14 @@ export function VkOneTapAuth({ onSuccess }: VkOneTapAuthProps) {
           scope: '',
         });
 
-        const oneTap = new VKID.OneTap();
+        const oAuth = new VKID.OAuthList();
         containerRef.current.innerHTML = '';
         initializedRef.current = true;
 
-        oneTap
+        oAuth
           .render({
             container: containerRef.current,
-            showAlternativeLogin: true,
+            oauthList: ['vkid'],
           })
           .on(VKID.WidgetEvents.ERROR, (vkError: unknown) => {
             if (!cancelled) {
@@ -84,7 +84,7 @@ export function VkOneTapAuth({ onSuccess }: VkOneTapAuthProps) {
             }
             void vkError;
           })
-          .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, (payload: VkPayload) => {
+          .on(VKID.OAuthListInternalEvents.LOGIN_SUCCESS, (payload: VkPayload) => {
             VKID.Auth.exchangeCode(payload.code, payload.device_id)
               .then((data: unknown) => {
                 if (!cancelled) {
