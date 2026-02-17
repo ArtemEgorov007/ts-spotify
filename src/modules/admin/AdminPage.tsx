@@ -3,6 +3,19 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { musicPlatformStore } from '@/store/store';
 import { clearVkSession } from '@/modules/auth/vkSession';
 
+const stats = [
+  { label: 'Активные слушатели', value: '128 430', note: 'за сутки' },
+  { label: 'Загружено треков', value: '9 842', note: 'в каталоге' },
+  { label: 'На модерации', value: '17', note: 'требуют проверки' },
+  { label: 'Новые артисты', value: '32', note: 'за неделю' },
+];
+
+const moderationQueue = [
+  { track: 'Городские петли', reason: 'Проверка прав', status: 'В работе' },
+  { track: 'Послесвечение', reason: 'Ошибка метаданных', status: 'Ожидает' },
+  { track: 'Сигнальные волны', reason: 'Метка 18+', status: 'Готово' },
+];
+
 export function AdminPage() {
   const navigate = useNavigate();
   const { logout: logoutAuth0, isAuthenticated } = useAuth0();
@@ -22,38 +35,50 @@ export function AdminPage() {
 
   return (
     <main className="admin-page">
-      <header>
+      <header className="admin-header">
+        <p className="admin-kicker">Панель управления</p>
         <h1>Админ-панель</h1>
-        <p>Заглушка для модерации, аналитики и управления каталогом.</p>
+        <p>Контроль каталога, модерации и статуса сервисов.</p>
       </header>
 
       <div className="admin-cards">
-        <article><h3>Активные слушатели за день</h3><strong>128,430</strong></article>
-        <article><h3>Загруженные треки</h3><strong>9,842</strong></article>
-        <article><h3>Ожидают проверки</h3><strong>17</strong></article>
-        <article><h3>Новые артисты</h3><strong>32</strong></article>
+        {stats.map((item) => (
+          <article key={item.label}>
+            <h3>{item.label}</h3>
+            <strong>{item.value}</strong>
+            <p>{item.note}</p>
+          </article>
+        ))}
       </div>
 
-      <section className="admin-table-wrap">
-        <h2>Очередь модерации (заглушка)</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Трек</th>
-              <th>Причина</th>
-              <th>Статус</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Городские петли</td><td>Проверка прав</td><td>В проверке</td></tr>
-            <tr><td>Послесвечение</td><td>Ошибка метаданных</td><td>Ожидает</td></tr>
-            <tr><td>Сигнальные волны</td><td>Метка 18+</td><td>Решено</td></tr>
-          </tbody>
-        </table>
+      <section className="admin-workspace">
+        <article className="admin-panel">
+          <h2>Очередь модерации</h2>
+          <ul className="moderation-list">
+            {moderationQueue.map((item) => (
+              <li key={item.track} className="moderation-item">
+                <div className="moderation-main">
+                  <strong>{item.track}</strong>
+                  <p>{item.reason}</p>
+                </div>
+                <span className="admin-status-chip">{item.status}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+
+        <article className="admin-panel">
+          <h2>Системный статус</h2>
+          <ul className="admin-meta-list">
+            <li><span>API каталога</span><strong>Онлайн</strong></li>
+            <li><span>Индексация поиска</span><strong>Синхронизируется</strong></li>
+            <li><span>Очередь загрузки</span><strong>Стабильно</strong></li>
+          </ul>
+        </article>
       </section>
 
       <div className="admin-actions">
-        <button type="button" className="btn btn-primary" onClick={goToApp}>Перейти в приложение</button>
+        <button type="button" className="btn btn-primary" onClick={goToApp}>К приложению</button>
         <button type="button" className="btn btn-secondary" onClick={handleLogout}>Выйти</button>
       </div>
     </main>

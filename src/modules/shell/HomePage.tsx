@@ -6,15 +6,21 @@ import { PlayIcon } from '@/shared/icons/Icons';
 export const HomePage = observer(function HomePage() {
   return (
     <section>
-      <h2 className="section-title">Рекомендованные треки</h2>
+      <h2 className="section-title">Для тебя</h2>
+      <p className="section-subtitle">Короткая подборка на сейчас.</p>
       <div className="track-grid">
         {mockTracks.map((track) => (
           <article className="track-card" key={track.id}>
             <img src={track.coverUrl} alt={track.title} />
             <strong>{track.title}</strong>
             <span>{track.artist}</span>
-            <button type="button" onClick={() => musicPlatformStore.play(track)}>
-              <PlayIcon /> Слушать
+            <button
+              type="button"
+              className="track-play-button"
+              onClick={() => musicPlatformStore.play(track)}
+              aria-label={`Воспроизвести ${track.title}`}
+            >
+              <PlayIcon />
             </button>
           </article>
         ))}

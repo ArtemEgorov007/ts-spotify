@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import { Track } from '@/types/music.types';
 
-type AuthMethod = 'none' | 'auth0' | 'vk';
+type AuthMethod = 'none' | 'auth0' | 'vk' | 'local';
 
 class MusicPlatformStore {
   queue: Track[] = [];
@@ -24,7 +24,7 @@ class MusicPlatformStore {
   }
 
   get roleChipLabel() {
-    return this.email || this.username || 'Гость';
+    return this.username || this.email || 'Гость';
   }
 
   get isAuthenticated() {

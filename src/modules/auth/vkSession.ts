@@ -3,6 +3,7 @@ const VK_SESSION_KEY = 'ts_spotify_vk_session';
 export type VkSession = {
   username: string;
   email: string;
+  authMethod?: 'vk' | 'local';
 };
 
 export function saveVkSession(session: VkSession) {
@@ -20,6 +21,7 @@ export function loadVkSession(): VkSession | null {
     return {
       username: typeof parsed.username === 'string' ? parsed.username : '',
       email: typeof parsed.email === 'string' ? parsed.email : '',
+      authMethod: parsed.authMethod === 'local' ? 'local' : 'vk',
     };
   } catch {
     return null;

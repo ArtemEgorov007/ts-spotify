@@ -38,7 +38,7 @@ export const PlayerBar = observer(function PlayerBar() {
           max={100}
           value={volumePercent}
           style={{
-            background: `linear-gradient(to right, #fff 0%, #fff ${volumePercent}%, #3a3a3a ${volumePercent}%, #3a3a3a 100%)`,
+            background: `linear-gradient(to right, var(--slider-fill) 0%, var(--slider-fill) ${volumePercent}%, var(--slider-track) ${volumePercent}%, var(--slider-track) 100%)`,
           }}
           onInput={(event) => setSliderVolume((event.target as HTMLInputElement).value)}
           onChange={(event) => setSliderVolume(event.target.value)}

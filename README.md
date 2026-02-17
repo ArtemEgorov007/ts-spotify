@@ -30,9 +30,7 @@
 ```env
 VITE_AUTH0_DOMAIN=your-domain.auth0.com
 VITE_AUTH0_CLIENT_ID=your-client-id
-VITE_AUTH0_REDIRECT_URI=http://localhost:33000
 VITE_VK_APP_ID=your-vk-app-id
-VITE_VK_REDIRECT_URI=http://localhost:33000
 ```
 
 В Auth0 приложении:
@@ -52,7 +50,8 @@ VITE_VK_REDIRECT_URI=http://localhost:33000
 - На странице входа подключён OneTap-виджет VK.
 - После успешного входа создаётся локальная сессия VK и открывается `/app`.
 - Выход очищает локальную VK-сессию.
-- Для работы VK ID нужен `https` origin и такой же `redirectUrl` в настройках приложения VK.
+- Для работы VK ID нужен `https` origin.
+- `redirectUrl` формируется автоматически из текущего домена и `VITE_BASE_PATH`.
 
 Для GitHub Pages укажи redirect:
 
@@ -76,3 +75,8 @@ npm run preview
 - Роутинг работает через `HashRouter`.
 - В workflow уже настроена сборка и деплой `dist` в Pages.
 - Базовый путь для Pages: `/ts-spotify/`.
+
+## Тема
+
+- Переключатель темы расположен внизу sidebar.
+- На странице входа переключателя нет.
