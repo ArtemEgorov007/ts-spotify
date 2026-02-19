@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { VkOneTapAuth } from '@/modules/auth/VkOneTapAuth';
 import { authStore } from '@/store/store';
 import { loginWithLocalDemo, loginWithVkIdentity } from '@/modules/auth/authService';
+import { APP_ROUTES } from '@/app/config/routes';
 
 export const LandingPage = observer(function LandingPage() {
   const navigate = useNavigate();
@@ -19,13 +20,13 @@ export const LandingPage = observer(function LandingPage() {
   );
 
   if (authStore.authHydrated && authStore.isAuthenticated) {
-    return <Navigate to="/app" replace />;
+    return <Navigate to={APP_ROUTES.app} replace />;
   }
 
   return (
     <main className="landing-page">
       <section className="auth-hero">
-        <p className="auth-hero-kicker">ts-spotify</p>
+        <p className="auth-hero-kicker">ts-music</p>
         <h1>Вход</h1>
         <p>Открой музыку, подборки и библиотеку.</p>
 

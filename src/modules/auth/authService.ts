@@ -1,4 +1,5 @@
 import { NavigateFunction } from 'react-router-dom';
+import { APP_ROUTES } from '@/app/config/routes';
 import { authStore, playerStore } from '@/store/store';
 import { clearVkSession, loadVkSession, saveVkSession, VkSession } from '@/modules/auth/vkSession';
 
@@ -8,7 +9,7 @@ type AuthIdentity = {
 };
 
 function navigateToApp(navigate: NavigateFunction) {
-  navigate('/app', { replace: true });
+  navigate(APP_ROUTES.app, { replace: true });
 }
 
 export function bootstrapAuthSession() {
@@ -21,14 +22,14 @@ export function bootstrapAuthSession() {
   authStore.hydrateAuthUser({
     username: vkSession.username,
     email: vkSession.email,
-    authMethod: vkSession.authMethod || 'vk',
+    authMethod: vkSession.authMethod,
   });
 }
 
 export function loginWithLocalDemo(navigate: NavigateFunction) {
   const localUser: VkSession = {
     username: 'local-user',
-    email: 'local@ts-spotify.dev',
+    email: 'local@ts-music.dev',
     authMethod: 'local',
   };
 
@@ -38,8 +39,14 @@ export function loginWithLocalDemo(navigate: NavigateFunction) {
 }
 
 export function loginWithVkIdentity(identity: AuthIdentity, navigate: NavigateFunction) {
-  saveVkSession(identity);
-  authStore.applyAuthUser(identity.username, identity.email, 'vk');
+  const session: VkSession = {
+    username: identity.username,
+    email: identity.email,
+    authMethod: 'vk',
+  };
+
+  saveVkSession(session);
+  authStore.applyAuthUser(session.username, session.email, session.authMethod);
   navigateToApp(navigate);
 }
 
@@ -47,5 +54,5 @@ export function logoutUser(navigate: NavigateFunction) {
   authStore.clearAuthUser();
   playerStore.pause();
   clearVkSession();
-  navigate('/');
+  navigate(APP_ROUTES.landing);
 }

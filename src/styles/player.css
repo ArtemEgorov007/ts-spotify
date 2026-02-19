@@ -196,10 +196,6 @@
   justify-content: flex-end;
 }
 
-.player-mobile-play {
-  display: none;
-}
-
 .player-volume {
   display: flex;
   align-items: center;

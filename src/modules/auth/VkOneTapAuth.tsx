@@ -11,10 +11,40 @@ type VkPayload = {
   email?: unknown;
 };
 
-const VK_SDK_URL = 'https://unpkg.com/@vkid/sdk@<3.0.0/dist-sdk/umd/index.js';
+type VkAuthApi = {
+  exchangeCode: (code: string, deviceId: string) => Promise<unknown>;
+  userInfo?: (accessToken: string) => Promise<unknown>;
+  publicInfo?: (idToken: string) => Promise<unknown>;
+};
 
-function getWindowSdk() {
-  return (window as Window & { VKIDSDK?: any }).VKIDSDK;
+type VkEventBus = {
+  on: (event: unknown, handler: (payload: unknown) => void) => VkEventBus;
+};
+
+type VkSdk = {
+  Config: {
+    init: (config: {
+      app: number;
+      redirectUrl: string;
+      responseMode: unknown;
+      source: unknown;
+      scope: string;
+    }) => void;
+  };
+  ConfigResponseMode: { Callback: unknown };
+  ConfigSource: { LOWCODE: unknown };
+  OneTap: new () => {
+    render: (options: { container: HTMLDivElement; showAlternativeLogin: boolean }) => VkEventBus;
+  };
+  WidgetEvents: { ERROR: unknown };
+  OneTapInternalEvents: { LOGIN_SUCCESS: unknown };
+  Auth: VkAuthApi;
+};
+
+const VK_SDK_URL = 'https://unpkg.com/@vkid/sdk@2.0.4/dist-sdk/umd/index.js';
+
+function getWindowSdk(): VkSdk | undefined {
+  return (window as Window & { VKIDSDK?: VkSdk }).VKIDSDK;
 }
 
 function asRecord(value: unknown): Record<string, unknown> {
@@ -110,7 +140,24 @@ function buildIdentity(exchangeData: unknown, profileData: unknown, payload: VkP
   return { username, email };
 }
 
-async function loadProfileByTokens(VKID: any, exchangeData: unknown) {
+function asVkPayload(value: unknown): VkPayload | null {
+  const payload = asRecord(value);
+  const code = typeof payload.code === 'string' ? payload.code : '';
+  const deviceId = typeof payload.device_id === 'string' ? payload.device_id : '';
+
+  if (!code || !deviceId) {
+    return null;
+  }
+
+  return {
+    code,
+    device_id: deviceId,
+    user: payload.user,
+    email: payload.email,
+  };
+}
+
+async function loadProfileByTokens(vkSdk: VkSdk, exchangeData: unknown) {
   const root = asRecord(exchangeData);
   const accessToken = pickString(
     [root, asRecord(root.response), asRecord(root.data)],
@@ -118,17 +165,17 @@ async function loadProfileByTokens(VKID: any, exchangeData: unknown) {
   );
   const idToken = pickString([root, asRecord(root.response), asRecord(root.data)], ['id_token']);
 
-  if (accessToken && VKID?.Auth?.userInfo) {
+  if (accessToken && vkSdk.Auth.userInfo) {
     try {
-      return await VKID.Auth.userInfo(accessToken);
+      return await vkSdk.Auth.userInfo(accessToken);
     } catch {
       // Fallback to publicInfo if userInfo is unavailable for token/scope.
     }
   }
 
-  if (idToken && VKID?.Auth?.publicInfo) {
+  if (idToken && vkSdk.Auth.publicInfo) {
     try {
-      return await VKID.Auth.publicInfo(idToken);
+      return await vkSdk.Auth.publicInfo(idToken);
     } catch {
       return null;
     }
@@ -178,13 +225,20 @@ export function VkOneTapAuth({ onSuccess }: VkOneTapAuthProps) {
             container: containerRef.current,
             showAlternativeLogin: true,
           })
-          .on(VKID.WidgetEvents.ERROR, (vkError: unknown) => {
+          .on(VKID.WidgetEvents.ERROR, () => {
             if (!cancelled) {
               setError('Ошибка VK ID. Проверь настройки приложения.');
             }
-            void vkError;
           })
-          .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, (payload: VkPayload) => {
+          .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, (payloadUnknown: unknown) => {
+            const payload = asVkPayload(payloadUnknown);
+            if (!payload) {
+              if (!cancelled) {
+                setError('Некорректный ответ VK ID.');
+              }
+              return;
+            }
+
             VKID.Auth.exchangeCode(payload.code, payload.device_id)
               .then(async (exchangeData: unknown) => {
                 const profileData = await loadProfileByTokens(VKID, exchangeData);

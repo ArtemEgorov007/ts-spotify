@@ -1,9 +1,9 @@
 import { mockTracks } from '@/shared/mock/media';
+import { formatDuration } from '@/shared/lib/format';
 
 export function SearchPage() {
   return (
     <section>
-      <h2 className="section-title">Поиск</h2>
       <p className="section-subtitle">Треки, артисты и плейлисты.</p>
       <div className="search-box">Поле поиска появится на следующем этапе.</div>
       <div className="tag-row">
@@ -22,9 +22,7 @@ export function SearchPage() {
               <strong>{track.title}</strong>
               <p>{track.artist}</p>
             </div>
-            <span>
-              {Math.floor(track.durationSec / 60)}:{String(track.durationSec % 60).padStart(2, '0')}
-            </span>
+            <span>{formatDuration(track.durationSec)}</span>
           </div>
         ))}
       </div>

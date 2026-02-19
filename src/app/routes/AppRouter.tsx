@@ -7,16 +7,17 @@ import { LibraryPage } from '@/modules/library/LibraryPage';
 import { AdminPage } from '@/modules/admin/AdminPage';
 import { RequireAuth } from '@/app/routes/guards';
 import { AuthBootstrap } from '@/app/providers/AuthBootstrap';
+import { APP_CHILD_ROUTES, APP_ROUTES } from '@/app/config/routes';
 
 export function AppRouter() {
   return (
     <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthBootstrap>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path={APP_ROUTES.landing} element={<LandingPage />} />
 
           <Route
-            path="/app"
+            path={APP_ROUTES.app}
             element={
               <RequireAuth>
                 <AppShellLayout />
@@ -24,12 +25,12 @@ export function AppRouter() {
             }
           >
             <Route index element={<HomePage />} />
-            <Route path="search" element={<SearchPage />} />
-            <Route path="library" element={<LibraryPage />} />
+            <Route path={APP_CHILD_ROUTES.search} element={<SearchPage />} />
+            <Route path={APP_CHILD_ROUTES.library} element={<LibraryPage />} />
           </Route>
 
           <Route
-            path="/admin"
+            path={APP_ROUTES.admin}
             element={
               <RequireAuth>
                 <AdminPage />
@@ -37,7 +38,7 @@ export function AppRouter() {
             }
           />
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to={APP_ROUTES.landing} replace />} />
         </Routes>
       </AuthBootstrap>
     </HashRouter>

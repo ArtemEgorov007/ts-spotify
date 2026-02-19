@@ -1,4 +1,5 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
+import { STORAGE_KEYS } from '@/app/config/storage';
 
 type ThemeMode = 'dark' | 'light';
 
@@ -7,12 +8,10 @@ type ThemeContextValue = {
   toggleTheme: () => void;
 };
 
-const THEME_KEY = 'ts_spotify_theme';
-
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function readInitialTheme(): ThemeMode {
-  const stored = localStorage.getItem(THEME_KEY);
+  const stored = localStorage.getItem(STORAGE_KEYS.theme);
   if (stored === 'dark' || stored === 'light') {
     return stored;
   }
@@ -25,7 +24,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem(THEME_KEY, theme);
+    localStorage.setItem(STORAGE_KEYS.theme, theme);
   }, [theme]);
 
   const value = useMemo<ThemeContextValue>(

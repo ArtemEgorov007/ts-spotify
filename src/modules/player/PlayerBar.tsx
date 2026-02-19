@@ -10,6 +10,7 @@ import {
   VolumeIcon,
   HeartIcon,
 } from '@/shared/icons/Icons';
+import { formatDuration } from '@/shared/lib/format';
 
 export const PlayerBar = observer(function PlayerBar() {
   const track = playerStore.currentTrack;
@@ -79,9 +80,7 @@ export const PlayerBar = observer(function PlayerBar() {
             <div className="player-progress-handle" />
           </div>
           <span className="player-time">
-            {track
-              ? `${Math.floor(track.durationSec / 60)}:${String(track.durationSec % 60).padStart(2, '0')}`
-              : '0:00'}
+            {track ? formatDuration(track.durationSec) : '0:00'}
           </span>
         </div>
       </div>
@@ -101,17 +100,8 @@ export const PlayerBar = observer(function PlayerBar() {
               background: `linear-gradient(to right, var(--slider-fill) 0%, var(--slider-fill) ${volumePercent}%, var(--slider-track) ${volumePercent}%, var(--slider-track) 100%)`,
             }}
             onInput={(event) => setSliderVolume((event.target as HTMLInputElement).value)}
-            onChange={(event) => setSliderVolume(event.target.value)}
           />
         </div>
-        <button
-          type="button"
-          className="player-icon-btn player-mobile-play"
-          onClick={() => playerStore.togglePlayback()}
-          aria-label={playerStore.isPlaying ? 'Пауза' : 'Воспроизвести'}
-        >
-          {playerStore.isPlaying ? <PauseIcon /> : <PlayIcon />}
-        </button>
       </div>
     </footer>
   );

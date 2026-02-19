@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { logoutUser } from '@/modules/auth/authService';
+import { APP_ROUTES } from '@/app/config/routes';
 
 const stats = [
   { label: 'Активные слушатели', value: '128 430', note: 'за сутки' },
@@ -17,7 +18,7 @@ const moderationQueue = [
 export function AdminPage() {
   const navigate = useNavigate();
 
-  const goToApp = () => navigate('/app');
+  const goToApp = () => navigate(APP_ROUTES.app);
   const handleLogout = () => logoutUser(navigate);
 
   return (
