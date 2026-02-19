@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { Heart, Pause, Play, Repeat, Shuffle, SkipBack, SkipForward, Volume2 } from 'lucide-react';
+import { Heart, Pause, Play, Repeat, Shuffle, SkipBack, SkipForward, Volume1, Volume2, VolumeX } from 'lucide-react';
 import { playerStore } from '@/store/store';
 import { formatDuration } from '@/shared/lib/format';
 
@@ -9,6 +9,22 @@ export const PlayerBar = observer(function PlayerBar() {
   const setSliderVolume = (value: string) => {
     playerStore.setVolume(Number(value) / 100);
   };
+
+  const toggleMute = () => {
+    if (playerStore.volume > 0) {
+      playerStore.setVolume(0);
+    } else {
+      playerStore.setVolume(0.5);
+    }
+  };
+
+  const getVolumeIcon = () => {
+    if (playerStore.volume === 0) return VolumeX;
+    if (playerStore.volume < 0.5) return Volume1;
+    return Volume2;
+  };
+
+  const VolumeIcon = getVolumeIcon();
 
   return (
     <footer className="player-bar">
@@ -20,8 +36,13 @@ export const PlayerBar = observer(function PlayerBar() {
               <strong className="player-track-title">{track.title}</strong>
               <span className="player-track-artist">{track.artist}</span>
             </div>
-            <button type="button" className="player-icon-btn" aria-label="Нравится">
-              <Heart aria-hidden="true" />
+            <button
+              type="button"
+              className={`player-icon-btn ${playerStore.isFavorite ? 'active' : ''}`}
+              aria-label="Нравится"
+              onClick={() => playerStore.toggleFavorite()}
+            >
+              <Heart aria-hidden="true" fill={playerStore.isFavorite ? 'currentColor' : 'none'} />
             </button>
           </>
         ) : (
@@ -77,21 +98,28 @@ export const PlayerBar = observer(function PlayerBar() {
       </div>
 
       <div className="player-right">
-        <button type="button" className="player-icon-btn" aria-label="Громкость">
-          <Volume2 aria-hidden="true" />
-        </button>
-        <div className="player-volume">
-          <input
-            className="volume-slider"
-            type="range"
-            min={0}
-            max={100}
-            value={volumePercent}
-            style={{
-              background: `linear-gradient(to right, var(--slider-fill) 0%, var(--slider-fill) ${volumePercent}%, var(--slider-track) ${volumePercent}%, var(--slider-track) 100%)`,
-            }}
-            onInput={(event) => setSliderVolume((event.target as HTMLInputElement).value)}
-          />
+        <div className="volume-control">
+          <button
+            type="button"
+            className="player-icon-btn"
+            aria-label={playerStore.volume === 0 ? 'Включить звук' : 'Выключить звук'}
+            onClick={toggleMute}
+          >
+            <VolumeIcon aria-hidden="true" />
+          </button>
+          <div className="volume-slider-container">
+            <input
+              className="volume-slider"
+              type="range"
+              min={0}
+              max={100}
+              value={volumePercent}
+              style={{
+                background: `linear-gradient(to right, var(--brand-green) 0%, var(--brand-green) ${volumePercent}%, var(--bg-strong) ${volumePercent}%, var(--bg-strong) 100%)`,
+              }}
+              onInput={(event) => setSliderVolume((event.target as HTMLInputElement).value)}
+            />
+          </div>
         </div>
       </div>
     </footer>

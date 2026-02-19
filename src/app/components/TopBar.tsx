@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { authStore } from '@/store/store';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { APP_ROUTES, getAppSectionTitle } from '@/app/config/routes';
+import './TopBar.css';
 
 export const TopBar = observer(function TopBar() {
   const navigate = useNavigate();

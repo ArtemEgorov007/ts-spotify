@@ -1,17 +1,21 @@
+/* Spotify-style Player Bar */
+
 .player-bar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   height: 90px;
-  border-top: 1px solid var(--line);
-  background: color-mix(in srgb, var(--panel-strong) 98%, transparent);
+  border-top: 1px solid var(--border-subdued);
+  background: var(--panel-player);
+  backdrop-filter: blur(20px);
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   align-items: center;
   gap: 16px;
   padding: 0 16px;
-  backdrop-filter: blur(20px);
+  z-index: 100;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
 }
 
 .player-left {
@@ -24,9 +28,15 @@
 .player-cover {
   width: 56px;
   height: 56px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.player-cover:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
 }
 
 .player-track-info {
@@ -38,46 +48,63 @@
 .player-track-title {
   font-size: 14px;
   font-weight: 500;
-  color: var(--text);
+  color: var(--text-base);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color var(--transition-fast);
+}
+
+.player-track-title:hover {
+  color: var(--brand-green);
+  cursor: pointer;
 }
 
 .player-track-artist {
   font-size: 12px;
-  color: var(--muted);
+  color: var(--text-subdued);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color var(--transition-fast);
+}
+
+.player-track-artist:hover {
+  color: var(--text-base);
+  cursor: pointer;
 }
 
 .player-no-track {
-  color: var(--muted);
+  color: var(--text-subdued);
   font-size: 13px;
 }
 
 .player-icon-btn {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   border: none;
   background: transparent;
-  color: var(--muted);
+  color: var(--text-subdued);
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all var(--transition-fast);
   padding: 0;
 }
 
 .player-icon-btn:hover {
-  color: var(--text);
-  background: color-mix(in srgb, var(--text) 10%, transparent);
+  color: var(--text-base);
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
 }
 
 .player-icon-btn:active {
   transform: scale(0.95);
+}
+
+.player-icon-btn.active {
+  color: var(--brand-green);
 }
 
 .player-center {
@@ -109,20 +136,22 @@
 .player-toggle {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   border: none;
-  background: var(--text);
-  color: var(--bg);
+  background: var(--text-base);
+  color: var(--bg-base);
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all var(--transition-fast);
   padding: 0;
+  box-shadow: var(--shadow-md);
 }
 
 .player-toggle:hover {
-  transform: scale(1.05);
-  background: var(--text);
+  transform: scale(1.08);
+  background: var(--text-base);
+  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.3);
 }
 
 .player-toggle:active {
@@ -144,20 +173,22 @@
 
 .player-time {
   font-size: 11px;
-  color: var(--muted);
   font-weight: 500;
+  color: var(--text-subdued);
   min-width: 40px;
   text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
 .player-progress-bar {
   flex: 1;
   height: 4px;
-  background: var(--slider-track);
-  border-radius: 2px;
+  background: var(--bg-strong);
+  border-radius: var(--radius-full);
   position: relative;
   cursor: pointer;
-  transition: height 0.15s ease;
+  transition: height var(--transition-fast);
+  overflow: visible;
 }
 
 .player-progress-bar:hover {
@@ -166,27 +197,22 @@
 
 .player-progress-fill {
   height: 100%;
-  background: var(--text);
-  border-radius: 2px;
+  background: var(--text-base);
+  border-radius: var(--radius-full);
   position: relative;
+  transition: background var(--transition-fast);
+}
+
+.player-progress-bar:hover .player-progress-fill {
+  background: var(--brand-green);
 }
 
 .player-progress-handle {
-  position: absolute;
-  right: -6px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 12px;
-  height: 12px;
-  background: var(--text);
-  border-radius: 50%;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: none;
 }
 
 .player-progress-bar:hover .player-progress-handle {
-  opacity: 1;
+  display: none;
 }
 
 .player-right {
@@ -194,58 +220,177 @@
   align-items: center;
   gap: 8px;
   justify-content: flex-end;
+  min-width: 140px;
+  overflow: visible;
 }
 
-.player-volume {
+.volume-control {
   display: flex;
   align-items: center;
+  gap: 8px;
+  overflow: visible;
+}
+
+.volume-slider-container {
+  width: 88px;
+  min-width: 88px;
+  opacity: 1;
+  transition: none;
+  overflow: visible;
+}
+
+.volume-control:hover .volume-slider-container {
+  width: 88px;
+  min-width: 88px;
+  opacity: 1;
 }
 
 .volume-slider {
   -webkit-appearance: none;
   appearance: none;
-  width: 100px;
+  width: 100%;
   height: 4px;
-  border-radius: 2px;
+  border-radius: var(--radius-full);
   border: none;
   outline: none;
   cursor: pointer;
-  transition: width 0.15s ease;
-}
-
-.player-volume:hover .volume-slider {
-  width: 120px;
+  transition: height var(--transition-fast);
+  background: transparent;
 }
 
 .volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--text);
+  width: 0;
+  height: 0;
+  border-radius: 0;
+  background: transparent;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
+  opacity: 1;
+}
+
+.volume-control:hover .volume-slider::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: none;
 }
 
 .volume-slider::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--text);
+  width: 0;
+  height: 0;
+  border-radius: 0;
+  background: transparent;
   cursor: pointer;
   border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
+  opacity: 1;
+}
+
+.volume-control:hover .volume-slider::-moz-range-thumb {
+  opacity: 1;
 }
 
 .volume-slider::-webkit-slider-track {
   height: 4px;
-  border-radius: 2px;
-  background: var(--slider-track);
+  border-radius: var(--radius-full);
+  background: var(--bg-strong);
 }
 
 .volume-slider::-moz-range-track {
   height: 4px;
-  border-radius: 2px;
-  background: var(--slider-track);
+  border-radius: var(--radius-full);
+  background: var(--bg-strong);
+}
+
+/* Mobile responsive */
+@media (max-width: 900px) {
+  .player-bar {
+    grid-template-columns: 1fr auto;
+    padding: 12px 16px;
+    height: auto;
+    min-height: 72px;
+  }
+
+  .player-right {
+    display: none;
+  }
+
+  .player-center {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    padding: 8px 16px;
+    background: var(--panel-player);
+    border-bottom: 1px solid var(--border-subdued);
+  }
+
+  .player-progress {
+    display: none;
+  }
+
+  .player-controls {
+    gap: 12px;
+  }
+
+  .player-control-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .player-control-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .player-toggle {
+    width: 44px;
+    height: 44px;
+  }
+
+  .player-toggle svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (max-width: 600px) {
+  .player-left {
+    gap: 8px;
+  }
+
+  .player-cover {
+    width: 48px;
+    height: 48px;
+  }
+
+  .player-track-title {
+    font-size: 13px;
+  }
+
+  .player-track-artist {
+    font-size: 11px;
+  }
+}
+
+/* Light theme */
+:root[data-theme='light'] .player-bar {
+  border-top-color: var(--border-subdued);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme='light'] .player-toggle {
+  background: var(--brand-green);
+  color: var(--bg-base);
+}
+
+:root[data-theme='light'] .player-toggle:hover {
+  box-shadow: 0 6px 16px rgba(30, 215, 96, 0.4);
+}
+
+:root[data-theme='light'] .player-icon-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
 }
