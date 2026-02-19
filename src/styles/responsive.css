@@ -1,63 +1,26 @@
-/* Mobile responsive styles */
+/* Spotify-style Mobile Responsive */
+
+/* Tablet and below - 900px */
 @media (max-width: 900px) {
+  /* App Layout */
   .app-shell-layout {
     grid-template-columns: 1fr;
-    padding-bottom: 174px;
   }
 
-  /* TopBar adjustments */
-  .topbar {
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .topbar-controls {
-    gap: 8px;
-  }
-
-  .topbar-mobile-theme {
-    display: block;
-  }
-
-  .topbar-title {
-    font-size: 24px;
-  }
-
-  .role-chip {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    padding: 0;
-    display: grid;
-    place-items: center;
-    font-size: 16px;
-  }
-
-  .role-chip-full {
-    display: none;
-  }
-
-  .role-chip-mobile {
-    display: inline;
-  }
-
-  /* Player Bar - fixed above nav */
+  /* Player Bar - Floating above mobile nav */
   .player-bar {
     position: fixed;
-    left: 10px;
-    right: 10px;
-    bottom: calc(72px + env(safe-area-inset-bottom));
-    height: 78px;
-    padding: 0 10px;
+    bottom: calc(86px + env(safe-area-inset-bottom));
+    height: 82px;
+    padding: 0 12px;
     gap: 8px;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: color-mix(in srgb, var(--panel-strong) 98%, transparent);
+    border: 1px solid var(--border-base);
+    border-radius: var(--radius-xl);
+    background: var(--panel-overlay);
     backdrop-filter: blur(20px);
     z-index: 30;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+    overflow: visible;
   }
 
   /* Progress bar at top of player */
@@ -76,10 +39,10 @@
   .player-progress-bar {
     flex: 1;
     height: 3px;
-    background: var(--slider-track);
+    background: var(--bg-strong);
     border-radius: 0;
     position: relative;
-    transition: height 0.15s ease;
+    transition: height var(--transition-fast);
   }
 
   .player-progress-bar:hover {
@@ -88,10 +51,14 @@
 
   .player-progress-fill {
     height: 100%;
-    background: var(--text);
+    background: var(--text-base);
     border-radius: 0;
     position: relative;
     transition: width 0.1s linear;
+  }
+
+  .player-progress-bar:hover .player-progress-fill {
+    background: var(--brand-green);
   }
 
   .player-time {
@@ -104,10 +71,18 @@
     flex: 1;
   }
 
+  .player-left .player-icon-btn {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    z-index: 3;
+  }
+
   .player-cover {
-    width: 46px;
-    height: 46px;
-    border-radius: 6px;
+    width: 54px;
+    height: 54px;
+    border-radius: var(--radius-md);
+    z-index: 2;
   }
 
   .player-track-info {
@@ -127,6 +102,7 @@
     flex-direction: column;
     gap: 0;
     pointer-events: none;
+    z-index: 1;
   }
 
   .player-controls {
@@ -135,8 +111,8 @@
   }
 
   .player-control-btn {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
   }
 
   .player-control-btn svg {
@@ -151,8 +127,9 @@
   }
 
   .player-toggle {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
+    background: var(--text-base);
   }
 
   .player-toggle svg {
@@ -170,14 +147,27 @@
     justify-content: flex-end;
     gap: 0;
     pointer-events: auto;
+    z-index: 3;
   }
 
   .player-right .player-icon-btn:first-child {
     display: grid;
   }
 
-  .player-right .player-volume {
-    display: none;
+  .player-right .volume-control {
+    display: flex;
+    gap: 6px;
+  }
+
+  .player-right .volume-slider-container {
+    width: 56px;
+    min-width: 56px;
+    opacity: 1;
+  }
+
+  .player-right .volume-control:hover .volume-slider-container {
+    width: 56px;
+    min-width: 56px;
   }
 
   .player-icon-btn {
@@ -193,24 +183,41 @@
   /* Content area */
   .app-content-area {
     padding: 16px;
-    padding-bottom: 16px;
-  }
-
-  /* Auth page */
-  .auth-hero {
-    padding: 20px;
+    padding-bottom: calc(180px + env(safe-area-inset-bottom));
   }
 
   /* Track grid - horizontal scroll */
   .track-grid {
     grid-auto-columns: minmax(180px, 70vw);
     gap: 12px;
-    padding: 4px 4px 12px 0;
+    padding: 10px 4px 20px 0;
   }
 
   .track-card {
-    min-height: 260px;
+    min-height: 280px;
     padding: 12px;
+  }
+
+  .track-card img {
+    border-radius: var(--radius-md);
+  }
+
+  .track-card strong {
+    font-size: 14px;
+  }
+
+  .track-card span {
+    font-size: 12px;
+  }
+
+  .track-play-button {
+    width: 48px;
+    height: 48px;
+  }
+
+  .track-play-button svg {
+    width: 20px;
+    height: 20px;
   }
 
   /* Playlist grid */
@@ -220,36 +227,87 @@
   }
 
   /* Admin page */
-  .admin-page {
-    padding: 16px;
+  .admin-page-wrapper {
+    padding: 0;
   }
 
-  .admin-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .admin-workspace {
+  .admin-hero {
+    padding: 32px 20px;
     grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .admin-hero-content {
+    align-items: center;
+  }
+
+  .admin-hero-visual {
+    display: none;
+  }
+
+  .admin-hero h1 {
+    font-size: 28px;
+  }
+
+  .admin-hero-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn-spotify,
+  .btn-admin-outline {
+    width: 100%;
+  }
+
+  .admin-stats-section,
+  .admin-content-grid {
+    padding: 20px;
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .moderation-action-btn {
+    display: none;
   }
 
   /* Search tags */
   .tag-row {
     flex-wrap: wrap;
   }
+
+  .tag-row span {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
 }
 
-/* Extra small devices */
+/* Mobile - Extra small devices */
 @media (max-width: 380px) {
   .player-bar {
-    height: 76px;
-    padding: 0 12px;
+    height: 78px;
+    padding: 0 10px;
+    bottom: calc(82px + env(safe-area-inset-bottom));
   }
 
   .player-cover {
-    width: 42px;
-    height: 42px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .player-right .volume-slider-container {
+    width: 48px;
+    min-width: 48px;
+  }
+
+  .player-right .volume-control:hover .volume-slider-container {
+    width: 48px;
+    min-width: 48px;
   }
 
   .player-controls {
@@ -268,5 +326,74 @@
 
   .track-grid {
     grid-auto-columns: minmax(160px, 65vw);
+  }
+
+  .track-card {
+    min-height: 260px;
+  }
+
+  .auth-hero {
+    padding: 24px 16px 28px;
+    gap: 16px;
+  }
+
+  .auth-hero h1 {
+    font-size: 26px;
+  }
+
+  .auth-hero > p {
+    font-size: 13px;
+  }
+
+  .btn {
+    padding: 14px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Hover capabilities */
+@media (hover: hover) {
+  .track-play-button {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+  }
+
+  .track-card:hover .track-play-button {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+@media (hover: none) {
+  .track-play-button {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  :root *,
+  :root *::before,
+  :root *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+  }
+}
+
+/* Print styles */
+@media print {
+  .sidebar,
+  .player-bar,
+  .topbar {
+    display: none;
+  }
+
+  .app-content-area {
+    padding: 0;
   }
 }
