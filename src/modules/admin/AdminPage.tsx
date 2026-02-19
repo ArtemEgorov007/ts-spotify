@@ -173,9 +173,6 @@ export function AdminPage() {
       <section className="admin-stats-section">
         <div className="section-header">
           <h2>Обзор платформы</h2>
-          <span className="admin-section-subtitle">
-            Обновление в реальном времени
-          </span>
         </div>
         <div className="admin-stats-grid">
           {stats.map((stat) => {
@@ -269,10 +266,6 @@ export function AdminPage() {
               <Server size={24} className="panel-icon" />
               <h2>Системный статус</h2>
             </div>
-            <span className="status-indicator online">
-              <span className="indicator-dot" />
-              Все системы в норме
-            </span>
           </div>
 
           <div className="system-status-list">
