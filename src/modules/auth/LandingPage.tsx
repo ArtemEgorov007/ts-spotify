@@ -9,6 +9,7 @@ export const LandingPage = observer(function LandingPage() {
   const navigate = useNavigate();
   const isLocalhost =
     window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const hasHttpsOrigin = window.location.protocol === 'https:';
 
   const onLogin = useCallback(() => loginWithLocalDemo(navigate), [navigate]);
 
@@ -33,11 +34,19 @@ export const LandingPage = observer(function LandingPage() {
             <button type="button" className="btn btn-primary auth-login-btn" onClick={onLogin}>
               Войти в демо
             </button>
-            <div className="auth-divider">или</div>
-            <VkOneTapAuth onSuccess={onVkSuccess} />
+            {hasHttpsOrigin ? (
+              <>
+                <div className="auth-divider">или</div>
+                <VkOneTapAuth onSuccess={onVkSuccess} />
+              </>
+            ) : (
+              <p className="landing-note">VK ID будет доступен при запуске через HTTPS.</p>
+            )}
           </>
-        ) : (
+        ) : hasHttpsOrigin ? (
           <VkOneTapAuth onSuccess={onVkSuccess} />
+        ) : (
+          <p className="landing-error">Для VK ID нужен HTTPS origin (например, прод-домен).</p>
         )}
       </section>
     </main>

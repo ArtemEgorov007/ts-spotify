@@ -41,10 +41,6 @@ VITE_VK_APP_ID=your-vk-app-id
 - `redirectUrl` формируется автоматически из текущего домена и `VITE_BASE_PATH`.
 - На `localhost` доступен демо-вход без VK (для локальной разработки по `http`).
 
-Для GitHub Pages укажи redirect:
-
-- `https://artemegorov007.github.io/ts-spotify/`
-
 ## Команды
 
 ```bash
@@ -70,4 +66,3 @@ npm run format:check
 ## Тема
 
 - Переключатель темы расположен внизу sidebar.
-- На странице входа переключателя нет.
