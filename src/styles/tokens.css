@@ -19,9 +19,6 @@
   --chip-hover: #212121;
   --slider-track: #3a3a3a;
   --slider-fill: #ffffff;
-  --slider-border: #404040;
-  --slider-thumb-border: #1f1f1f;
-  --slider-thumb-shadow: #0a0a0a;
   --radius-control: 14px;
   --radius-card: 16px;
 }
@@ -43,7 +40,4 @@
   --chip-hover: #e6e6e6;
   --slider-track: #c8c8c8;
   --slider-fill: #111111;
-  --slider-border: #bdbdbd;
-  --slider-thumb-border: #aaaaaa;
-  --slider-thumb-shadow: #f2f2f2;
 }
