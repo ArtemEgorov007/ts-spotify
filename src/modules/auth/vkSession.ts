@@ -26,12 +26,11 @@ export function loadVkSession(): VkSession | null {
       lowerUsername === 'vk пользователь' ||
       lowerUsername === 'пользователь' ||
       lowerUsername === 'user';
-    const normalizedUsername =
-      !isFallbackName
-        ? rawUsername
-        : email.includes('@')
-          ? email.split('@')[0]
-          : '';
+    const normalizedUsername = !isFallbackName
+      ? rawUsername
+      : email.includes('@')
+        ? email.split('@')[0]
+        : '';
 
     return {
       username: normalizedUsername,

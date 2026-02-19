@@ -1,7 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
-import { musicPlatformStore } from '@/store/store';
-import { clearVkSession } from '@/modules/auth/vkSession';
+import { logoutUser } from '@/modules/auth/authService';
 
 const stats = [
   { label: 'Активные слушатели', value: '128 430', note: 'за сутки' },
@@ -18,20 +16,9 @@ const moderationQueue = [
 
 export function AdminPage() {
   const navigate = useNavigate();
-  const { logout: logoutAuth0, isAuthenticated } = useAuth0();
 
   const goToApp = () => navigate('/app');
-  const handleLogout = () => {
-    musicPlatformStore.clearAuthUser();
-    clearVkSession();
-
-    if (isAuthenticated) {
-      logoutAuth0({ logoutParams: { returnTo: window.location.origin } });
-      return;
-    }
-
-    navigate('/');
-  };
+  const handleLogout = () => logoutUser(navigate);
 
   return (
     <main className="admin-page">
@@ -70,16 +57,29 @@ export function AdminPage() {
         <article className="admin-panel">
           <h2>Системный статус</h2>
           <ul className="admin-meta-list">
-            <li><span>API каталога</span><strong>Онлайн</strong></li>
-            <li><span>Индексация поиска</span><strong>Синхронизируется</strong></li>
-            <li><span>Очередь загрузки</span><strong>Стабильно</strong></li>
+            <li>
+              <span>API каталога</span>
+              <strong>Онлайн</strong>
+            </li>
+            <li>
+              <span>Индексация поиска</span>
+              <strong>Синхронизируется</strong>
+            </li>
+            <li>
+              <span>Очередь загрузки</span>
+              <strong>Стабильно</strong>
+            </li>
           </ul>
         </article>
       </section>
 
       <div className="admin-actions">
-        <button type="button" className="btn btn-primary" onClick={goToApp}>К приложению</button>
-        <button type="button" className="btn btn-secondary" onClick={handleLogout}>Выйти</button>
+        <button type="button" className="btn btn-primary" onClick={goToApp}>
+          К приложению
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={handleLogout}>
+          Выйти
+        </button>
       </div>
     </main>
   );

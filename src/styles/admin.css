@@ -1,0 +1,155 @@
+.admin-page {
+  min-height: 100vh;
+  padding: 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.admin-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.admin-kicker {
+  margin: 0;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+}
+
+.admin-page header h1 {
+  margin: 0;
+  font-size: clamp(28px, 4.2vw, 40px);
+  font-family: var(--font-heading);
+}
+
+.admin-page header p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 620px;
+}
+
+.admin-cards {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.admin-cards article {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 14px;
+  background: var(--panel);
+}
+
+.admin-cards h3 {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.admin-cards strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 30px;
+}
+
+.admin-cards p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.admin-workspace {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 12px;
+}
+
+.admin-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  background: var(--panel);
+}
+
+.admin-panel h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.moderation-list {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.moderation-item {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.moderation-main strong {
+  display: block;
+  font-size: 14px;
+}
+
+.moderation-main p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.admin-status-chip {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.admin-meta-list {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.admin-meta-list li {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.admin-meta-list span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.admin-meta-list strong {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admin-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+}

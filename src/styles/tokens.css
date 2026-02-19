@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap');
+
+:root {
+  --font-body: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --font-heading: 'Manrope', 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --bg: #050505;
+  --bg-glow: #171717;
+  --panel: #0f0f0f;
+  --panel-soft: #171717;
+  --panel-strong: #080808;
+  --line: #2c2c2c;
+  --line-strong: #3a3a3a;
+  --text: #ffffff;
+  --muted: #a5a5a5;
+  --accent: #f2f2f2;
+  --accent-text: #050505;
+  --danger: #f1b2b2;
+  --chip-bg: #1a1a1a;
+  --chip-hover: #212121;
+  --slider-track: #3a3a3a;
+  --slider-fill: #ffffff;
+  --slider-border: #404040;
+  --slider-thumb-border: #1f1f1f;
+  --slider-thumb-shadow: #0a0a0a;
+  --radius-control: 14px;
+  --radius-card: 16px;
+}
+
+:root[data-theme='light'] {
+  --bg: #f5f5f5;
+  --bg-glow: #ffffff;
+  --panel: #ffffff;
+  --panel-soft: #f3f3f3;
+  --panel-strong: #ececec;
+  --line: #dddddd;
+  --line-strong: #cccccc;
+  --text: #111111;
+  --muted: #666666;
+  --accent: #111111;
+  --accent-text: #ffffff;
+  --danger: #b53a3a;
+  --chip-bg: #f0f0f0;
+  --chip-hover: #e6e6e6;
+  --slider-track: #c8c8c8;
+  --slider-fill: #111111;
+  --slider-border: #bdbdbd;
+  --slider-thumb-border: #aaaaaa;
+  --slider-thumb-shadow: #f2f2f2;
+}

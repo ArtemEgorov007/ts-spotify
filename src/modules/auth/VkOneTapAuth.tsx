@@ -89,11 +89,21 @@ function buildIdentity(exchangeData: unknown, profileData: unknown, payload: VkP
   const firstName = pickString(sources, ['first_name', 'firstName', 'given_name']);
   const lastName = pickString(sources, ['last_name', 'lastName', 'family_name']);
   const fullName = `${firstName} ${lastName}`.trim();
-  const email = pickString(sources, ['email', 'mail']) || (typeof payload.email === 'string' ? payload.email.trim() : '');
+  const email =
+    pickString(sources, ['email', 'mail']) ||
+    (typeof payload.email === 'string' ? payload.email.trim() : '');
 
   const username =
     fullName ||
-    pickString(sources, ['name', 'display_name', 'displayName', 'nickname', 'screen_name', 'screenName', 'login']) ||
+    pickString(sources, [
+      'name',
+      'display_name',
+      'displayName',
+      'nickname',
+      'screen_name',
+      'screenName',
+      'login',
+    ]) ||
     (email.includes('@') ? email.split('@')[0] : '') ||
     'Пользователь';
 
@@ -102,7 +112,10 @@ function buildIdentity(exchangeData: unknown, profileData: unknown, payload: VkP
 
 async function loadProfileByTokens(VKID: any, exchangeData: unknown) {
   const root = asRecord(exchangeData);
-  const accessToken = pickString([root, asRecord(root.response), asRecord(root.data)], ['access_token']);
+  const accessToken = pickString(
+    [root, asRecord(root.response), asRecord(root.data)],
+    ['access_token'],
+  );
   const idToken = pickString([root, asRecord(root.response), asRecord(root.data)], ['id_token']);
 
   if (accessToken && VKID?.Auth?.userInfo) {
@@ -123,7 +136,6 @@ async function loadProfileByTokens(VKID: any, exchangeData: unknown) {
 
   return null;
 }
-
 
 export function VkOneTapAuth({ onSuccess }: VkOneTapAuthProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -196,7 +208,9 @@ export function VkOneTapAuth({ onSuccess }: VkOneTapAuthProps) {
       }
     };
 
-    const existingScript = document.querySelector(`script[src="${VK_SDK_URL}"]`) as HTMLScriptElement | null;
+    const existingScript = document.querySelector(
+      `script[src="${VK_SDK_URL}"]`,
+    ) as HTMLScriptElement | null;
 
     if (existingScript) {
       if (getWindowSdk()) {

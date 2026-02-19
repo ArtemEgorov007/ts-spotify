@@ -1,26 +1,13 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import { useAuth0 } from '@auth0/auth0-react';
-import { musicPlatformStore } from '@/store/store';
 import { HomeIcon, LibraryIcon, SearchIcon } from '@/shared/icons/Icons';
-import { clearVkSession } from '@/modules/auth/vkSession';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
+import { logoutUser } from '@/modules/auth/authService';
 
 export const Sidebar = observer(function Sidebar() {
   const navigate = useNavigate();
-  const { logout, isAuthenticated } = useAuth0();
 
-  const onLogout = () => {
-    musicPlatformStore.clearAuthUser();
-    clearVkSession();
-
-    if (isAuthenticated) {
-      logout({ logoutParams: { returnTo: window.location.origin } });
-      return;
-    }
-
-    navigate('/');
-  };
+  const onLogout = () => logoutUser(navigate);
 
   return (
     <aside className="sidebar">

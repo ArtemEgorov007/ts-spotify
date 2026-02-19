@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { musicPlatformStore } from '@/store/store';
+import { playerStore } from '@/store/store';
 import {
   PauseIcon,
   PlayIcon,
@@ -12,10 +12,10 @@ import {
 } from '@/shared/icons/Icons';
 
 export const PlayerBar = observer(function PlayerBar() {
-  const track = musicPlatformStore.currentTrack;
-  const volumePercent = Math.round(musicPlatformStore.volume * 100);
+  const track = playerStore.currentTrack;
+  const volumePercent = Math.round(playerStore.volume * 100);
   const setSliderVolume = (value: string) => {
-    musicPlatformStore.setVolume(Number(value) / 100);
+    playerStore.setVolume(Number(value) / 100);
   };
 
   return (
@@ -39,21 +39,33 @@ export const PlayerBar = observer(function PlayerBar() {
 
       <div className="player-center">
         <div className="player-controls">
-          <button type="button" className="player-icon-btn player-control-btn" aria-label="Перемешать">
+          <button
+            type="button"
+            className="player-icon-btn player-control-btn"
+            aria-label="Перемешать"
+          >
             <ShuffleIcon />
           </button>
-          <button type="button" className="player-icon-btn player-control-btn" aria-label="Предыдущий">
+          <button
+            type="button"
+            className="player-icon-btn player-control-btn"
+            aria-label="Предыдущий"
+          >
             <PrevIcon />
           </button>
           <button
             type="button"
             className="player-toggle"
-            onClick={() => musicPlatformStore.togglePlayback()}
-            aria-label={musicPlatformStore.isPlaying ? 'Пауза' : 'Воспроизвести'}
+            onClick={() => playerStore.togglePlayback()}
+            aria-label={playerStore.isPlaying ? 'Пауза' : 'Воспроизвести'}
           >
-            {musicPlatformStore.isPlaying ? <PauseIcon /> : <PlayIcon />}
+            {playerStore.isPlaying ? <PauseIcon /> : <PlayIcon />}
           </button>
-          <button type="button" className="player-icon-btn player-control-btn" aria-label="Следующий">
+          <button
+            type="button"
+            className="player-icon-btn player-control-btn"
+            aria-label="Следующий"
+          >
             <NextIcon />
           </button>
           <button type="button" className="player-icon-btn player-control-btn" aria-label="Повтор">
@@ -66,7 +78,11 @@ export const PlayerBar = observer(function PlayerBar() {
             <div className="player-progress-fill" style={{ width: '30%' }} />
             <div className="player-progress-handle" />
           </div>
-          <span className="player-time">{track ? `${Math.floor(track.durationSec / 60)}:${String(track.durationSec % 60).padStart(2, '0')}` : '0:00'}</span>
+          <span className="player-time">
+            {track
+              ? `${Math.floor(track.durationSec / 60)}:${String(track.durationSec % 60).padStart(2, '0')}`
+              : '0:00'}
+          </span>
         </div>
       </div>
 
@@ -88,8 +104,13 @@ export const PlayerBar = observer(function PlayerBar() {
             onChange={(event) => setSliderVolume(event.target.value)}
           />
         </div>
-        <button type="button" className="player-icon-btn player-mobile-play" onClick={() => musicPlatformStore.togglePlayback()} aria-label={musicPlatformStore.isPlaying ? 'Пауза' : 'Воспроизвести'}>
-          {musicPlatformStore.isPlaying ? <PauseIcon /> : <PlayIcon />}
+        <button
+          type="button"
+          className="player-icon-btn player-mobile-play"
+          onClick={() => playerStore.togglePlayback()}
+          aria-label={playerStore.isPlaying ? 'Пауза' : 'Воспроизвести'}
+        >
+          {playerStore.isPlaying ? <PauseIcon /> : <PlayIcon />}
         </button>
       </div>
     </footer>
