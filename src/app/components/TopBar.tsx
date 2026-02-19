@@ -3,24 +3,15 @@ import { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { authStore } from '@/store/store';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
+import { APP_ROUTES, getAppSectionTitle } from '@/app/config/routes';
 
 export const TopBar = observer(function TopBar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const goToAdmin = () => navigate('/admin');
+  const goToAdmin = () => navigate(APP_ROUTES.admin);
   const roleLabel = authStore.roleChipLabel;
   const roleInitial = (roleLabel.trim().charAt(0) || 'Г').toUpperCase();
-  const sectionTitle = useMemo(() => {
-    if (location.pathname.startsWith('/app/search')) {
-      return 'Поиск';
-    }
-
-    if (location.pathname.startsWith('/app/library')) {
-      return 'Медиатека';
-    }
-
-    return 'Главная';
-  }, [location.pathname]);
+  const sectionTitle = useMemo(() => getAppSectionTitle(location.pathname), [location.pathname]);
 
   return (
     <header className="topbar">

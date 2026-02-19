@@ -2,6 +2,7 @@ import { ReactElement } from 'react';
 import { Navigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { authStore } from '@/store/store';
+import { APP_ROUTES } from '@/app/config/routes';
 
 type GuardProps = {
   children: ReactElement;
@@ -16,5 +17,5 @@ export const RequireAuth = observer(function RequireAuth({ children }: GuardProp
     return children;
   }
 
-  return <Navigate to="/" replace />;
+  return <Navigate to={APP_ROUTES.landing} replace />;
 });

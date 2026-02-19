@@ -1,17 +1,17 @@
-const VK_SESSION_KEY = 'ts_spotify_vk_session';
+import { STORAGE_KEYS } from '@/app/config/storage';
 
 export type VkSession = {
   username: string;
   email: string;
-  authMethod?: 'vk' | 'local';
+  authMethod: 'vk' | 'local';
 };
 
 export function saveVkSession(session: VkSession) {
-  localStorage.setItem(VK_SESSION_KEY, JSON.stringify(session));
+  localStorage.setItem(STORAGE_KEYS.vkSession, JSON.stringify(session));
 }
 
 export function loadVkSession(): VkSession | null {
-  const raw = localStorage.getItem(VK_SESSION_KEY);
+  const raw = localStorage.getItem(STORAGE_KEYS.vkSession);
   if (!raw) {
     return null;
   }
@@ -43,5 +43,5 @@ export function loadVkSession(): VkSession | null {
 }
 
 export function clearVkSession() {
-  localStorage.removeItem(VK_SESSION_KEY);
+  localStorage.removeItem(STORAGE_KEYS.vkSession);
 }
