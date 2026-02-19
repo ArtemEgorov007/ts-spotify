@@ -5,7 +5,6 @@ import {
   LibraryIcon,
   LogoutIcon,
   SearchIcon,
-  SidebarModeIcon,
   PlusIcon,
 } from '@/shared/icons/Icons';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
@@ -47,6 +46,15 @@ function SidebarNavLinks({ items }: { items: SidebarLinkItem[] }) {
   );
 }
 
+function SidebarToggleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M9 4v16" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
 export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: SidebarProps) {
   const navigate = useNavigate();
 
@@ -73,7 +81,7 @@ export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: Si
           aria-label={collapsed ? 'Развернуть боковую панель' : 'Свернуть боковую панель'}
           title={collapsed ? 'Развернуть' : 'Свернуть'}
         >
-          <SidebarModeIcon />
+          <SidebarToggleIcon />
         </button>
       </div>
 
