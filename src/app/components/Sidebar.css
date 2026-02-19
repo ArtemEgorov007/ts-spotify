@@ -315,12 +315,12 @@
     position: fixed;
     top: auto;
     bottom: max(8px, env(safe-area-inset-bottom));
-    left: max(8px, env(safe-area-inset-left));
-    right: max(8px, env(safe-area-inset-right));
+    left: 0;
+    right: 0;
     z-index: 20;
     width: auto;
     max-width: none;
-    height: 78px;
+    height: 75px;
     border: 1px solid var(--border-base);
     background: var(--panel-overlay);
     backdrop-filter: blur(20px);
