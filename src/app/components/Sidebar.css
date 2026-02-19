@@ -315,8 +315,11 @@
     position: fixed;
     top: auto;
     bottom: max(8px, env(safe-area-inset-bottom));
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
     z-index: 20;
     width: auto;
+    max-width: none;
     height: 78px;
     border: 1px solid var(--border-base);
     background: var(--panel-overlay);
@@ -378,7 +381,8 @@
 
   /* Collapsed state */
   .sidebar.sidebar-collapsed {
-    width: 100%;
+    width: auto;
+    max-width: none;
   }
 
   .sidebar-link span {
