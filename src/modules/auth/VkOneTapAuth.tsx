@@ -41,7 +41,10 @@ type VkSdk = {
   Auth: VkAuthApi;
 };
 
-const VK_SDK_URL = 'https://unpkg.com/@vkid/sdk@2.0.4/dist-sdk/umd/index.js';
+const VK_SDK_URLS = [
+  'https://cdn.jsdelivr.net/npm/@vkid/sdk@2.6.1/dist-sdk/umd/index.js',
+  'https://unpkg.com/@vkid/sdk@2.6.1/dist-sdk/umd/index.js',
+] as const;
 
 function getWindowSdk(): VkSdk | undefined {
   return (window as Window & { VKIDSDK?: VkSdk }).VKIDSDK;
@@ -262,27 +265,52 @@ export function VkOneTapAuth({ onSuccess }: VkOneTapAuthProps) {
       }
     };
 
-    const existingScript = document.querySelector(
-      `script[src="${VK_SDK_URL}"]`,
-    ) as HTMLScriptElement | null;
-
-    if (existingScript) {
-      if (getWindowSdk()) {
-        initWidget();
-      } else {
-        existingScript.addEventListener('load', initWidget, { once: true });
+    const tryLoadSdk = (index: number) => {
+      if (cancelled) {
+        return;
       }
-    } else {
-      const script = document.createElement('script');
-      script.src = VK_SDK_URL;
-      script.async = true;
-      script.onload = initWidget;
-      script.onerror = () => {
-        if (!cancelled) {
-          setError('SDK VK не загрузился.');
+
+      const nextUrl = VK_SDK_URLS[index];
+      if (!nextUrl) {
+        setError('SDK VK не загрузился.');
+        return;
+      }
+
+      const existingScript = document.querySelector(
+        `script[src="${nextUrl}"]`,
+      ) as HTMLScriptElement | null;
+      const script = existingScript ?? document.createElement('script');
+
+      const onLoad = () => {
+        if (getWindowSdk()) {
+          initWidget();
+          return;
         }
+
+        tryLoadSdk(index + 1);
       };
-      document.body.appendChild(script);
+
+      const onError = () => {
+        if (!existingScript) {
+          script.remove();
+        }
+        tryLoadSdk(index + 1);
+      };
+
+      script.addEventListener('load', onLoad, { once: true });
+      script.addEventListener('error', onError, { once: true });
+
+      if (!existingScript) {
+        script.src = nextUrl;
+        script.async = true;
+        document.body.appendChild(script);
+      }
+    };
+
+    if (getWindowSdk()) {
+      initWidget();
+    } else {
+      tryLoadSdk(0);
     }
 
     return () => {
