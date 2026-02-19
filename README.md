@@ -1,68 +1,98 @@
-# ts-spotify
+# ts-music
 
-Минималистичный фронтенд-каркас музыкальной платформы на React + TypeScript.
+Минималистичный фронтенд музыкальной платформы на React + TypeScript.
 
-## Архитектура
+## Стек
 
-- `src/app`:
-  - роутинг
-  - layout
-  - guards
-  - синхронизация локальной auth-сессии
-- `src/modules`:
-  - `auth` — стартовый экран входа
-  - `authService` — единый слой auth-use-cases (bootstrap/login/logout)
-  - `shell` — главная и поиск
-  - `library` — медиатека
-  - `player` — нижний плеер
-  - `admin` — базовая админ-панель
-- `src/store`:
-  - `authStore` — состояние авторизации
-  - `playerStore` — очередь и управление плеером
-  - `store.ts` — barrel-экспорты
-- `src/shared`:
-  - иконки
-  - мок-данные
-- `src/types`:
-  - доменные типы
-- `src/styles`:
-  - токены, base и раздельные feature-стили (auth/layout/content/player/admin/responsive)
+- React 19 + TypeScript
+- MobX (state management)
+- React Router (HashRouter)
+- Vite (сборка)
+- CSS-переменные (theming)
 
-## VK ID
+## Структура
 
-- Файл `.env`:
-```env
-VITE_VK_APP_ID=your-vk-app-id
 ```
-- На странице входа подключён OneTap-виджет VK.
-- После успешного входа создаётся локальная сессия VK и открывается `/app`.
-- Выход очищает локальную VK-сессию.
-- Для работы VK ID нужен `https` origin.
-- `redirectUrl` формируется автоматически из текущего домена и `VITE_BASE_PATH`.
-- На `localhost` доступен демо-вход без VK (для локальной разработки по `http`).
+src/
+├── app/           # Роутинг, layout, провайдеры
+├── modules/       # Фичи: auth, shell, library, player, admin
+├── store/         # MobX store'ы
+├── shared/        # Иконки, мок-данные
+├── types/         # TypeScript типы
+└── styles/        # CSS токены и стили
+```
 
-## Команды
+## Быстрый старт
 
 ```bash
 npm install
-npm run dev
-npm run build
-npm run preview
-npm run lint
-npm run lint:styles
-npm run format:check
 ```
 
-## Alias
+Создай `.env` на основе `.env.example`:
 
-- `@/*` -> `src/*`
+```env
+VITE_VK_APP_ID=your-vk-app-id
+```
 
-## GitHub Pages
+Запуск:
 
-- Роутинг работает через `HashRouter`.
-- В workflow уже настроена сборка и деплой `dist` в Pages.
-- Базовый путь для Pages: `/ts-spotify/`.
+```bash
+npm run dev
+```
 
-## Тема
+Сборка:
 
-- Переключатель темы расположен внизу sidebar.
+```bash
+npm run build
+```
+
+## Команды
+
+| Команда | Описание |
+|---------|----------|
+| `npm run dev` | Запуск dev-сервера |
+| `npm run build` | Сборка продакшена |
+| `npm run preview` | Предпросмотр сборки |
+| `npm run lint` | ESLint проверка |
+| `npm run lint:styles` | Stylelint проверка |
+| `npm run format:check` | Проверка форматирования |
+| `npm run format` | Форматирование кода |
+
+## Функционал
+
+### ✅ Реализовано
+
+- Вход через VK ID (OneTap) или демо-режим
+- Главная страница с треками
+- Медиатека с плейлистами
+- Поиск (заглушка)
+- Плеер (UI, без аудио)
+- Тёмная/светлая тема
+- Адаптив (мобилки, планшеты, десктоп)
+- Сворачиваемый сайдбар
+
+### ⚠️ Требует доработки
+
+- Воспроизведение аудио (нет HTML5 audio)
+- Поиск (нет ввода и логики)
+- Создание плейлистов
+- Управление очередью
+- Горячие клавиши
+
+## VK ID
+
+Для работы VK ID нужен HTTPS. На `localhost` доступен демо-вход.
+
+1. Создай приложение в [VK Developers](https://dev.vk.com/)
+2. Укажи `VITE_VK_APP_ID` в `.env`
+3. Настрой redirect URI в приложении VK
+
+## Деплой
+
+Проект настроен для деплоя на GitHub Pages.
+
+В `vite.config.ts` указан `base: '/ts-music/'`.
+
+## Лицензия
+
+MIT

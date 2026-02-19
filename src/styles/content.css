@@ -1,11 +1,5 @@
-.section-title {
-  margin: 0 0 14px;
-  font-size: 26px;
-  font-family: var(--font-heading);
-}
-
 .section-subtitle {
-  margin: -6px 0 14px;
+  margin: 0 0 14px;
   color: var(--muted);
   font-size: 14px;
 }
