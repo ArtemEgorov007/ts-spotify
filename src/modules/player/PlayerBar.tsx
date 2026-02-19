@@ -1,15 +1,6 @@
 import { observer } from 'mobx-react-lite';
+import { Heart, Pause, Play, Repeat, Shuffle, SkipBack, SkipForward, Volume2 } from 'lucide-react';
 import { playerStore } from '@/store/store';
-import {
-  PauseIcon,
-  PlayIcon,
-  PrevIcon,
-  NextIcon,
-  ShuffleIcon,
-  RepeatIcon,
-  VolumeIcon,
-  HeartIcon,
-} from '@/shared/icons/Icons';
 import { formatDuration } from '@/shared/lib/format';
 
 export const PlayerBar = observer(function PlayerBar() {
@@ -30,7 +21,7 @@ export const PlayerBar = observer(function PlayerBar() {
               <span className="player-track-artist">{track.artist}</span>
             </div>
             <button type="button" className="player-icon-btn" aria-label="Нравится">
-              <HeartIcon />
+              <Heart aria-hidden="true" />
             </button>
           </>
         ) : (
@@ -45,14 +36,14 @@ export const PlayerBar = observer(function PlayerBar() {
             className="player-icon-btn player-control-btn"
             aria-label="Перемешать"
           >
-            <ShuffleIcon />
+            <Shuffle aria-hidden="true" />
           </button>
           <button
             type="button"
             className="player-icon-btn player-control-btn"
             aria-label="Предыдущий"
           >
-            <PrevIcon />
+            <SkipBack aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -60,17 +51,17 @@ export const PlayerBar = observer(function PlayerBar() {
             onClick={() => playerStore.togglePlayback()}
             aria-label={playerStore.isPlaying ? 'Пауза' : 'Воспроизвести'}
           >
-            {playerStore.isPlaying ? <PauseIcon /> : <PlayIcon />}
+            {playerStore.isPlaying ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
           </button>
           <button
             type="button"
             className="player-icon-btn player-control-btn"
             aria-label="Следующий"
           >
-            <NextIcon />
+            <SkipForward aria-hidden="true" />
           </button>
           <button type="button" className="player-icon-btn player-control-btn" aria-label="Повтор">
-            <RepeatIcon />
+            <Repeat aria-hidden="true" />
           </button>
         </div>
         <div className="player-progress">
@@ -87,7 +78,7 @@ export const PlayerBar = observer(function PlayerBar() {
 
       <div className="player-right">
         <button type="button" className="player-icon-btn" aria-label="Громкость">
-          <VolumeIcon />
+          <Volume2 aria-hidden="true" />
         </button>
         <div className="player-volume">
           <input

@@ -1,12 +1,11 @@
 import { observer } from 'mobx-react-lite';
 import { mockTracks } from '@/shared/mock/media';
 import { playerStore } from '@/store/store';
-import { PlayIcon } from '@/shared/icons/Icons';
+import { Play } from 'lucide-react';
 
 export const HomePage = observer(function HomePage() {
   return (
     <section>
-      <h2 className="section-title">Для тебя</h2>
       <p className="section-subtitle">Короткая подборка на сейчас.</p>
       <div className="track-grid">
         {mockTracks.map((track) => (
@@ -20,7 +19,7 @@ export const HomePage = observer(function HomePage() {
               onClick={() => playerStore.play(track)}
               aria-label={`Воспроизвести ${track.title}`}
             >
-              <PlayIcon />
+              <Play aria-hidden="true" />
             </button>
           </article>
         ))}

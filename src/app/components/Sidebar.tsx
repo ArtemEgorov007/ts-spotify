@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { House, Library, LogOut, PanelLeftClose, Plus, Search, type LucideIcon } from 'lucide-react';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { logoutUser } from '@/modules/auth/authService';
 import { APP_ROUTES } from '@/app/config/routes';
@@ -13,59 +14,17 @@ type SidebarProps = {
 type SidebarLinkItem = {
   label: string;
   to: string;
-  Icon: () => JSX.Element;
+  Icon: LucideIcon;
   end?: boolean;
 };
 
-function SidebarHomeIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M3 11.5L12 4l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-8.5z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-    </svg>
-  );
-}
-
-function SidebarSearchIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M16 16l5 5" stroke="currentColor" strokeWidth="1.8" />
-    </svg>
-  );
-}
-
-function SidebarLibraryIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="4" y="4" width="4" height="16" rx="1" stroke="currentColor" strokeWidth="1.8" />
-      <rect x="10" y="4" width="4" height="16" rx="1" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M20 4v16" stroke="currentColor" strokeWidth="1.8" />
-    </svg>
-  );
-}
-
-function SidebarLogoutIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M14 5h5v14h-5" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M10 12h9" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M13 9l-3 3 3 3" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M14 5H6a2 2 0 00-2 2v10a2 2 0 002 2h8" stroke="currentColor" strokeWidth="1.8" />
-    </svg>
-  );
-}
-
 const primaryNavItems: SidebarLinkItem[] = [
-  { label: 'Главная', to: APP_ROUTES.app, Icon: SidebarHomeIcon, end: true },
-  { label: 'Поиск', to: APP_ROUTES.search, Icon: SidebarSearchIcon },
+  { label: 'Главная', to: APP_ROUTES.app, Icon: House, end: true },
+  { label: 'Поиск', to: APP_ROUTES.search, Icon: Search },
 ];
 
 const libraryNavItems: SidebarLinkItem[] = [
-  { label: 'Медиатека', to: APP_ROUTES.library, Icon: SidebarLibraryIcon },
+  { label: 'Медиатека', to: APP_ROUTES.library, Icon: Library },
 ];
 
 function SidebarNavLinks({ items }: { items: SidebarLinkItem[] }) {
@@ -73,28 +32,11 @@ function SidebarNavLinks({ items }: { items: SidebarLinkItem[] }) {
     <>
       {items.map(({ label, to, Icon, end = false }) => (
         <NavLink key={to} to={to} end={end} className="sidebar-link">
-          <Icon />
+          <Icon aria-hidden="true" />
           <span>{label}</span>
         </NavLink>
       ))}
     </>
-  );
-}
-
-function SidebarToggleIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M9 4v16" stroke="currentColor" strokeWidth="1.8" />
-    </svg>
-  );
-}
-
-function SidebarCreateIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
   );
 }
 
@@ -124,7 +66,7 @@ export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: Si
           aria-label={collapsed ? 'Развернуть боковую панель' : 'Свернуть боковую панель'}
           title={collapsed ? 'Развернуть' : 'Свернуть'}
         >
-          <SidebarToggleIcon />
+          <PanelLeftClose aria-hidden="true" />
         </button>
       </div>
 
@@ -141,7 +83,7 @@ export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: Si
           <div className="sidebar-nav-links">
             <SidebarNavLinks items={libraryNavItems} />
             <button type="button" className="sidebar-link sidebar-link-action">
-              <SidebarCreateIcon />
+              <Plus aria-hidden="true" />
               <span>Создать плейлист</span>
             </button>
           </div>
@@ -158,7 +100,7 @@ export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: Si
             aria-label="Выйти"
             title="Выйти"
           >
-            <SidebarLogoutIcon />
+            <LogOut aria-hidden="true" />
             {!collapsed && <span>Выйти</span>}
           </button>
         </div>

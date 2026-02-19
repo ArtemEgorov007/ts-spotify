@@ -1,5 +1,5 @@
 import { useTheme } from '@/app/providers/ThemeProvider';
-import { SunIcon, MoonIcon } from '@/shared/icons/Icons';
+import { Moon, Sun } from 'lucide-react';
 
 type ThemeToggleProps = {
   compact?: boolean;
@@ -18,7 +18,7 @@ export function ThemeToggle({ compact = false }: ThemeToggleProps) {
       aria-label={`Переключить тему на ${nextThemeLabelAccusative}`}
       title={`Переключить тему на ${nextThemeLabelAccusative}`}
     >
-      {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+      {theme === 'dark' ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
       {!compact && <span>{nextThemeLabel}</span>}
     </button>
   );
