@@ -5,7 +5,6 @@ import {
   LibraryIcon,
   LogoutIcon,
   SearchIcon,
-  PlusIcon,
 } from '@/shared/icons/Icons';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { logoutUser } from '@/modules/auth/authService';
@@ -55,6 +54,14 @@ function SidebarToggleIcon() {
   );
 }
 
+function SidebarCreateIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: SidebarProps) {
   const navigate = useNavigate();
 
@@ -98,7 +105,7 @@ export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: Si
           <div className="sidebar-nav-links">
             <SidebarNavLinks items={libraryNavItems} />
             <button type="button" className="sidebar-link sidebar-link-action">
-              <PlusIcon />
+              <SidebarCreateIcon />
               <span>Создать плейлист</span>
             </button>
           </div>
