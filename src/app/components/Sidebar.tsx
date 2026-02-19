@@ -1,11 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import {
-  HomeIcon,
-  LibraryIcon,
-  LogoutIcon,
-  SearchIcon,
-} from '@/shared/icons/Icons';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { logoutUser } from '@/modules/auth/authService';
 import { APP_ROUTES } from '@/app/config/routes';
@@ -19,17 +13,59 @@ type SidebarProps = {
 type SidebarLinkItem = {
   label: string;
   to: string;
-  Icon: typeof HomeIcon;
+  Icon: () => JSX.Element;
   end?: boolean;
 };
 
+function SidebarHomeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M3 11.5L12 4l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-8.5z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
+}
+
+function SidebarSearchIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M16 16l5 5" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
+function SidebarLibraryIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="4" y="4" width="4" height="16" rx="1" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="10" y="4" width="4" height="16" rx="1" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M20 4v16" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
+function SidebarLogoutIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M14 5h5v14h-5" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M10 12h9" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M13 9l-3 3 3 3" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M14 5H6a2 2 0 00-2 2v10a2 2 0 002 2h8" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
 const primaryNavItems: SidebarLinkItem[] = [
-  { label: 'Главная', to: APP_ROUTES.app, Icon: HomeIcon, end: true },
-  { label: 'Поиск', to: APP_ROUTES.search, Icon: SearchIcon },
+  { label: 'Главная', to: APP_ROUTES.app, Icon: SidebarHomeIcon, end: true },
+  { label: 'Поиск', to: APP_ROUTES.search, Icon: SidebarSearchIcon },
 ];
 
 const libraryNavItems: SidebarLinkItem[] = [
-  { label: 'Медиатека', to: APP_ROUTES.library, Icon: LibraryIcon },
+  { label: 'Медиатека', to: APP_ROUTES.library, Icon: SidebarLibraryIcon },
 ];
 
 function SidebarNavLinks({ items }: { items: SidebarLinkItem[] }) {
@@ -122,7 +158,7 @@ export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: Si
             aria-label="Выйти"
             title="Выйти"
           >
-            <LogoutIcon />
+            <SidebarLogoutIcon />
             {!collapsed && <span>Выйти</span>}
           </button>
         </div>
