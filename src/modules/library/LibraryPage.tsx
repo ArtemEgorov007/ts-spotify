@@ -18,7 +18,6 @@ function formatTracksCount(count: number) {
 export function LibraryPage() {
   return (
     <section>
-      <h2 className="section-title">Медиатека</h2>
       <p className="section-subtitle">Твои плейлисты и сохранённые подборки.</p>
       <div className="playlist-grid">
         {mockPlaylists.map((playlist) => (
