@@ -1,0 +1,76 @@
+.landing-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.auth-hero {
+  width: min(440px, 100%);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 22px 28px 28px;
+  text-align: center;
+}
+
+.auth-hero-kicker {
+  margin: 0;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+}
+
+.auth-hero h1 {
+  margin: 10px 0 12px;
+  font-size: clamp(30px, 5vw, 42px);
+  font-family: var(--font-heading);
+}
+
+.auth-hero > p {
+  margin: 0 auto;
+  color: var(--muted);
+  max-width: 320px;
+}
+
+.auth-login-btn {
+  margin-top: 22px;
+  width: 100%;
+  padding-block: 12px;
+}
+
+.auth-divider {
+  margin: 14px 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.vk-auth-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.landing-error {
+  margin: 12px 0 0;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.guard-state {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.vk-auth-block iframe,
+.vk-auth-block > div,
+.vk-auth-block button,
+.vk-auth-block input {
+  border-radius: var(--radius-control);
+}

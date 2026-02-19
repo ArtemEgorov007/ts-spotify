@@ -3,13 +3,13 @@ import { useEffect } from 'react';
 import { Sidebar } from '@/app/components/Sidebar';
 import { TopBar } from '@/app/components/TopBar';
 import { PlayerBar } from '@/modules/player/PlayerBar';
-import { musicPlatformStore } from '@/store/store';
+import { playerStore } from '@/store/store';
 import { mockTracks } from '@/shared/mock/media';
 
 export function AppShellLayout() {
   useEffect(() => {
-    if (musicPlatformStore.queue.length === 0) {
-      musicPlatformStore.setQueue(mockTracks);
+    if (playerStore.queue.length === 0) {
+      playerStore.setQueue(mockTracks);
     }
   }, []);
 

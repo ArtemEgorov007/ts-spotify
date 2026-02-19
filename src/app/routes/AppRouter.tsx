@@ -6,12 +6,12 @@ import { SearchPage } from '@/modules/shell/SearchPage';
 import { LibraryPage } from '@/modules/library/LibraryPage';
 import { AdminPage } from '@/modules/admin/AdminPage';
 import { RequireAuth } from '@/app/routes/guards';
-import { AuthSessionSync } from '@/app/providers/AuthSessionSync';
+import { AuthBootstrap } from '@/app/providers/AuthBootstrap';
 
 export function AppRouter() {
   return (
     <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <AuthSessionSync>
+      <AuthBootstrap>
         <Routes>
           <Route path="/" element={<LandingPage />} />
 
@@ -39,7 +39,7 @@ export function AppRouter() {
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </AuthSessionSync>
+      </AuthBootstrap>
     </HashRouter>
   );
 }

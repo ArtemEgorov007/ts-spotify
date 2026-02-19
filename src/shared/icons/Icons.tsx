@@ -9,7 +9,11 @@ function BaseIcon(props: IconProps) {
 export function HomeIcon(props: IconProps) {
   return (
     <BaseIcon {...props}>
-      <path d="M3 11.5L12 4l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-8.5z" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="M3 11.5L12 4l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-8.5z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
     </BaseIcon>
   );
 }
@@ -63,7 +67,12 @@ export function SunIcon(props: IconProps) {
   return (
     <BaseIcon {...props}>
       <circle cx="12" cy="12" r="4" fill="currentColor" />
-      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </BaseIcon>
   );
 }
@@ -97,7 +106,14 @@ export function NextIcon(props: IconProps) {
 export function ShuffleIcon(props: IconProps) {
   return (
     <BaseIcon {...props}>
-      <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path
+        d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </BaseIcon>
   );
 }
@@ -105,10 +121,38 @@ export function ShuffleIcon(props: IconProps) {
 export function RepeatIcon(props: IconProps) {
   return (
     <BaseIcon {...props}>
-      <path d="M17 1l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      <path d="M3 11V9a4 4 0 014-4h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      <path d="M7 23l-4-4 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      <path d="M21 13v2a4 4 0 01-4 4H3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path
+        d="M17 1l4 4-4 4"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path
+        d="M3 11V9a4 4 0 014-4h14"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path
+        d="M7 23l-4-4 4-4"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path
+        d="M21 13v2a4 4 0 01-4 4H3"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </BaseIcon>
   );
 }
@@ -117,7 +161,13 @@ export function VolumeIcon(props: IconProps) {
   return (
     <BaseIcon {...props}>
       <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor" />
-      <path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
+      <path
+        d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        fill="none"
+      />
     </BaseIcon>
   );
 }
@@ -125,7 +175,12 @@ export function VolumeIcon(props: IconProps) {
 export function HeartIcon(props: IconProps) {
   return (
     <BaseIcon {...props}>
-      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" fill="none" stroke="currentColor" strokeWidth="2" />
+      <path
+        d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
     </BaseIcon>
   );
 }

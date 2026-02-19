@@ -22,7 +22,9 @@ export function SearchPage() {
               <strong>{track.title}</strong>
               <p>{track.artist}</p>
             </div>
-            <span>{Math.floor(track.durationSec / 60)}:{String(track.durationSec % 60).padStart(2, '0')}</span>
+            <span>
+              {Math.floor(track.durationSec / 60)}:{String(track.durationSec % 60).padStart(2, '0')}
+            </span>
           </div>
         ))}
       </div>

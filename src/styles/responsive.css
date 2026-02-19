@@ -1,0 +1,175 @@
+@media (max-width: 900px) {
+  .app-shell-layout {
+    grid-template-columns: 1fr;
+    padding-bottom: 140px;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    height: 74px;
+    z-index: 30;
+    border-top: 1px solid var(--line);
+    border-right: none;
+    border-left: none;
+    border-bottom: none;
+    padding: 8px 10px;
+    background: color-mix(in srgb, var(--panel-strong) 96%, transparent);
+    backdrop-filter: blur(10px);
+    border-radius: 0;
+  }
+
+  .sidebar h2,
+  .sidebar-footer {
+    display: none;
+  }
+
+  .sidebar nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+  }
+
+  .sidebar-link {
+    justify-content: center;
+    padding: 9px 8px;
+  }
+
+  .sidebar-link span {
+    display: none;
+  }
+
+  .sidebar-link svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .topbar {
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .topbar-controls {
+    gap: 8px;
+  }
+
+  .topbar-mobile-theme {
+    display: block;
+  }
+
+  .topbar-title {
+    font-size: 24px;
+  }
+
+  .role-chip {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+  }
+
+  .role-chip-full {
+    display: none;
+  }
+
+  .role-chip-mobile {
+    display: inline;
+  }
+
+  .player-bar {
+    display: flex;
+    justify-content: space-between;
+    left: 0;
+    right: 0;
+    bottom: 74px;
+    height: 75px;
+    padding: 0 12px;
+    gap: 0;
+    border: none;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+    z-index: 20;
+  }
+
+  .player-left {
+    gap: 8px;
+  }
+
+  .player-cover {
+    width: 48px;
+    height: 48px;
+  }
+
+  .player-center {
+    display: none;
+  }
+
+  .player-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .player-right .player-icon-btn:first-child,
+  .player-right .player-volume,
+  .player-right .volume-slider {
+    display: none;
+  }
+
+  .player-icon-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .player-icon-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .player-mobile-play {
+    display: grid !important;
+    place-items: center;
+    margin-left: auto;
+  }
+
+  .player-mobile-play svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .auth-hero {
+    padding: 20px;
+  }
+
+  .track-grid {
+    grid-auto-columns: minmax(190px, 72vw);
+    gap: 10px;
+    padding: 2px 2px 8px 0;
+  }
+
+  .track-card {
+    min-height: 276px;
+    padding: 12px;
+  }
+
+  .admin-page {
+    padding: 18px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-workspace {
+    grid-template-columns: 1fr;
+  }
+}

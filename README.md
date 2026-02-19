@@ -8,50 +8,38 @@
   - роутинг
   - layout
   - guards
-  - синхронизация Auth0-сессии
+  - синхронизация локальной auth-сессии
 - `src/modules`:
   - `auth` — стартовый экран входа
+  - `authService` — единый слой auth-use-cases (bootstrap/login/logout)
   - `shell` — главная и поиск
   - `library` — медиатека
   - `player` — нижний плеер
   - `admin` — базовая админ-панель
 - `src/store`:
-  - MobX store для плеера и профиля пользователя
+  - `authStore` — состояние авторизации
+  - `playerStore` — очередь и управление плеером
+  - `store.ts` — barrel-экспорты
 - `src/shared`:
   - иконки
   - мок-данные
 - `src/types`:
   - доменные типы
-
-## Auth0
-
-Файл `.env`:
-
-```env
-VITE_AUTH0_DOMAIN=your-domain.auth0.com
-VITE_AUTH0_CLIENT_ID=your-client-id
-VITE_VK_APP_ID=your-vk-app-id
-```
-
-В Auth0 приложении:
-
-- `Allowed Callback URLs`: `http://localhost:33000`
-- `Allowed Logout URLs`: `http://localhost:33000`
-- `Allowed Web Origins`: `http://localhost:33000`
-
-Для GitHub Pages добавь:
-
-- `Allowed Callback URLs`: `https://artemegorov007.github.io/ts-spotify/`
-- `Allowed Logout URLs`: `https://artemegorov007.github.io/ts-spotify/`
-- `Allowed Web Origins`: `https://artemegorov007.github.io`
+- `src/styles`:
+  - токены, base и раздельные feature-стили (auth/layout/content/player/admin/responsive)
 
 ## VK ID
 
+- Файл `.env`:
+```env
+VITE_VK_APP_ID=your-vk-app-id
+```
 - На странице входа подключён OneTap-виджет VK.
 - После успешного входа создаётся локальная сессия VK и открывается `/app`.
 - Выход очищает локальную VK-сессию.
 - Для работы VK ID нужен `https` origin.
 - `redirectUrl` формируется автоматически из текущего домена и `VITE_BASE_PATH`.
+- На `localhost` доступен демо-вход без VK (для локальной разработки по `http`).
 
 Для GitHub Pages укажи redirect:
 
@@ -64,6 +52,9 @@ npm install
 npm run dev
 npm run build
 npm run preview
+npm run lint
+npm run lint:styles
+npm run format:check
 ```
 
 ## Alias

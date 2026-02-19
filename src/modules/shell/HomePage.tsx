@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { mockTracks } from '@/shared/mock/media';
-import { musicPlatformStore } from '@/store/store';
+import { playerStore } from '@/store/store';
 import { PlayIcon } from '@/shared/icons/Icons';
 
 export const HomePage = observer(function HomePage() {
@@ -17,7 +17,7 @@ export const HomePage = observer(function HomePage() {
             <button
               type="button"
               className="track-play-button"
-              onClick={() => musicPlatformStore.play(track)}
+              onClick={() => playerStore.play(track)}
               aria-label={`Воспроизвести ${track.title}`}
             >
               <PlayIcon />
