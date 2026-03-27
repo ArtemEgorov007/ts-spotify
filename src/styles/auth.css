@@ -215,7 +215,6 @@
   background: #0077FF;
   color: #ffffff;
   border: none;
-  border-radius: var(--radius-full);
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
