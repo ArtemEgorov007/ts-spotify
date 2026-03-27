@@ -30,6 +30,8 @@ yarn-error.log*
 .env.*
 !.env.example
 .ai/
+.qwen/
+.aiassistant/
 
 # Vite
 .vite/

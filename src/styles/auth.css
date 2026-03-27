@@ -140,13 +140,6 @@
   width: 100%;
 }
 
-.vk-auth-block iframe,
-.vk-auth-block > div,
-.vk-auth-block button,
-.vk-auth-block input {
-  border-radius: var(--radius-full);
-}
-
 /* Error & Note Messages */
 .landing-error {
   margin: 16px 0 0;
