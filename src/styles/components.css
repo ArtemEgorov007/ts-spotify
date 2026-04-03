@@ -1,5 +1,172 @@
 /* Spotify-style Reusable Components */
 
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  z-index: 200;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-content {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subdued);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  width: 90%;
+  max-width: 440px;
+  animation: slideUp 0.2s ease;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-base);
+  font-family: var(--font-heading);
+}
+
+.modal-close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text-subdued);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.modal-close-btn:hover {
+  color: var(--text-base);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-close-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-field {
+  margin-bottom: 16px;
+}
+
+.modal-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-subdued);
+}
+
+.modal-input {
+  width: 100%;
+  border: 1px solid var(--border-subdued);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  background: var(--bg-base);
+  color: var(--text-base);
+  font-size: 15px;
+  font-family: var(--font-body);
+  outline: none;
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.modal-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.modal-input:focus {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 2px rgba(30, 215, 96, 0.2);
+}
+
+.modal-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.modal-btn {
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.modal-btn-primary {
+  background: var(--brand-green);
+  color: var(--bg-base);
+}
+
+.modal-btn-primary:hover:not(:disabled) {
+  background: var(--brand-green-hover);
+  transform: scale(1.02);
+}
+
+.modal-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modal-btn-secondary {
+  background: transparent;
+  color: var(--text-base);
+  border: 1px solid var(--border-subdued);
+}
+
+.modal-btn-secondary:hover {
+  border-color: var(--border-base);
+  background: var(--bg-strong);
+}
+
+/* Light theme modal */
+:root[data-theme='light'] .modal-overlay {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme='light'] .modal-content {
+  background: var(--bg-elevated);
+}
+
+:root[data-theme='light'] .modal-close-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;

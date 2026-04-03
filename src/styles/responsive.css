@@ -351,6 +351,75 @@
   }
 }
 
+/* Mobile landscape - compact player */
+@media (max-height: 500px) and (orientation: landscape) {
+  .player-bar {
+    height: 56px;
+    bottom: calc(56px + env(safe-area-inset-bottom));
+    padding: 0 12px;
+  }
+
+  .player-cover {
+    width: 40px;
+    height: 40px;
+  }
+
+  .player-track-info {
+    display: none;
+  }
+
+  .player-left .player-icon-btn {
+    display: none;
+  }
+
+  .player-controls {
+    gap: 4px;
+  }
+
+  .player-control-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .player-control-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .player-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .player-toggle svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .player-right .volume-slider-container {
+    width: 48px;
+    min-width: 48px;
+  }
+
+  /* Bottom nav smaller */
+  .mobile-bottom-nav {
+    height: 56px;
+  }
+
+  .mobile-bottom-nav button {
+    font-size: 10px;
+  }
+
+  .mobile-bottom-nav svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .app-content-area {
+    padding-bottom: calc(120px + env(safe-area-inset-bottom));
+  }
+}
+
 /* Hover capabilities */
 @media (hover: hover) {
   .track-play-button {

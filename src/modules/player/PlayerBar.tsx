@@ -6,25 +6,20 @@ import { formatDuration } from '@/shared/lib/format';
 export const PlayerBar = observer(function PlayerBar() {
   const track = playerStore.currentTrack;
   const volumePercent = Math.round(playerStore.volume * 100);
+  const progressPercent = track && track.durationSec > 0
+    ? (playerStore.currentTime / track.durationSec) * 100
+    : 0;
+
   const setSliderVolume = (value: string) => {
     playerStore.setVolume(Number(value) / 100);
   };
 
-  const toggleMute = () => {
-    if (playerStore.volume > 0) {
-      playerStore.setVolume(0);
-    } else {
-      playerStore.setVolume(0.5);
-    }
+  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!track) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+    playerStore.seekTo(ratio * track.durationSec);
   };
-
-  const getVolumeIcon = () => {
-    if (playerStore.volume === 0) return VolumeX;
-    if (playerStore.volume < 0.5) return Volume1;
-    return Volume2;
-  };
-
-  const VolumeIcon = getVolumeIcon();
 
   return (
     <footer className="player-bar">
@@ -54,8 +49,9 @@ export const PlayerBar = observer(function PlayerBar() {
         <div className="player-controls">
           <button
             type="button"
-            className="player-icon-btn player-control-btn"
+            className={`player-icon-btn player-control-btn ${playerStore.isShuffle ? 'active' : ''}`}
             aria-label="Перемешать"
+            onClick={() => playerStore.toggleShuffle()}
           >
             <Shuffle aria-hidden="true" />
           </button>
@@ -63,6 +59,7 @@ export const PlayerBar = observer(function PlayerBar() {
             type="button"
             className="player-icon-btn player-control-btn"
             aria-label="Предыдущий"
+            onClick={() => playerStore.prev()}
           >
             <SkipBack aria-hidden="true" />
           </button>
@@ -78,18 +75,31 @@ export const PlayerBar = observer(function PlayerBar() {
             type="button"
             className="player-icon-btn player-control-btn"
             aria-label="Следующий"
+            onClick={() => playerStore.next()}
           >
             <SkipForward aria-hidden="true" />
           </button>
-          <button type="button" className="player-icon-btn player-control-btn" aria-label="Повтор">
+          <button
+            type="button"
+            className={`player-icon-btn player-control-btn ${playerStore.isRepeat ? 'active' : ''}`}
+            aria-label="Повтор"
+            onClick={() => playerStore.toggleRepeat()}
+          >
             <Repeat aria-hidden="true" />
           </button>
         </div>
         <div className="player-progress">
-          <span className="player-time">0:00</span>
-          <div className="player-progress-bar">
-            <div className="player-progress-fill" style={{ width: '30%' }} />
-            <div className="player-progress-handle" />
+          <span className="player-time">{formatDuration(playerStore.currentTime)}</span>
+          <div
+            className="player-progress-bar"
+            onClick={handleProgressClick}
+            role="slider"
+            aria-label="Прогресс воспроизведения"
+            aria-valuemin={0}
+            aria-valuemax={track ? track.durationSec : 0}
+            aria-valuenow={Math.round(playerStore.currentTime)}
+          >
+            <div className="player-progress-fill" style={{ width: `${progressPercent}%` }} />
           </div>
           <span className="player-time">
             {track ? formatDuration(track.durationSec) : '0:00'}
@@ -102,10 +112,16 @@ export const PlayerBar = observer(function PlayerBar() {
           <button
             type="button"
             className="player-icon-btn"
-            aria-label={playerStore.volume === 0 ? 'Включить звук' : 'Выключить звук'}
-            onClick={toggleMute}
+            aria-label={playerStore.isMuted ? 'Включить звук' : 'Выключить звук'}
+            onClick={() => playerStore.toggleMute()}
           >
-            <VolumeIcon aria-hidden="true" />
+            {playerStore.isMuted ? (
+              <VolumeX aria-hidden="true" />
+            ) : playerStore.volume < 0.5 ? (
+              <Volume1 aria-hidden="true" />
+            ) : (
+              <Volume2 aria-hidden="true" />
+            )}
           </button>
           <div className="volume-slider-container">
             <input

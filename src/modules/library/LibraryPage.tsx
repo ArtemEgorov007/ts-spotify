@@ -1,4 +1,6 @@
-import { mockPlaylists } from '@/shared/mock/media';
+import { observer } from 'mobx-react-lite';
+import { Trash2 } from 'lucide-react';
+import { playerStore } from '@/store/store';
 
 function formatTracksCount(count: number) {
   const mod10 = count % 10;
@@ -15,19 +17,47 @@ function formatTracksCount(count: number) {
   return `${count} треков`;
 }
 
-export function LibraryPage() {
+export const LibraryPage = observer(function LibraryPage() {
   return (
     <section>
       <p className="section-subtitle">Твои плейлисты и сохранённые подборки.</p>
-      <div className="playlist-grid">
-        {mockPlaylists.map((playlist) => (
-          <article key={playlist.id} className="playlist-card">
-            <h3>{playlist.title}</h3>
-            <p>{playlist.description}</p>
-            <span>{formatTracksCount(playlist.tracks.length)}</span>
-          </article>
-        ))}
-      </div>
+      {playerStore.playlists.length === 0 ? (
+        <div className="library-empty">
+          <p>У тебя пока нет плейлистов.</p>
+          <button
+            type="button"
+            className="library-create-btn"
+            onClick={() => playerStore.openCreatePlaylistModal()}
+          >
+            Создать первый плейлист
+          </button>
+        </div>
+      ) : (
+        <div className="playlist-grid">
+          {playerStore.playlists.map((playlist) => (
+            <article key={playlist.id} className="playlist-card">
+              <div className="playlist-card-header">
+                <h3>{playlist.title}</h3>
+                <button
+                  type="button"
+                  className="playlist-delete-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (confirm(`Удалить плейлист "${playlist.title}"?`)) {
+                      playerStore.deletePlaylist(playlist.id);
+                    }
+                  }}
+                  aria-label={`Удалить ${playlist.title}`}
+                >
+                  <Trash2 aria-hidden="true" />
+                </button>
+              </div>
+              <p>{playlist.description}</p>
+              <span>{formatTracksCount(playlist.tracks.length)}</span>
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   );
-}
+});

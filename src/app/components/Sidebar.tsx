@@ -4,6 +4,7 @@ import { House, Library, LogOut, PanelLeftClose, Plus, Search, type LucideIcon }
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { logoutUser } from '@/modules/auth/authService';
 import { APP_ROUTES } from '@/app/config/routes';
+import { playerStore } from '@/store/store';
 import './Sidebar.css';
 
 type SidebarProps = {
@@ -82,7 +83,11 @@ export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: Si
           {!collapsed && <h3 className="sidebar-section-title">Ваша медиатека</h3>}
           <div className="sidebar-nav-links">
             <SidebarNavLinks items={libraryNavItems} />
-            <button type="button" className="sidebar-link sidebar-link-action">
+            <button
+              type="button"
+              className="sidebar-link sidebar-link-action"
+              onClick={() => playerStore.openCreatePlaylistModal()}
+            >
               <Plus aria-hidden="true" />
               <span>Создать плейлист</span>
             </button>
