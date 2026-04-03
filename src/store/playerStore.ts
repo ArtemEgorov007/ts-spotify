@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import { Track } from '@/types/music.types';
 import { Playlist } from '@/types/playlist.types';
 import { mockPlaylists } from '@/shared/mock/media';
@@ -245,11 +245,13 @@ class PlayerStore {
         clearInterval(interval);
         return;
       }
-      this.currentTime += 0.1;
-      if (this.currentTime >= durationSec) {
-        clearInterval(interval);
-        this.onEnded();
-      }
+      runInAction(() => {
+        this.currentTime += 0.1;
+        if (this.currentTime >= durationSec) {
+          clearInterval(interval);
+          this.onEnded();
+        }
+      });
     }, 100);
 
     // Store interval reference to clear on track change
@@ -258,7 +260,9 @@ class PlayerStore {
 
   private onTimeUpdate = () => {
     if (this.audio && !isNaN(this.audio.currentTime)) {
-      this.currentTime = this.audio.currentTime;
+      runInAction(() => {
+        this.currentTime = this.audio.currentTime;
+      });
     }
   };
 
@@ -268,7 +272,9 @@ class PlayerStore {
 
   private onLoadedMetadata = () => {
     if (this.audio) {
-      this.duration = this.audio.duration;
+      runInAction(() => {
+        this.duration = this.audio.duration;
+      });
     }
   };
 
