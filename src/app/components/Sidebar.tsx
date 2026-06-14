@@ -47,7 +47,10 @@ export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: Si
   const onLogout = () => logoutUser(navigate);
 
   return (
-    <aside className={`sidebar${collapsed ? ' sidebar-collapsed' : ''}`}>
+    <aside
+      className={`sidebar${collapsed ? ' sidebar-collapsed' : ''}`}
+      aria-label="Основная навигация"
+    >
       <div className="sidebar-header">
         <div className="sidebar-brand" aria-label="ts-music">
           <div className="sidebar-brand-logo">
@@ -80,7 +83,7 @@ export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: Si
         </nav>
 
         <nav className="sidebar-nav-section">
-          {!collapsed && <h3 className="sidebar-section-title">Ваша медиатека</h3>}
+          {!collapsed && <h3 className="sidebar-section-title">Твоя медиатека</h3>}
           <div className="sidebar-nav-links">
             <SidebarNavLinks items={libraryNavItems} />
             <button

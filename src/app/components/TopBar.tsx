@@ -1,21 +1,26 @@
 import { observer } from 'mobx-react-lite';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { authStore } from '@/store/store';
+import { authStore, playerStore } from '@/store/store';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
-import { getAppSectionTitle } from '@/app/config/routes';
+import { getAppSectionTitle, getPlaylistIdFromPath } from '@/app/config/routes';
 import './TopBar.css';
 
 export const TopBar = observer(function TopBar() {
   const location = useLocation();
   const roleLabel = authStore.roleChipLabel;
   const roleInitial = (roleLabel.trim().charAt(0) || 'Г').toUpperCase();
-  const sectionTitle = useMemo(() => getAppSectionTitle(location.pathname), [location.pathname]);
+  const playlistId = getPlaylistIdFromPath(location.pathname);
+  const playlistTitle = playlistId ? playerStore.getPlaylistById(playlistId)?.title : null;
+  const sectionTitle = useMemo(
+    () => getAppSectionTitle(location.pathname, playlistTitle),
+    [location.pathname, playlistTitle],
+  );
 
   return (
     <header className="topbar">
       <div>
-        <p className="topbar-label">Раздел</p>
+        <p className="topbar-label">{playlistTitle ? 'Плейлист' : 'Раздел'}</p>
         <h1 className="topbar-title">{sectionTitle}</h1>
       </div>
       <div className="topbar-controls">

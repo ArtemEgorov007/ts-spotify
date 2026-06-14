@@ -48,14 +48,15 @@
   width: 40px;
   height: 40px;
   color: var(--brand-green);
-  filter: drop-shadow(0 0 8px rgba(30, 215, 96, 0.4));
+  filter: drop-shadow(0 0 12px var(--brand-accent-glow));
 }
 
 .sidebar h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
+  font-family: var(--font-display);
   font-weight: 800;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.03em;
   color: var(--text-base);
   white-space: nowrap;
 }
@@ -396,11 +397,11 @@
   }
 
   .sidebar-link-action {
-    display: none;
+    display: flex;
   }
 
   .sidebar-link.active {
-    background: rgba(30, 215, 96, 0.15);
+    background: var(--brand-accent-soft);
     color: var(--brand-green);
   }
 

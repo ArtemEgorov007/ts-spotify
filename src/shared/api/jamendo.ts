@@ -43,7 +43,7 @@ export const MOOD_PRESETS: MoodPreset[] = [
     label: 'Утро',
     description: 'Спокойный старт дня',
     tags: 'chill',
-    speed: 'slow+medium',
+    speed: 'low',
     acousticelectric: '',
   },
   {
@@ -52,7 +52,7 @@ export const MOOD_PRESETS: MoodPreset[] = [
     label: 'Энергия',
     description: 'Бодрый ритм для активности',
     tags: 'rock,pop',
-    speed: 'fast+medium',
+    speed: 'high',
     acousticelectric: '',
   },
   {
@@ -61,7 +61,7 @@ export const MOOD_PRESETS: MoodPreset[] = [
     description: 'Спокойная музыка для отдыха',
     emoji: '😌',
     tags: 'ambient,chill',
-    speed: 'slow+veryslow',
+    speed: 'verylow',
     acousticelectric: '',
   },
   {
@@ -79,7 +79,7 @@ export const MOOD_PRESETS: MoodPreset[] = [
     label: 'Ночь',
     description: 'Тихая музыка для вечера',
     tags: 'downtempo,chill',
-    speed: 'veryslow+slow',
+    speed: 'verylow',
     acousticelectric: '',
   },
 ];

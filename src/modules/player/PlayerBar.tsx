@@ -6,35 +6,32 @@ import { formatDuration } from '@/shared/lib/format';
 export const PlayerBar = observer(function PlayerBar() {
   const track = playerStore.currentTrack;
   const volumePercent = Math.round(playerStore.volume * 100);
-  const progressPercent = track && track.durationSec > 0
-    ? (playerStore.currentTime / track.durationSec) * 100
-    : 0;
+  const progressMax =
+    playerStore.duration > 0 ? playerStore.duration : (track?.durationSec ?? 0);
 
   const setSliderVolume = (value: string) => {
     playerStore.setVolume(Number(value) / 100);
   };
 
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!track) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const ratio = (e.clientX - rect.left) / rect.width;
-    playerStore.seekTo(ratio * track.durationSec);
+  const handleProgressChange = (value: string) => {
+    playerStore.seekTo(Number(value));
   };
 
   return (
-    <footer className="player-bar">
+    <footer className="player-bar" aria-label="Плеер">
       <div className="player-left">
         {track ? (
           <>
-            <img src={track.coverUrl} alt={track.title} className="player-cover" />
+            <img src={track.coverUrl} alt="" className="player-cover" />
             <div className="player-track-info">
-              <strong className="player-track-title">{track.title}</strong>
-              <span className="player-track-artist">{track.artist}</span>
+              <p className="player-track-title">{track.title}</p>
+              <p className="player-track-artist">{track.artist}</p>
             </div>
             <button
               type="button"
               className={`player-icon-btn ${playerStore.isFavorite ? 'active' : ''}`}
-              aria-label="Нравится"
+              aria-label={playerStore.isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+              aria-pressed={playerStore.isFavorite}
               onClick={() => playerStore.toggleFavorite()}
             >
               <Heart aria-hidden="true" fill={playerStore.isFavorite ? 'currentColor' : 'none'} />
@@ -46,11 +43,12 @@ export const PlayerBar = observer(function PlayerBar() {
       </div>
 
       <div className="player-center">
-        <div className="player-controls">
+        <div className="player-controls" aria-label="Управление воспроизведением">
           <button
             type="button"
             className={`player-icon-btn player-control-btn ${playerStore.isShuffle ? 'active' : ''}`}
             aria-label="Перемешать"
+            aria-pressed={playerStore.isShuffle}
             onClick={() => playerStore.toggleShuffle()}
           >
             <Shuffle aria-hidden="true" />
@@ -58,8 +56,9 @@ export const PlayerBar = observer(function PlayerBar() {
           <button
             type="button"
             className="player-icon-btn player-control-btn"
-            aria-label="Предыдущий"
+            aria-label="Предыдущий трек"
             onClick={() => playerStore.prev()}
+            disabled={!track}
           >
             <SkipBack aria-hidden="true" />
           </button>
@@ -68,14 +67,16 @@ export const PlayerBar = observer(function PlayerBar() {
             className="player-toggle"
             onClick={() => playerStore.togglePlayback()}
             aria-label={playerStore.isPlaying ? 'Пауза' : 'Воспроизвести'}
+            disabled={!track && playerStore.queue.length === 0}
           >
             {playerStore.isPlaying ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
           </button>
           <button
             type="button"
             className="player-icon-btn player-control-btn"
-            aria-label="Следующий"
+            aria-label="Следующий трек"
             onClick={() => playerStore.next()}
+            disabled={!track}
           >
             <SkipForward aria-hidden="true" />
           </button>
@@ -83,28 +84,45 @@ export const PlayerBar = observer(function PlayerBar() {
             type="button"
             className={`player-icon-btn player-control-btn ${playerStore.isRepeat ? 'active' : ''}`}
             aria-label="Повтор"
+            aria-pressed={playerStore.isRepeat}
             onClick={() => playerStore.toggleRepeat()}
           >
             <Repeat aria-hidden="true" />
           </button>
         </div>
         <div className="player-progress">
-          <span className="player-time">{formatDuration(playerStore.currentTime)}</span>
-          <div
+          <span className="player-time" aria-hidden="true">
+            {formatDuration(playerStore.currentTime)}
+          </span>
+          <label className="visually-hidden" htmlFor="player-progress">
+            Прогресс воспроизведения
+          </label>
+          <input
+            id="player-progress"
             className="player-progress-bar"
-            onClick={handleProgressClick}
-            role="slider"
-            aria-label="Прогресс воспроизведения"
-            aria-valuemin={0}
-            aria-valuemax={track ? track.durationSec : 0}
-            aria-valuenow={Math.round(playerStore.currentTime)}
-          >
-            <div className="player-progress-fill" style={{ width: `${progressPercent}%` }} />
-          </div>
-          <span className="player-time">
-            {track ? formatDuration(track.durationSec) : '0:00'}
+            type="range"
+            min={0}
+            max={progressMax}
+            step={1}
+            value={Math.min(playerStore.currentTime, progressMax)}
+            onChange={(event) => handleProgressChange(event.target.value)}
+            disabled={!track}
+            style={
+              progressMax > 0
+                ? ({ '--progress': `${(playerStore.currentTime / progressMax) * 100}%` } as React.CSSProperties)
+                : undefined
+            }
+            aria-valuetext={`${formatDuration(playerStore.currentTime)} из ${formatDuration(progressMax)}`}
+          />
+          <span className="player-time" aria-hidden="true">
+            {track ? formatDuration(progressMax) : '0:00'}
           </span>
         </div>
+        {playerStore.playbackError && (
+          <p className="player-error" role="alert">
+            {playerStore.playbackError}
+          </p>
+        )}
       </div>
 
       <div className="player-right">
@@ -124,12 +142,17 @@ export const PlayerBar = observer(function PlayerBar() {
             )}
           </button>
           <div className="volume-slider-container">
+            <label className="visually-hidden" htmlFor="player-volume">
+              Громкость
+            </label>
             <input
+              id="player-volume"
               className="volume-slider"
               type="range"
               min={0}
               max={100}
               value={volumePercent}
+              aria-valuetext={`${volumePercent} процентов`}
               style={{
                 background: `linear-gradient(to right, var(--brand-green) 0%, var(--brand-green) ${volumePercent}%, var(--bg-strong) ${volumePercent}%, var(--bg-strong) 100%)`,
               }}

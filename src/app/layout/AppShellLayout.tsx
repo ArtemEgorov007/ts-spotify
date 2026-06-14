@@ -4,11 +4,28 @@ import { Sidebar } from '@/app/components/Sidebar';
 import { TopBar } from '@/app/components/TopBar';
 import { PlayerBar } from '@/modules/player/PlayerBar';
 import { CreatePlaylistModal } from '@/app/components/CreatePlaylistModal';
+import { DeletePlaylistModal } from '@/app/components/DeletePlaylistModal';
 import { playerStore } from '@/store/store';
 import { STORAGE_KEYS } from '@/app/config/storage';
 
 function readInitialSidebarCollapsed() {
   return localStorage.getItem(STORAGE_KEYS.sidebarCollapsed) === 'true';
+}
+
+function isEditableTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+
+  if (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target instanceof HTMLSelectElement
+  ) {
+    return true;
+  }
+
+  return Boolean(target.closest('button, a[href], [role="button"], [contenteditable="true"]'));
 }
 
 export function AppShellLayout() {
@@ -19,10 +36,18 @@ export function AppShellLayout() {
   }, [sidebarCollapsed]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    // Don't handle shortcuts when typing in inputs
-    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+    if (
+      playerStore.showCreatePlaylistModal ||
+      playerStore.deletePlaylistTargetId ||
+      isEditableTarget(e.target)
+    ) {
       return;
     }
+
+    const durationMax =
+      playerStore.duration > 0
+        ? playerStore.duration
+        : (playerStore.currentTrack?.durationSec ?? 0);
 
     switch (e.code) {
       case 'Space':
@@ -33,9 +58,7 @@ export function AppShellLayout() {
         if (e.shiftKey) {
           playerStore.next();
         } else if (playerStore.currentTrack) {
-          playerStore.seekTo(
-            Math.min(playerStore.currentTime + 10, playerStore.currentTrack.durationSec),
-          );
+          playerStore.seekTo(Math.min(playerStore.currentTime + 10, durationMax));
         }
         break;
       case 'ArrowLeft':
@@ -76,15 +99,21 @@ export function AppShellLayout() {
 
   return (
     <div className={`app-shell-layout${sidebarCollapsed ? ' app-shell-layout-collapsed' : ''}`}>
+      <a href="#main-content" className="skip-link">
+        Перейти к содержимому
+      </a>
       <Sidebar collapsed={sidebarCollapsed} onToggleMode={toggleSidebarMode} />
       <div className="app-main">
         <TopBar />
-        <section className="app-content-area">
-          <Outlet />
-        </section>
+        <main id="main-content" className="app-content-area" tabIndex={-1}>
+          <div className="app-page">
+            <Outlet />
+          </div>
+        </main>
       </div>
       <PlayerBar />
       <CreatePlaylistModal />
+      <DeletePlaylistModal />
     </div>
   );
 }

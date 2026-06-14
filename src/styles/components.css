@@ -114,7 +114,7 @@
 
 .modal-input:focus {
   border-color: var(--brand-green);
-  box-shadow: 0 0 0 2px rgba(30, 215, 96, 0.2);
+  box-shadow: 0 0 0 2px var(--brand-accent-soft);
 }
 
 .modal-textarea {
@@ -141,8 +141,8 @@
 }
 
 .modal-btn-primary {
-  background: var(--brand-green);
-  color: var(--bg-base);
+  background: var(--gradient-accent);
+  color: var(--brand-on-accent);
 }
 
 .modal-btn-primary:hover:not(:disabled) {
@@ -164,6 +164,27 @@
 .modal-btn-secondary:hover {
   border-color: var(--border-base);
   background: var(--bg-strong);
+}
+
+.modal-content-confirm {
+  max-width: 400px;
+}
+
+.modal-confirm-text {
+  margin: 0;
+  color: var(--text-subdued);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.modal-btn-danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.modal-btn-danger:hover {
+  background: #dc2626;
+  transform: scale(1.02);
 }
 
 /* Light theme modal */
@@ -201,15 +222,15 @@
 }
 
 .btn-primary {
-  background: var(--brand-green);
-  color: var(--bg-base);
-  box-shadow: 0 4px 16px rgba(30, 215, 96, 0.3);
+  background: var(--gradient-accent);
+  color: var(--brand-on-accent);
+  box-shadow: 0 4px 20px var(--brand-accent-glow);
 }
 
 .btn-primary:hover {
   background: var(--brand-green-hover);
   transform: scale(1.02);
-  box-shadow: 0 6px 24px rgba(30, 215, 96, 0.4);
+  box-shadow: 0 8px 28px var(--brand-accent-glow);
 }
 
 .btn-secondary {
@@ -284,7 +305,6 @@
   background: var(--panel-card-hover);
   border-color: var(--border-base);
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
 }
 
 .card-header {
@@ -327,9 +347,9 @@
 }
 
 .chip-brand {
-  background: rgba(30, 215, 96, 0.12);
+  background: var(--brand-accent-soft);
   color: var(--brand-green);
-  border: 1px solid rgba(30, 215, 96, 0.2);
+  border: 1px solid var(--brand-accent-medium);
 }
 
 .chip-warning {
@@ -363,7 +383,7 @@
 .input:focus {
   outline: none;
   border-color: var(--brand-green);
-  box-shadow: 0 0 0 3px rgba(30, 215, 96, 0.15);
+  box-shadow: 0 0 0 3px var(--brand-accent-soft);
 }
 
 .input::placeholder {

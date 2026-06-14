@@ -4,6 +4,7 @@ import { AppShellLayout } from '@/app/layout/AppShellLayout';
 import { HomePage } from '@/modules/shell/HomePage';
 import { SearchPage } from '@/modules/shell/SearchPage';
 import { LibraryPage } from '@/modules/library/LibraryPage';
+import { PlaylistDetailPage } from '@/modules/library/PlaylistDetailPage';
 import { RequireAuth } from '@/app/routes/guards';
 import { AuthBootstrap } from '@/app/providers/AuthBootstrap';
 import { APP_CHILD_ROUTES, APP_ROUTES } from '@/app/config/routes';
@@ -26,6 +27,7 @@ export function AppRouter() {
             <Route index element={<HomePage />} />
             <Route path={APP_CHILD_ROUTES.search} element={<SearchPage />} />
             <Route path={APP_CHILD_ROUTES.library} element={<LibraryPage />} />
+            <Route path={APP_CHILD_ROUTES.libraryPlaylist} element={<PlaylistDetailPage />} />
           </Route>
 
           <Route path="*" element={<Navigate to={APP_ROUTES.landing} replace />} />

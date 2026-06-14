@@ -1,0 +1,179 @@
+/* Motion & page atmosphere */
+
+body {
+  position: relative;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+.app-shell-layout,
+.landing-page {
+  position: relative;
+}
+
+.app-page > section {
+  position: relative;
+  animation: page-reveal 0.6s var(--ease-out-expo) both;
+}
+
+@keyframes page-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.track-card,
+.playlist-card,
+.result-item,
+.playlist-track-item {
+  animation: card-rise 0.55s var(--ease-out-expo) both;
+}
+
+.track-card:nth-child(1),
+.playlist-card:nth-child(1),
+.result-item:nth-child(1),
+.playlist-track-item:nth-child(1) {
+  animation-delay: 0.04s;
+}
+
+.track-card:nth-child(2),
+.playlist-card:nth-child(2),
+.result-item:nth-child(2),
+.playlist-track-item:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.track-card:nth-child(3),
+.playlist-card:nth-child(3),
+.result-item:nth-child(3),
+.playlist-track-item:nth-child(3) {
+  animation-delay: 0.12s;
+}
+
+.track-card:nth-child(4),
+.playlist-card:nth-child(4),
+.result-item:nth-child(4),
+.playlist-track-item:nth-child(4) {
+  animation-delay: 0.16s;
+}
+
+.track-card:nth-child(5),
+.playlist-card:nth-child(5),
+.result-item:nth-child(5),
+.playlist-track-item:nth-child(5) {
+  animation-delay: 0.2s;
+}
+
+.track-card:nth-child(n + 6),
+.playlist-card:nth-child(n + 6),
+.result-item:nth-child(n + 6),
+.playlist-track-item:nth-child(n + 6) {
+  animation-delay: 0.24s;
+}
+
+@keyframes card-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.mood-chip,
+.genre-tag {
+  animation: chip-in 0.45s var(--ease-out-expo) both;
+}
+
+.mood-chip:nth-child(1),
+.genre-tag:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.mood-chip:nth-child(2),
+.genre-tag:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.mood-chip:nth-child(3),
+.genre-tag:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.mood-chip:nth-child(4),
+.genre-tag:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.mood-chip:nth-child(5),
+.genre-tag:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+@keyframes chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Landing — minimal static glow only */
+.landing-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.landing-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+.landing-orb-1 {
+  width: 320px;
+  height: 320px;
+  top: -100px;
+  left: -60px;
+  background: rgba(var(--brand-accent-rgb), 0.12);
+}
+
+.landing-orb-2 {
+  width: 280px;
+  height: 280px;
+  bottom: -80px;
+  right: -40px;
+  background: rgba(255, 159, 67, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-page > section,
+  .track-card,
+  .playlist-card,
+  .result-item,
+  .playlist-track-item,
+  .mood-chip,
+  .genre-tag {
+    animation: none;
+  }
+}

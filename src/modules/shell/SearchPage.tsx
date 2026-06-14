@@ -5,31 +5,35 @@ import { searchTracks, fetchTracksByMood, MOOD_PRESETS, type MoodPreset } from '
 import { jamendoToTracks } from '@/shared/lib/jamendoMapper';
 import { playerStore } from '@/store/store';
 import { formatDuration } from '@/shared/lib/format';
+import type { Track } from '@/types/music.types';
 
 export const SearchPage = observer(function SearchPage() {
   const [query, setQuery] = useState('');
   const [activeGenre, setActiveGenre] = useState<MoodPreset | null>(null);
-  const [results, setResults] = useState(playerStore.queue);
+  const [results, setResults] = useState<Track[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Debounced search
   useEffect(() => {
     if (!query.trim()) {
-      setResults(playerStore.queue);
+      setResults([]);
       setSearched(false);
+      setError(null);
       return;
     }
 
     const timer = setTimeout(() => {
       setLoading(true);
       setSearched(true);
+      setError(null);
       searchTracks(query.trim(), 20)
         .then((tracks) => {
           setResults(jamendoToTracks(tracks));
         })
         .catch(() => {
           setResults([]);
+          setError('Не удалось выполнить поиск. Проверь соединение и попробуй снова.');
         })
         .finally(() => setLoading(false));
     }, 400);
@@ -37,59 +41,88 @@ export const SearchPage = observer(function SearchPage() {
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Genre filter
   useEffect(() => {
-    if (!activeGenre) return;
+    if (!activeGenre) {
+      return;
+    }
+
     setLoading(true);
+    setSearched(true);
+    setError(null);
     fetchTracksByMood(activeGenre, 20)
       .then((tracks) => {
         setResults(jamendoToTracks(tracks));
-        setSearched(true);
       })
-      .catch(() => setResults([]))
+      .catch(() => {
+        setResults([]);
+        setError('Не удалось загрузить подборку. Попробуй ещё раз.');
+      })
       .finally(() => setLoading(false));
   }, [activeGenre]);
 
   const handlePlay = useCallback(
     (index: number) => {
-      playerStore.setQueue(results, index);
-      playerStore.play();
+      const sameSearchQueue =
+        playerStore.queueSource === 'search' &&
+        playerStore.queue.length === results.length &&
+        playerStore.queue.every((track, trackIndex) => track.id === results[trackIndex]?.id);
+
+      if (sameSearchQueue) {
+        playerStore.playAt(index);
+        return;
+      }
+
+      playerStore.setQueue(results, index, true, 'search');
     },
     [results],
   );
 
-  const displayTracks = activeGenre || query.trim() ? results : playerStore.queue;
+  const currentTrack = playerStore.currentTrack;
+  const displayTracks = searched ? results : [];
 
   return (
-    <section>
+    <section aria-labelledby="search-heading">
+      <h2 id="search-heading" className="visually-hidden">
+        Поиск музыки
+      </h2>
       <p className="section-subtitle">Треки, артисты и плейлисты.</p>
 
-      <div className="search-input-wrapper">
-        <SearchIcon className="search-input-icon" aria-hidden="true" />
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Что хочешь послушать?"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setActiveGenre(null);
-          }}
-          autoFocus
-        />
-        {query && (
-          <button
-            type="button"
-            className="search-clear-btn"
-            onClick={() => setQuery('')}
-            aria-label="Очистить поиск"
-          >
-            ✕
-          </button>
-        )}
-      </div>
+      <form
+        className="search-form"
+        role="search"
+        onSubmit={(event) => event.preventDefault()}
+      >
+        <div className="search-input-wrapper">
+          <label className="visually-hidden" htmlFor="search-query">
+            Поиск треков
+          </label>
+          <SearchIcon className="search-input-icon" aria-hidden="true" />
+          <input
+            id="search-query"
+            type="search"
+            className="search-input"
+            placeholder="Что хочешь послушать?"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setActiveGenre(null);
+            }}
+            autoComplete="off"
+          />
+          {query && (
+            <button
+              type="button"
+              className="search-clear-btn"
+              onClick={() => setQuery('')}
+              aria-label="Очистить поиск"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </form>
 
-      <div className="tag-row">
+      <div className="tag-row" role="group" aria-label="Фильтр по настроению">
         {MOOD_PRESETS.map((mood) => (
           <button
             key={mood.key}
@@ -99,6 +132,7 @@ export const SearchPage = observer(function SearchPage() {
               setActiveGenre(activeGenre?.key === mood.key ? null : mood);
               setQuery('');
             }}
+            aria-pressed={activeGenre?.key === mood.key}
           >
             {mood.emoji} {mood.label}
           </button>
@@ -106,37 +140,63 @@ export const SearchPage = observer(function SearchPage() {
       </div>
 
       {loading && (
-        <div className="loading-state">
+        <div className="loading-state" role="status" aria-live="polite">
           <Loader2 className="loading-spinner" aria-hidden="true" />
           <p>Ищем музыку…</p>
         </div>
       )}
 
-      {!loading && displayTracks.length === 0 && searched && (
+      {error && !loading && (
+        <div className="error-state" role="alert">
+          <p>{error}</p>
+        </div>
+      )}
+
+      {!loading && !error && displayTracks.length === 0 && searched && (
         <div className="search-empty">
           <p>Ничего не найдено{query ? ` по запросу «${query}»` : ''}</p>
+        </div>
+      )}
+
+      {!loading && !searched && (
+        <div className="search-empty">
+          <p>Начни с поиска или выбери настроение — покажем подборку треков.</p>
         </div>
       )}
 
       {!loading && displayTracks.length > 0 && (
         <div className="results-list">
           {displayTracks.map((track, index) => (
-            <div key={track.id} className="result-item">
-              <img src={track.coverUrl} alt={track.title} loading="lazy" />
+            <button
+              type="button"
+              key={track.id}
+              className={`result-item${currentTrack?.id === track.id ? ' result-item-active' : ''}`}
+              onClick={() => handlePlay(index)}
+              aria-label={
+                currentTrack?.id === track.id && playerStore.isPlaying
+                  ? `Пауза ${track.title} — ${track.artist}`
+                  : `Воспроизвести ${track.title} — ${track.artist}`
+              }
+              aria-current={currentTrack?.id === track.id ? 'true' : undefined}
+            >
+              <img src={track.coverUrl} alt="" loading="lazy" />
               <div className="result-item-info">
                 <strong>{track.title}</strong>
                 <p>{track.artist}</p>
               </div>
-              <button
-                type="button"
-                className="result-play-btn"
-                onClick={() => handlePlay(index)}
-                aria-label={`Воспроизвести ${track.title}`}
-              >
-                <Play aria-hidden="true" />
-              </button>
+              <span className="result-play-btn" aria-hidden="true">
+                {currentTrack?.id === track.id && playerStore.isPlaying ? (
+                  <span className="now-playing-indicator">
+                    <span />
+                    <span />
+                    <span />
+                  </span>
+                ) : (
+                  <Play />
+                )}
+              </span>
               <span className="result-duration">{formatDuration(track.durationSec)}</span>
-            </div>
+            </button>
           ))}
         </div>
       )}

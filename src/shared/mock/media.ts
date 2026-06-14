@@ -8,6 +8,15 @@ import cover4 from '@/assets/covers/cover-4.svg';
 import cover5 from '@/assets/covers/cover-5.svg';
 import cover6 from '@/assets/covers/cover-6.svg';
 
+const demoAudioUrls = [
+  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+];
+
 export const mockTracks: Track[] = [
   {
     id: 't1',
@@ -15,7 +24,7 @@ export const mockTracks: Track[] = [
     artist: 'Пульс Авеню',
     coverUrl: cover1,
     durationSec: 214,
-    audioUrl: '#',
+    audioUrl: demoAudioUrls[0],
   },
   {
     id: 't2',
@@ -23,7 +32,7 @@ export const mockTracks: Track[] = [
     artist: 'Стерео Кадры',
     coverUrl: cover2,
     durationSec: 189,
-    audioUrl: '#',
+    audioUrl: demoAudioUrls[1],
   },
   {
     id: 't3',
@@ -31,7 +40,7 @@ export const mockTracks: Track[] = [
     artist: 'Нова Эхо',
     coverUrl: cover3,
     durationSec: 202,
-    audioUrl: '#',
+    audioUrl: demoAudioUrls[2],
   },
   {
     id: 't4',
@@ -39,7 +48,7 @@ export const mockTracks: Track[] = [
     artist: 'Рейлтон',
     coverUrl: cover4,
     durationSec: 176,
-    audioUrl: '#',
+    audioUrl: demoAudioUrls[3],
   },
   {
     id: 't5',
@@ -47,7 +56,7 @@ export const mockTracks: Track[] = [
     artist: 'ФМ Север',
     coverUrl: cover5,
     durationSec: 231,
-    audioUrl: '#',
+    audioUrl: demoAudioUrls[4],
   },
   {
     id: 't6',
@@ -55,7 +64,7 @@ export const mockTracks: Track[] = [
     artist: 'Монохром Кид',
     coverUrl: cover6,
     durationSec: 205,
-    audioUrl: '#',
+    audioUrl: demoAudioUrls[5],
   },
 ];
 

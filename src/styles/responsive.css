@@ -39,10 +39,7 @@
   .player-progress-bar {
     flex: 1;
     height: 3px;
-    background: var(--bg-strong);
     border-radius: 0;
-    position: relative;
-    transition: height var(--transition-fast);
   }
 
   .player-progress-bar:hover {
@@ -50,15 +47,7 @@
   }
 
   .player-progress-fill {
-    height: 100%;
-    background: var(--text-base);
-    border-radius: 0;
-    position: relative;
-    transition: width 0.1s linear;
-  }
-
-  .player-progress-bar:hover .player-progress-fill {
-    background: var(--brand-green);
+    display: none;
   }
 
   .player-time {
@@ -90,7 +79,11 @@
   }
 
   .player-no-track {
-    display: none;
+    display: block;
+    font-size: 11px;
+    max-width: 72px;
+    line-height: 1.3;
+    color: var(--text-subdued);
   }
 
   .player-center {
@@ -129,7 +122,8 @@
   .player-toggle {
     width: 44px;
     height: 44px;
-    background: var(--text-base);
+    background: var(--gradient-accent);
+    color: var(--brand-on-accent);
   }
 
   .player-toggle svg {
@@ -206,16 +200,18 @@
     font-size: 14px;
   }
 
-  .track-card span {
+  .track-card-artist {
     font-size: 12px;
   }
 
-  .track-play-button {
+  .track-card .track-play-button {
     width: 48px;
     height: 48px;
+    min-width: 48px;
+    min-height: 48px;
   }
 
-  .track-play-button svg {
+  .track-card .track-play-button svg {
     width: 20px;
     height: 20px;
   }
@@ -372,24 +368,22 @@
 
 /* Hover capabilities */
 @media (hover: hover) {
-  .track-play-button {
+  .track-card .track-play-button {
     opacity: 0;
     transform: translateY(12px);
-    pointer-events: none;
   }
 
-  .track-card:hover .track-play-button {
+  .track-card:hover .track-play-button,
+  .track-card:focus-visible .track-play-button {
     opacity: 1;
     transform: translateY(0);
-    pointer-events: auto;
   }
 }
 
 @media (hover: none) {
-  .track-play-button {
+  .track-card .track-play-button {
     opacity: 1;
     transform: translateY(0);
-    pointer-events: auto;
   }
 }
 

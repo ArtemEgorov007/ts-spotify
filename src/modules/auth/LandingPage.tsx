@@ -25,6 +25,10 @@ export const LandingPage = observer(function LandingPage() {
 
   return (
     <main className="landing-page">
+      <div className="landing-backdrop" aria-hidden="true">
+        <span className="landing-orb landing-orb-1" />
+        <span className="landing-orb landing-orb-2" />
+      </div>
       <section className="auth-hero">
         <p className="auth-hero-kicker">ts-music</p>
         <h1>Вход</h1>

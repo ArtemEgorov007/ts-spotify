@@ -1,13 +1,44 @@
 import { observer } from 'mobx-react-lite';
-import { useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import { playerStore } from '@/store/store';
 
 export const CreatePlaylistModal = observer(function CreatePlaylistModal() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const titleId = useId();
+  const isOpen = playerStore.showCreatePlaylistModal;
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  if (!playerStore.showCreatePlaylistModal) {
+  const handleClose = () => {
+    playerStore.closeCreatePlaylistModal();
+    setTitle('');
+    setDescription('');
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        handleClose();
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isOpen]);
+
+  if (!isOpen) {
     return null;
   }
 
@@ -19,18 +50,19 @@ export const CreatePlaylistModal = observer(function CreatePlaylistModal() {
     setDescription('');
   };
 
-  const handleClose = () => {
-    playerStore.closeCreatePlaylistModal();
-    setTitle('');
-    setDescription('');
-  };
-
   return (
     <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
-          <h2>Создать плейлист</h2>
+          <h2 id={titleId}>Создать плейлист</h2>
           <button
+            ref={closeButtonRef}
             type="button"
             className="modal-close-btn"
             onClick={handleClose}
