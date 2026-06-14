@@ -1,13 +1,23 @@
 import { observer } from 'mobx-react-lite';
-import { Heart, Pause, Play, Repeat, Shuffle, SkipBack, SkipForward, Volume1, Volume2, VolumeX } from 'lucide-react';
+import {
+  Heart,
+  Pause,
+  Play,
+  Repeat,
+  Shuffle,
+  SkipBack,
+  SkipForward,
+  Volume1,
+  Volume2,
+  VolumeX,
+} from 'lucide-react';
 import { playerStore } from '@/store/store';
 import { formatDuration } from '@/shared/lib/format';
 
 export const PlayerBar = observer(function PlayerBar() {
   const track = playerStore.currentTrack;
   const volumePercent = Math.round(playerStore.volume * 100);
-  const progressMax =
-    playerStore.duration > 0 ? playerStore.duration : (track?.durationSec ?? 0);
+  const progressMax = playerStore.duration > 0 ? playerStore.duration : (track?.durationSec ?? 0);
 
   const setSliderVolume = (value: string) => {
     playerStore.setVolume(Number(value) / 100);
@@ -109,7 +119,9 @@ export const PlayerBar = observer(function PlayerBar() {
             disabled={!track}
             style={
               progressMax > 0
-                ? ({ '--progress': `${(playerStore.currentTime / progressMax) * 100}%` } as React.CSSProperties)
+                ? ({
+                    '--progress': `${(playerStore.currentTime / progressMax) * 100}%`,
+                  } as React.CSSProperties)
                 : undefined
             }
             aria-valuetext={`${formatDuration(playerStore.currentTime)} из ${formatDuration(progressMax)}`}

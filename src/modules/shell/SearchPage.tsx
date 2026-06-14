@@ -1,7 +1,12 @@
 import { observer } from 'mobx-react-lite';
 import { useState, useEffect, useCallback } from 'react';
 import { Search as SearchIcon, Loader2, Play } from 'lucide-react';
-import { searchTracks, fetchTracksByMood, MOOD_PRESETS, type MoodPreset } from '@/shared/api/jamendo';
+import {
+  searchTracks,
+  fetchTracksByMood,
+  MOOD_PRESETS,
+  type MoodPreset,
+} from '@/shared/api/jamendo';
 import { jamendoToTracks } from '@/shared/lib/jamendoMapper';
 import { playerStore } from '@/store/store';
 import { formatDuration } from '@/shared/lib/format';
@@ -67,7 +72,6 @@ export const SearchPage = observer(function SearchPage() {
     [results],
   );
 
-  const currentTrack = playerStore.currentTrack;
   const displayTracks = searched ? results : [];
 
   return (
@@ -77,11 +81,7 @@ export const SearchPage = observer(function SearchPage() {
       </h2>
       <p className="section-subtitle">Треки, артисты и плейлисты.</p>
 
-      <form
-        className="search-form"
-        role="search"
-        onSubmit={(event) => event.preventDefault()}
-      >
+      <form className="search-form" role="search" onSubmit={(event) => event.preventDefault()}>
         <div className="search-input-wrapper">
           <label className="visually-hidden" htmlFor="search-query">
             Поиск треков
@@ -156,38 +156,42 @@ export const SearchPage = observer(function SearchPage() {
 
       {!loading && displayTracks.length > 0 && (
         <div className="results-list">
-          {displayTracks.map((track, index) => (
-            <button
-              type="button"
-              key={track.id}
-              className={`result-item${currentTrack?.id === track.id ? ' result-item-active' : ''}`}
-              onClick={() => handlePlay(index)}
-              aria-label={
-                currentTrack?.id === track.id && playerStore.isPlaying
-                  ? `Пауза ${track.title} — ${track.artist}`
-                  : `Воспроизвести ${track.title} — ${track.artist}`
-              }
-              aria-current={currentTrack?.id === track.id ? 'true' : undefined}
-            >
-              <img src={track.coverUrl} alt="" loading="lazy" />
-              <div className="result-item-info">
-                <strong>{track.title}</strong>
-                <p>{track.artist}</p>
-              </div>
-              <span className="result-play-btn" aria-hidden="true">
-                {currentTrack?.id === track.id && playerStore.isPlaying ? (
-                  <span className="now-playing-indicator">
-                    <span />
-                    <span />
-                    <span />
-                  </span>
-                ) : (
-                  <Play />
-                )}
-              </span>
-              <span className="result-duration">{formatDuration(track.durationSec)}</span>
-            </button>
-          ))}
+          {displayTracks.map((track, index) => {
+            const isActive = playerStore.isQueueTrackActive(track.id, 'search');
+
+            return (
+              <button
+                type="button"
+                key={track.id}
+                className={`result-item${isActive ? ' result-item-active' : ''}`}
+                onClick={() => handlePlay(index)}
+                aria-label={
+                  isActive && playerStore.isPlaying
+                    ? `Пауза ${track.title} — ${track.artist}`
+                    : `Воспроизвести ${track.title} — ${track.artist}`
+                }
+                aria-current={isActive ? 'true' : undefined}
+              >
+                <img src={track.coverUrl} alt="" loading="lazy" />
+                <div className="result-item-info">
+                  <strong>{track.title}</strong>
+                  <p>{track.artist}</p>
+                </div>
+                <span className="result-play-btn" aria-hidden="true">
+                  {isActive && playerStore.isPlaying ? (
+                    <span className="now-playing-indicator">
+                      <span />
+                      <span />
+                      <span />
+                    </span>
+                  ) : (
+                    <Play />
+                  )}
+                </span>
+                <span className="result-duration">{formatDuration(track.durationSec)}</span>
+              </button>
+            );
+          })}
         </div>
       )}
     </section>

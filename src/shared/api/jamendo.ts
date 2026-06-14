@@ -84,6 +84,19 @@ export const MOOD_PRESETS: MoodPreset[] = [
   },
 ];
 
+export function getMoodByKey(key: MoodKey): MoodPreset | undefined {
+  return MOOD_PRESETS.find((mood) => mood.key === key);
+}
+
+export function getDefaultMood(): MoodPreset {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 10) return MOOD_PRESETS[0];
+  if (hour >= 10 && hour < 14) return MOOD_PRESETS[1];
+  if (hour >= 14 && hour < 18) return MOOD_PRESETS[3];
+  if (hour >= 18 && hour < 22) return MOOD_PRESETS[2];
+  return MOOD_PRESETS[4];
+}
+
 function buildUrl(path: string, params: Record<string, string>): string {
   const url = new URL(`${JAMENDO_BASE}${path}`);
   url.searchParams.set('client_id', CLIENT_ID);

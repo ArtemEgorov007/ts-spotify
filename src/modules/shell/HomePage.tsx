@@ -2,28 +2,47 @@ import { observer } from 'mobx-react-lite';
 import { useCallback, useEffect, useState } from 'react';
 import { Play, Loader2, RotateCcw } from 'lucide-react';
 import { playerStore } from '@/store/store';
-import { fetchTracksByMood, MOOD_PRESETS, type MoodPreset } from '@/shared/api/jamendo';
+import {
+  fetchTracksByMood,
+  getDefaultMood,
+  getMoodByKey,
+  MOOD_PRESETS,
+  type MoodKey,
+  type MoodPreset,
+} from '@/shared/api/jamendo';
 import { jamendoToTracks } from '@/shared/lib/jamendoMapper';
 import { mockTracks } from '@/shared/mock/media';
 
-function getDefaultMood(): MoodPreset {
-  const hour = new Date().getHours();
-  if (hour >= 5 && hour < 10) return MOOD_PRESETS[0];
-  if (hour >= 10 && hour < 14) return MOOD_PRESETS[1];
-  if (hour >= 14 && hour < 18) return MOOD_PRESETS[3];
-  if (hour >= 18 && hour < 22) return MOOD_PRESETS[2];
-  return MOOD_PRESETS[4];
+function getInitialMood(): MoodPreset {
+  const storedKey = playerStore.selectedHomeMoodKey ?? playerStore.homeFeedMoodKey;
+  if (storedKey) {
+    const storedMood = getMoodByKey(storedKey as MoodKey);
+    if (storedMood) {
+      return storedMood;
+    }
+  }
+
+  return getDefaultMood();
+}
+
+function isStaleMoodRequest(mood: MoodPreset) {
+  const { selectedHomeMoodKey } = playerStore;
+  return selectedHomeMoodKey !== null && selectedHomeMoodKey !== mood.key;
 }
 
 export const HomePage = observer(function HomePage() {
-  const [selectedMood, setSelectedMood] = useState<MoodPreset>(getDefaultMood);
-  const [loading, setLoading] = useState(true);
+  const [selectedMood, setSelectedMood] = useState<MoodPreset>(getInitialMood);
+  const [loading, setLoading] = useState(() => playerStore.homeFeedTracks.length === 0);
   const [error, setError] = useState<string | null>(null);
   const [usingFallback, setUsingFallback] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
 
-  const loadTracks = useCallback(async (mood: MoodPreset, signal: AbortSignal, force = false) => {
-    if (!force && playerStore.homeFeedMoodKey === mood.key && playerStore.homeFeedTracks.length > 0) {
+  const loadTracks = useCallback(async (mood: MoodPreset, force = false) => {
+    if (
+      !force &&
+      playerStore.homeFeedMoodKey === mood.key &&
+      playerStore.homeFeedTracks.length > 0
+    ) {
       setLoading(false);
       setError(null);
       return;
@@ -35,7 +54,10 @@ export const HomePage = observer(function HomePage() {
 
     try {
       const tracks = await fetchTracksByMood(mood, 24);
-      if (signal.aborted) return;
+
+      if (isStaleMoodRequest(mood)) {
+        return;
+      }
 
       if (tracks.length > 0) {
         playerStore.setHomeFeed(jamendoToTracks(tracks), mood.key, force);
@@ -46,22 +68,30 @@ export const HomePage = observer(function HomePage() {
       setUsingFallback(true);
       setError('Онлайн-подборка пуста. Показали демо-треки.');
     } catch {
-      if (signal.aborted) return;
+      if (isStaleMoodRequest(mood)) {
+        return;
+      }
+
       playerStore.setHomeFeed(mockTracks, mood.key, true);
       setUsingFallback(true);
       setError('Не удалось загрузить треки. Показали демо-подборку.');
     } finally {
-      if (!signal.aborted) {
-        setLoading(false);
-      }
+      setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    const controller = new AbortController();
-    void loadTracks(selectedMood, controller.signal, reloadToken > 0);
-    return () => controller.abort();
+    if (!playerStore.selectedHomeMoodKey) {
+      playerStore.setSelectedHomeMoodKey(selectedMood.key);
+    }
+
+    void loadTracks(selectedMood, reloadToken > 0);
   }, [selectedMood, reloadToken, loadTracks]);
+
+  const handleMoodSelect = (mood: MoodPreset) => {
+    playerStore.setSelectedHomeMoodKey(mood.key);
+    setSelectedMood(mood);
+  };
 
   const handlePlay = (index: number) => {
     playerStore.playFromHomeFeed(index);
@@ -70,8 +100,6 @@ export const HomePage = observer(function HomePage() {
   const handleRetry = () => {
     setReloadToken((token) => token + 1);
   };
-
-  const currentTrack = playerStore.currentTrack;
 
   return (
     <section aria-labelledby="home-mood-heading">
@@ -85,7 +113,7 @@ export const HomePage = observer(function HomePage() {
               key={mood.key}
               type="button"
               className={`mood-chip ${selectedMood.key === mood.key ? 'active' : ''}`}
-              onClick={() => setSelectedMood(mood)}
+              onClick={() => handleMoodSelect(mood)}
               aria-pressed={selectedMood.key === mood.key}
             >
               <span className="mood-chip-emoji" aria-hidden="true">
@@ -120,35 +148,39 @@ export const HomePage = observer(function HomePage() {
 
       {!loading && playerStore.homeFeedTracks.length > 0 && (
         <div className="track-grid" aria-label="Подборка треков">
-          {playerStore.homeFeedTracks.map((track, index) => (
-            <button
-              type="button"
-              className={`track-card${currentTrack?.id === track.id ? ' track-card-active' : ''}`}
-              key={track.id}
-              onClick={() => handlePlay(index)}
-              aria-label={
-                currentTrack?.id === track.id && playerStore.isPlaying
-                  ? `Пауза ${track.title} — ${track.artist}`
-                  : `Воспроизвести ${track.title} — ${track.artist}`
-              }
-              aria-current={currentTrack?.id === track.id ? 'true' : undefined}
-            >
-              <img src={track.coverUrl} alt="" loading="lazy" />
-              <strong>{track.title}</strong>
-              <span className="track-card-artist">{track.artist}</span>
-              <span className="track-play-button" aria-hidden="true">
-                {currentTrack?.id === track.id && playerStore.isPlaying ? (
-                  <span className="now-playing-indicator">
-                    <span />
-                    <span />
-                    <span />
-                  </span>
-                ) : (
-                  <Play aria-hidden="true" />
-                )}
-              </span>
-            </button>
-          ))}
+          {playerStore.homeFeedTracks.map((track, index) => {
+            const isActive = playerStore.isHomeTrackActive(track.id);
+
+            return (
+              <button
+                type="button"
+                className={`track-card${isActive ? ' track-card-active' : ''}`}
+                key={track.id}
+                onClick={() => handlePlay(index)}
+                aria-label={
+                  isActive && playerStore.isPlaying
+                    ? `Пауза ${track.title} — ${track.artist}`
+                    : `Воспроизвести ${track.title} — ${track.artist}`
+                }
+                aria-current={isActive ? 'true' : undefined}
+              >
+                <img src={track.coverUrl} alt="" loading="lazy" />
+                <strong>{track.title}</strong>
+                <span className="track-card-artist">{track.artist}</span>
+                <span className="track-play-button" aria-hidden="true">
+                  {isActive && playerStore.isPlaying ? (
+                    <span className="now-playing-indicator">
+                      <span />
+                      <span />
+                      <span />
+                    </span>
+                  ) : (
+                    <Play aria-hidden="true" />
+                  )}
+                </span>
+              </button>
+            );
+          })}
         </div>
       )}
     </section>

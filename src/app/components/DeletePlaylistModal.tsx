@@ -65,7 +65,12 @@ export const DeletePlaylistModal = observer(function DeletePlaylistModal() {
       >
         <div className="modal-header">
           <h2 id={titleId}>Удалить плейлист?</h2>
-          <button type="button" className="modal-close-btn" onClick={handleClose} aria-label="Закрыть">
+          <button
+            type="button"
+            className="modal-close-btn"
+            onClick={handleClose}
+            aria-label="Закрыть"
+          >
             <X aria-hidden="true" />
           </button>
         </div>

@@ -12,7 +12,9 @@
   background: linear-gradient(180deg, rgba(5, 7, 12, 0.88) 0%, transparent 100%);
   backdrop-filter: blur(20px) saturate(1.2);
   border-bottom: 1px solid transparent;
-  transition: border-color var(--transition-normal), background var(--transition-normal);
+  transition:
+    border-color var(--transition-normal),
+    background var(--transition-normal);
 }
 
 .topbar-label {

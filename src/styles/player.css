@@ -31,7 +31,9 @@
   border-radius: var(--radius-md);
   object-fit: cover;
   box-shadow: var(--shadow-md);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .player-cover:hover {

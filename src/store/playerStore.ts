@@ -6,7 +6,9 @@ import { mockPlaylists } from '@/shared/mock/media';
 type QueueSource = 'home' | 'search' | 'playlist';
 
 function tracksMatch(left: Track[], right: Track[]) {
-  return left.length === right.length && left.every((track, index) => track.id === right[index]?.id);
+  return (
+    left.length === right.length && left.every((track, index) => track.id === right[index]?.id)
+  );
 }
 
 class PlayerStore {
@@ -25,6 +27,7 @@ class PlayerStore {
   showCreatePlaylistModal = false;
   deletePlaylistTargetId: string | null = null;
   homeFeedMoodKey: string | null = null;
+  selectedHomeMoodKey: string | null = null;
   homeFeedTracks: Track[] = [];
   queueSource: QueueSource | null = null;
   queueSourceId: string | null = null;
@@ -87,17 +90,44 @@ class PlayerStore {
     this.startTrackAt(index, true);
   }
 
+  setSelectedHomeMoodKey(moodKey: string) {
+    this.selectedHomeMoodKey = moodKey;
+  }
+
   setHomeFeed(tracks: Track[], moodKey: string, force = false) {
-    if (!force && this.homeFeedMoodKey === moodKey && this.homeFeedTracks.length > 0) {
+    if (
+      !force &&
+      this.homeFeedMoodKey === moodKey &&
+      this.homeFeedTracks.length > 0 &&
+      tracksMatch(tracks, this.homeFeedTracks)
+    ) {
       return;
     }
 
     this.homeFeedMoodKey = moodKey;
+    this.selectedHomeMoodKey = moodKey;
     this.homeFeedTracks = tracks;
 
     if (this.queueSource === 'home') {
       this.syncQueueWithTracks(tracks);
     }
+  }
+
+  isQueueTrackActive(trackId: string, source: QueueSource, sourceId: string | null = null) {
+    if (this.queueSource !== source) {
+      return false;
+    }
+
+    if (sourceId !== null && this.queueSourceId !== sourceId) {
+      return false;
+    }
+
+    const activeId = this.loadedTrackId ?? this.currentTrack?.id;
+    return activeId === trackId;
+  }
+
+  isHomeTrackActive(trackId: string) {
+    return this.isQueueTrackActive(trackId, 'home');
   }
 
   playFromHomeFeed(index: number) {
@@ -351,11 +381,7 @@ class PlayerStore {
   }
 
   private canToggleTrack(track: Track, index: number) {
-    return (
-      index === this.currentIndex &&
-      this.loadedTrackId === track.id &&
-      Boolean(this.audio)
-    );
+    return index === this.currentIndex && this.loadedTrackId === track.id && Boolean(this.audio);
   }
 
   private startTrackAt(index: number, autoplay: boolean) {
@@ -369,27 +395,22 @@ class PlayerStore {
   }
 
   private syncQueueWithTracks(tracks: Track[]) {
-    const playingTrackId = this.isPlaying ? this.loadedTrackId : this.currentTrack?.id ?? null;
-    this.queue = tracks;
+    const activeTrackId = this.loadedTrackId ?? this.currentTrack?.id ?? null;
 
-    if (!playingTrackId) {
+    if (!activeTrackId) {
+      this.queue = tracks;
       if (this.currentIndex >= tracks.length) {
         this.currentIndex = -1;
       }
       return;
     }
 
-    const nextIndex = tracks.findIndex((track) => track.id === playingTrackId);
+    const nextIndex = tracks.findIndex((track) => track.id === activeTrackId);
 
     if (nextIndex >= 0) {
+      this.queue = tracks;
       this.currentIndex = nextIndex;
-      return;
     }
-
-    this.stopAudio();
-    this.currentIndex = -1;
-    this.isPlaying = false;
-    this.currentTime = 0;
   }
 
   private resumePlayback() {
