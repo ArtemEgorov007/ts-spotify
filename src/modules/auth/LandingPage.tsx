@@ -9,6 +9,7 @@ import { LandingPreview } from '@/modules/auth/LandingPreview';
 import { authStore } from '@/store/store';
 import { loginWithLocalDemo, loginWithVkIdentity } from '@/modules/auth/authService';
 import { APP_ROUTES } from '@/app/config/routes';
+import { useIsMobileShell } from '@/shared/hooks/useMediaQuery';
 
 const LANDING_FEATURES = [
   'Подборки по настроению',
@@ -18,6 +19,7 @@ const LANDING_FEATURES = [
 
 export const LandingPage = observer(function LandingPage() {
   const navigate = useNavigate();
+  const isMobileShell = useIsMobileShell();
   const isLocalhost =
     window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   const hasHttpsOrigin = window.location.protocol === 'https:';
@@ -36,6 +38,7 @@ export const LandingPage = observer(function LandingPage() {
   const showLocalDemo = isLocalhost;
   const showVkAuth = hasHttpsOrigin;
   const showVkHint = isLocalhost && !hasHttpsOrigin;
+  const showStickyCta = isMobileShell && showLocalDemo;
 
   return (
     <main className="landing-page">
@@ -47,7 +50,7 @@ export const LandingPage = observer(function LandingPage() {
 
       <header className="landing-header">
         <BrandLogo />
-        <ThemeToggle compact className="landing-header-theme" />
+        {isMobileShell ? <ThemeToggle compact /> : null}
       </header>
 
       <div className="landing-shell">
@@ -67,9 +70,13 @@ export const LandingPage = observer(function LandingPage() {
             ))}
           </ul>
 
-          <div className="landing-actions">
+          <div className="landing-actions" id="landing-actions">
             {showLocalDemo ? (
-              <button type="button" className="btn btn-primary btn-lg landing-cta" onClick={onLogin}>
+              <button
+                type="button"
+                className="btn btn-primary btn-lg landing-cta"
+                onClick={onLogin}
+              >
                 Начать слушать
               </button>
             ) : null}
@@ -93,6 +100,14 @@ export const LandingPage = observer(function LandingPage() {
 
         <LandingPreview />
       </div>
+
+      {showStickyCta ? (
+        <div className="landing-sticky-cta">
+          <button type="button" className="btn btn-primary btn-lg" onClick={onLogin}>
+            Начать слушать
+          </button>
+        </div>
+      ) : null}
 
       <footer className="landing-footer">
         <span>Учебный проект</span>

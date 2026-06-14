@@ -5,6 +5,7 @@ import { BrandLogo } from '@/app/components/BrandLogo';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { logoutUser } from '@/modules/auth/authService';
 import { APP_ROUTES } from '@/app/config/routes';
+import { useIsMobileShell } from '@/shared/hooks/useMediaQuery';
 import './Sidebar.css';
 
 type SidebarProps = {
@@ -43,6 +44,7 @@ function SidebarNavLinks({ items }: { items: SidebarLinkItem[] }) {
 
 export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: SidebarProps) {
   const navigate = useNavigate();
+  const isMobileShell = useIsMobileShell();
 
   const onLogout = () => logoutUser(navigate);
 
@@ -82,7 +84,7 @@ export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: Si
 
       <div className="sidebar-footer">
         <div className="sidebar-footer-row">
-          <ThemeToggle compact />
+          {!isMobileShell ? <ThemeToggle compact /> : null}
           <button
             type="button"
             className="sidebar-logout-btn"
