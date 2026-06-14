@@ -62,17 +62,7 @@ export const SearchPage = observer(function SearchPage() {
 
   const handlePlay = useCallback(
     (index: number) => {
-      const sameSearchQueue =
-        playerStore.queueSource === 'search' &&
-        playerStore.queue.length === results.length &&
-        playerStore.queue.every((track, trackIndex) => track.id === results[trackIndex]?.id);
-
-      if (sameSearchQueue) {
-        playerStore.playAt(index);
-        return;
-      }
-
-      playerStore.setQueue(results, index, true, 'search');
+      playerStore.playFromList(results, index, 'search');
     },
     [results],
   );

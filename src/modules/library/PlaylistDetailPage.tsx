@@ -17,18 +17,7 @@ export const PlaylistDetailPage = observer(function PlaylistDetailPage() {
   const currentTrack = playerStore.currentTrack;
 
   const handlePlayTrack = (index: number) => {
-    const samePlaylistQueue =
-      playerStore.queueSource === 'playlist' &&
-      playerStore.queueSourceId === playlist.id &&
-      playerStore.queue.length === playlist.tracks.length &&
-      playerStore.queue.every((track, trackIndex) => track.id === playlist.tracks[trackIndex]?.id);
-
-    if (samePlaylistQueue) {
-      playerStore.playAt(index);
-      return;
-    }
-
-    playerStore.setQueue(playlist.tracks, index, true, 'playlist', playlist.id);
+    playerStore.playFromList(playlist.tracks, index, 'playlist', playlist.id);
   };
 
   return (

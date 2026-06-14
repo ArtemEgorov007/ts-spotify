@@ -3,6 +3,14 @@ import { Track } from '@/types/music.types';
 import { Playlist } from '@/types/playlist.types';
 import { mockPlaylists } from '@/shared/mock/media';
 
+function tracksMatch(left: Track[], right: Track[]) {
+  if (left.length !== right.length) {
+    return false;
+  }
+
+  return left.every((track, index) => track.id === right[index]?.id);
+}
+
 class PlayerStore {
   queue: Track[] = [];
   currentIndex = -1;
@@ -25,6 +33,7 @@ class PlayerStore {
   playbackError: string | null = null;
 
   private audio: HTMLAudioElement | null = null;
+  private loadGeneration = 0;
 
   constructor() {
     makeAutoObservable(this);
@@ -85,6 +94,12 @@ class PlayerStore {
 
     this.homeFeedMoodKey = moodKey;
     this.homeFeedTracks = tracks;
+
+    if (this.queueSource !== 'home') {
+      return;
+    }
+
+    this.syncQueueWithTracks(tracks, { keepPlayback: true });
   }
 
   playAt(index: number) {
@@ -92,7 +107,14 @@ class PlayerStore {
       return;
     }
 
-    if (index === this.currentIndex && this.currentTrack && this.audio) {
+    const queuedTrack = this.queue[index];
+    const isSameLoadedTrack =
+      index === this.currentIndex &&
+      queuedTrack &&
+      this.currentTrack?.id === queuedTrack.id &&
+      this.audio;
+
+    if (isSameLoadedTrack) {
       if (this.isPlaying) {
         this.pause();
       } else {
@@ -102,7 +124,7 @@ class PlayerStore {
     }
 
     this.currentIndex = index;
-    this.loadTrack(this.queue[index], true);
+    this.loadTrack(queuedTrack, true);
   }
 
   playFromHomeFeed(index: number) {
@@ -111,9 +133,7 @@ class PlayerStore {
     }
 
     const sameHomeQueue =
-      this.queueSource === 'home' &&
-      this.queue.length === this.homeFeedTracks.length &&
-      this.queue.every((track, trackIndex) => track.id === this.homeFeedTracks[trackIndex]?.id);
+      this.queueSource === 'home' && tracksMatch(this.queue, this.homeFeedTracks);
 
     if (sameHomeQueue) {
       this.playAt(index);
@@ -121,6 +141,29 @@ class PlayerStore {
     }
 
     this.setQueue(this.homeFeedTracks, index, true, 'home');
+  }
+
+  playFromList(
+    tracks: Track[],
+    index: number,
+    source: 'search' | 'playlist',
+    sourceId: string | null = null,
+  ) {
+    if (index < 0 || index >= tracks.length) {
+      return;
+    }
+
+    const sameQueue =
+      this.queueSource === source &&
+      this.queueSourceId === sourceId &&
+      tracksMatch(this.queue, tracks);
+
+    if (sameQueue) {
+      this.playAt(index);
+      return;
+    }
+
+    this.setQueue(tracks, index, true, source, sourceId);
   }
 
   play(track?: Track) {
@@ -145,8 +188,19 @@ class PlayerStore {
       return;
     }
 
-    this.audio.play().catch(() => {});
-    this.isPlaying = true;
+    void this.audio
+      .play()
+      .then(() => {
+        runInAction(() => {
+          this.isPlaying = true;
+          this.playbackError = null;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.isPlaying = false;
+        });
+      });
   }
 
   pause() {
@@ -172,24 +226,34 @@ class PlayerStore {
   }
 
   next() {
-    if (this.queue.length === 0) return;
-
-    if (this.isRepeat && this.audio) {
-      this.audio.currentTime = 0;
-      this.audio.play().catch(() => {});
+    if (this.queue.length === 0) {
       return;
     }
 
+    if (this.isRepeat && this.audio && this.currentTrack) {
+      this.audio.currentTime = 0;
+      this.currentTime = 0;
+      void this.audio.play().catch(() => {
+        runInAction(() => {
+          this.isPlaying = false;
+        });
+      });
+      this.isPlaying = true;
+      return;
+    }
+
+    const activeIndex = this.currentIndex >= 0 ? this.currentIndex : 0;
     let nextIndex: number;
+
     if (this.isShuffle) {
       nextIndex = Math.floor(Math.random() * this.queue.length);
       if (this.queue.length > 1) {
-        while (nextIndex === this.currentIndex) {
+        while (nextIndex === activeIndex) {
           nextIndex = Math.floor(Math.random() * this.queue.length);
         }
       }
     } else {
-      nextIndex = (this.currentIndex + 1) % this.queue.length;
+      nextIndex = (activeIndex + 1) % this.queue.length;
     }
 
     this.currentIndex = nextIndex;
@@ -197,26 +261,28 @@ class PlayerStore {
   }
 
   prev() {
-    if (this.queue.length === 0) return;
+    if (this.queue.length === 0) {
+      return;
+    }
 
-    if (this.currentTime > 3) {
-      if (this.audio) {
-        this.audio.currentTime = 0;
-      }
+    if (this.currentTime > 3 && this.audio) {
+      this.audio.currentTime = 0;
       this.currentTime = 0;
       return;
     }
 
+    const activeIndex = this.currentIndex >= 0 ? this.currentIndex : 0;
     let prevIndex: number;
+
     if (this.isShuffle) {
       prevIndex = Math.floor(Math.random() * this.queue.length);
       if (this.queue.length > 1) {
-        while (prevIndex === this.currentIndex) {
+        while (prevIndex === activeIndex) {
           prevIndex = Math.floor(Math.random() * this.queue.length);
         }
       }
     } else {
-      prevIndex = (this.currentIndex - 1 + this.queue.length) % this.queue.length;
+      prevIndex = (activeIndex - 1 + this.queue.length) % this.queue.length;
     }
 
     this.currentIndex = prevIndex;
@@ -319,6 +385,22 @@ class PlayerStore {
       return;
     }
 
+    const samePlaylistQueue =
+      this.queueSource === 'playlist' &&
+      this.queueSourceId === playlistId &&
+      tracksMatch(this.queue, playlist.tracks);
+
+    if (samePlaylistQueue) {
+      if (this.isPlaying) {
+        this.pause();
+      } else if (this.currentTrack) {
+        this.play();
+      } else {
+        this.setQueue(playlist.tracks, 0, true, 'playlist', playlistId);
+      }
+      return;
+    }
+
     this.setQueue(playlist.tracks, 0, true, 'playlist', playlistId);
   }
 
@@ -327,6 +409,33 @@ class PlayerStore {
       this.audio.currentTime = time;
     }
     this.currentTime = time;
+  }
+
+  private syncQueueWithTracks(
+    tracks: Track[],
+    options: { keepPlayback: boolean },
+  ) {
+    const playingTrackId = options.keepPlayback ? this.currentTrack?.id : null;
+    this.queue = tracks;
+
+    if (!playingTrackId) {
+      if (this.currentIndex >= tracks.length) {
+        this.currentIndex = -1;
+      }
+      return;
+    }
+
+    const nextIndex = tracks.findIndex((track) => track.id === playingTrackId);
+
+    if (nextIndex >= 0) {
+      this.currentIndex = nextIndex;
+      return;
+    }
+
+    this.stopAudio();
+    this.currentIndex = -1;
+    this.isPlaying = false;
+    this.currentTime = 0;
   }
 
   private stopAudio() {
@@ -347,8 +456,21 @@ class PlayerStore {
 
     if (sameTrackLoaded) {
       if (autoplay) {
-        this.audio?.play().catch(() => {});
-        this.isPlaying = true;
+        void this.audio
+          ?.play()
+          .then(() => {
+            runInAction(() => {
+              this.isPlaying = true;
+              this.playbackError = null;
+            });
+          })
+          .catch(() => {
+            runInAction(() => {
+              this.isPlaying = false;
+            });
+          });
+      } else {
+        this.pause();
       }
       return;
     }
@@ -359,21 +481,37 @@ class PlayerStore {
     this.playbackError = null;
     this.stopAudio();
 
-    this.audio = new Audio(track.audioUrl);
-    this.audio.volume = this.isMuted ? 0 : this.volume;
-    this.audio.preload = 'metadata';
+    const generation = ++this.loadGeneration;
+    const audio = new Audio(track.audioUrl);
+    this.audio = audio;
+    audio.volume = this.isMuted ? 0 : this.volume;
+    audio.preload = 'metadata';
 
-    this.audio.addEventListener('timeupdate', this.onTimeUpdate);
-    this.audio.addEventListener('ended', this.onEnded);
-    this.audio.addEventListener('loadedmetadata', this.onLoadedMetadata);
-    this.audio.addEventListener('error', this.onError);
+    audio.addEventListener('timeupdate', this.onTimeUpdate);
+    audio.addEventListener('ended', this.onEnded);
+    audio.addEventListener('loadedmetadata', this.onLoadedMetadata);
+    audio.addEventListener('error', this.onError);
 
     if (autoplay) {
-      this.audio.play().catch(() => {
-        runInAction(() => {
-          this.isPlaying = false;
+      void audio
+        .play()
+        .then(() => {
+          runInAction(() => {
+            if (generation !== this.loadGeneration || this.audio !== audio) {
+              return;
+            }
+            this.isPlaying = true;
+            this.playbackError = null;
+          });
+        })
+        .catch(() => {
+          runInAction(() => {
+            if (generation !== this.loadGeneration || this.audio !== audio) {
+              return;
+            }
+            this.isPlaying = false;
+          });
         });
-      });
       this.isPlaying = true;
     } else {
       this.isPlaying = false;
@@ -403,9 +541,11 @@ class PlayerStore {
   };
 
   private onError = () => {
-    this.playbackError = 'Не удалось загрузить трек. Попробуй другой.';
-    this.pause();
-    this.currentTime = 0;
+    runInAction(() => {
+      this.playbackError = 'Не удалось загрузить трек. Попробуй другой.';
+      this.pause();
+      this.currentTime = 0;
+    });
   };
 
   destroy() {

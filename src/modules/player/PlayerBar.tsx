@@ -58,7 +58,7 @@ export const PlayerBar = observer(function PlayerBar() {
             className="player-icon-btn player-control-btn"
             aria-label="Предыдущий трек"
             onClick={() => playerStore.prev()}
-            disabled={!track}
+            disabled={playerStore.queue.length === 0}
           >
             <SkipBack aria-hidden="true" />
           </button>
@@ -76,7 +76,7 @@ export const PlayerBar = observer(function PlayerBar() {
             className="player-icon-btn player-control-btn"
             aria-label="Следующий трек"
             onClick={() => playerStore.next()}
-            disabled={!track}
+            disabled={playerStore.queue.length === 0}
           >
             <SkipForward aria-hidden="true" />
           </button>
