@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Sparkles } from 'lucide-react';
@@ -39,22 +39,9 @@ export const LandingPage = observer(function LandingPage() {
   const showLocalDemo = isLocalhost;
   const showVkAuth = hasHttpsOrigin;
   const showVkHint = isLocalhost && !hasHttpsOrigin;
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    let raf2 = 0;
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => setIsReady(true));
-    });
-
-    return () => {
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
-    };
-  }, []);
 
   return (
-    <main className={`landing-page${isReady ? ' landing-page--ready' : ''}`}>
+    <main className="landing-page">
       <div className="landing-backdrop" aria-hidden="true">
         <span className="landing-orb landing-orb-1" />
         <span className="landing-orb landing-orb-2" />

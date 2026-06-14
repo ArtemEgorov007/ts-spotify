@@ -217,8 +217,6 @@
   flex-direction: column;
   gap: 16px;
   overflow: visible;
-  transform: translate3d(0, 24px, 0);
-  opacity: 0;
 }
 
 .landing-preview-kicker,
@@ -538,20 +536,10 @@
     background: linear-gradient(180deg, rgba(5, 7, 12, 0) 0%, var(--bg-base) 42%);
     pointer-events: none;
     box-sizing: border-box;
-    transform: translate3d(0, calc(100% + 36px), 0);
-    opacity: 0;
   }
 
   .landing-cta-dock--float .landing-actions--dock {
     pointer-events: auto;
-  }
-
-  .landing-page--ready .landing-cta-dock--ready.landing-cta-dock--float {
-    animation: landing-cta-bounce-in 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  }
-
-  .landing-cta-dock--float .landing-cta.btn-primary:hover {
-    transform: none;
   }
 
   .landing-cta-slot--settled .landing-cta-dock {
@@ -559,56 +547,6 @@
     padding: 0;
     background: none;
   }
-
-  .landing-cta-slot--settled .landing-cta-dock .landing-cta {
-    animation: none;
-  }
-}
-
-@keyframes landing-cta-bounce-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, calc(100% + 36px), 0);
-  }
-
-  62% {
-    opacity: 1;
-    transform: translate3d(0, -8px, 0);
-  }
-
-  82% {
-    transform: translate3d(0, 3px, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes landing-preview-rise {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 40px, 0);
-  }
-
-  62% {
-    opacity: 1;
-    transform: translate3d(0, -6px, 0);
-  }
-
-  82% {
-    transform: translate3d(0, 2px, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.landing-page--ready .landing-preview-panel {
-  animation: landing-preview-rise 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) 0.08s both;
 }
 
 @media (max-width: 600px) {
@@ -637,14 +575,6 @@
 
 :root[data-theme='light'] .landing-cta-dock--float {
   background: linear-gradient(180deg, rgba(246, 244, 239, 0) 0%, var(--bg-base) 42%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .landing-page--ready .landing-cta-dock--ready.landing-cta-dock--float,
-  .landing-page--ready .landing-preview-panel {
-    animation-duration: 0.85s !important;
-    animation-iteration-count: 1 !important;
-  }
 }
 
 :root[data-theme='light'] .landing-error {

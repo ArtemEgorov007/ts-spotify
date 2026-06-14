@@ -20,25 +20,6 @@ export function LandingStickyAuth({ children }: LandingStickyAuthProps) {
   const isMobileShell = useIsMobileShell();
   const slotRef = useRef<HTMLDivElement>(null);
   const [isFloating, setIsFloating] = useState(true);
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    if (!isMobileShell) {
-      setIsReady(false);
-      return;
-    }
-
-    let raf2 = 0;
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => setIsReady(true));
-    });
-
-    return () => {
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
-      setIsReady(false);
-    };
-  }, [isMobileShell]);
 
   useEffect(() => {
     if (!isMobileShell) {
@@ -76,9 +57,7 @@ export function LandingStickyAuth({ children }: LandingStickyAuthProps) {
       ref={slotRef}
       className={`landing-cta-slot${isFloating ? '' : ' landing-cta-slot--settled'}`}
     >
-      <div
-        className={`landing-cta-dock${isFloating ? ' landing-cta-dock--float' : ''}${isReady ? ' landing-cta-dock--ready' : ''}`}
-      >
+      <div className={`landing-cta-dock${isFloating ? ' landing-cta-dock--float' : ''}`}>
         <div className="landing-actions landing-actions--dock">{children}</div>
       </div>
     </div>
