@@ -17,6 +17,10 @@
     background var(--transition-normal);
 }
 
+.topbar-main {
+  min-width: 0;
+}
+
 .topbar-label {
   margin: 0;
   font-size: 10px;
@@ -40,10 +44,44 @@
 .topbar-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
-.topbar-mobile-theme {
+.topbar-action-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-subdued);
+  border-radius: var(--radius-full);
+  background: var(--bg-elevated);
+  color: var(--text-base);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.topbar-action-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.topbar-action-btn:hover {
+  border-color: var(--border-base);
+  background: var(--bg-strong);
+}
+
+.topbar-logout-btn:hover {
+  color: var(--error);
+  border-color: rgba(255, 107, 107, 0.35);
+  background: rgba(255, 107, 107, 0.08);
+}
+
+.topbar-logout-btn {
+  display: none;
+}
+
+.topbar-action-theme {
   display: none;
 }
 
@@ -78,29 +116,41 @@
 
 @media (max-width: 900px) {
   .topbar {
-    padding: 12px 16px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    padding: 10px 16px;
+    align-items: center;
+  }
+
+  .topbar-label {
+    display: none;
+  }
+
+  .topbar-title {
+    font-size: 22px;
+  }
+
+  .topbar-main {
+    flex: 1;
+    min-width: 0;
   }
 
   .topbar-controls {
     gap: 8px;
-    width: 100%;
-    justify-content: flex-end;
   }
 
-  .topbar-title {
-    font-size: 26px;
+  .topbar-action-theme,
+  .topbar-logout-btn {
+    display: grid;
   }
 
-  .topbar-mobile-theme {
-    display: block;
+  .topbar-action-theme.theme-toggle-compact {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
   }
 
   .role-chip {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: var(--radius-full);
     padding: 0;
     display: grid;

@@ -166,6 +166,14 @@ body {
   background: rgba(255, 159, 67, 0.08);
 }
 
+.landing-orb-3 {
+  width: 420px;
+  height: 420px;
+  left: 45%;
+  bottom: -180px;
+  background: rgba(var(--brand-accent-rgb), 0.08);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .app-page > section,
   .track-card,

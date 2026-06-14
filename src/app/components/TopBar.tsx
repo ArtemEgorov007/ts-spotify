@@ -1,13 +1,16 @@
 import { observer } from 'mobx-react-lite';
 import { useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { LogOut } from 'lucide-react';
 import { authStore, playerStore } from '@/store/store';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
+import { logoutUser } from '@/modules/auth/authService';
 import { getAppSectionTitle, getPlaylistIdFromPath } from '@/app/config/routes';
 import './TopBar.css';
 
 export const TopBar = observer(function TopBar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const roleLabel = authStore.roleChipLabel;
   const roleInitial = (roleLabel.trim().charAt(0) || 'Г').toUpperCase();
   const playlistId = getPlaylistIdFromPath(location.pathname);
@@ -17,16 +20,25 @@ export const TopBar = observer(function TopBar() {
     [location.pathname, playlistTitle],
   );
 
+  const onLogout = () => logoutUser(navigate);
+
   return (
     <header className="topbar">
-      <div>
+      <div className="topbar-main">
         <p className="topbar-label">{playlistTitle ? 'Плейлист' : 'Раздел'}</p>
         <h1 className="topbar-title">{sectionTitle}</h1>
       </div>
       <div className="topbar-controls">
-        <div className="topbar-mobile-theme">
-          <ThemeToggle compact />
-        </div>
+        <ThemeToggle compact className="topbar-action-theme" />
+        <button
+          type="button"
+          className="topbar-action-btn topbar-logout-btn"
+          onClick={onLogout}
+          aria-label="Выйти"
+          title="Выйти"
+        >
+          <LogOut aria-hidden="true" />
+        </button>
         <div className="role-chip">
           <span className="role-chip-full">{roleLabel}</span>
           <span className="role-chip-mobile">{roleInitial}</span>

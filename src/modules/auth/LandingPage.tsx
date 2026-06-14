@@ -1,10 +1,20 @@
 import { useCallback } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { Sparkles } from 'lucide-react';
+import { BrandLogo } from '@/app/components/BrandLogo';
+import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { VkOneTapAuth } from '@/modules/auth/VkOneTapAuth';
+import { LandingPreview } from '@/modules/auth/LandingPreview';
 import { authStore } from '@/store/store';
 import { loginWithLocalDemo, loginWithVkIdentity } from '@/modules/auth/authService';
 import { APP_ROUTES } from '@/app/config/routes';
+
+const LANDING_FEATURES = [
+  'Подборки по настроению',
+  'Поиск через Jamendo API',
+  'Плеер с hotkeys',
+] as const;
 
 export const LandingPage = observer(function LandingPage() {
   const navigate = useNavigate();
@@ -23,37 +33,72 @@ export const LandingPage = observer(function LandingPage() {
     return <Navigate to={APP_ROUTES.app} replace />;
   }
 
+  const showLocalDemo = isLocalhost;
+  const showVkAuth = hasHttpsOrigin;
+  const showVkHint = isLocalhost && !hasHttpsOrigin;
+
   return (
     <main className="landing-page">
       <div className="landing-backdrop" aria-hidden="true">
         <span className="landing-orb landing-orb-1" />
         <span className="landing-orb landing-orb-2" />
+        <span className="landing-orb landing-orb-3" />
       </div>
-      <section className="auth-hero">
-        <p className="auth-hero-kicker">ts-music</p>
-        <h1>Вход</h1>
-        <p>Открой музыку, подборки и библиотеку.</p>
 
-        {isLocalhost ? (
-          <>
-            <button type="button" className="btn btn-primary auth-login-btn" onClick={onLogin}>
-              Войти в демо
-            </button>
-            {hasHttpsOrigin ? (
+      <header className="landing-header">
+        <BrandLogo />
+        <ThemeToggle compact className="landing-header-theme" />
+      </header>
+
+      <div className="landing-shell">
+        <section className="landing-auth" aria-labelledby="landing-title">
+          <p className="landing-auth-kicker">Portfolio · React 19 · TypeScript</p>
+          <h1 id="landing-title">Музыка под твоё настроение</h1>
+          <p className="landing-auth-lead">
+            Подборки, поиск и плеер в одном интерфейсе — демо-проект в духе Spotify с API Jamendo.
+          </p>
+
+          <ul className="landing-features">
+            {LANDING_FEATURES.map((feature) => (
+              <li key={feature}>
+                <Sparkles aria-hidden="true" />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="landing-actions">
+            {showLocalDemo ? (
+              <button type="button" className="btn btn-primary btn-lg landing-cta" onClick={onLogin}>
+                Начать слушать
+              </button>
+            ) : null}
+
+            {showVkAuth ? (
               <>
-                <div className="auth-divider">или</div>
+                {showLocalDemo ? <div className="landing-divider">или</div> : null}
                 <VkOneTapAuth onSuccess={onVkSuccess} />
               </>
-            ) : (
-              <p className="landing-note">VK ID будет доступен при запуске через HTTPS.</p>
-            )}
-          </>
-        ) : hasHttpsOrigin ? (
-          <VkOneTapAuth onSuccess={onVkSuccess} />
-        ) : (
-          <p className="landing-error">Для VK ID нужен HTTPS origin (например, прод-домен).</p>
-        )}
-      </section>
+            ) : null}
+
+            {showVkHint ? (
+              <p className="landing-hint">VK ID доступен на проде с HTTPS.</p>
+            ) : null}
+
+            {!showLocalDemo && !showVkAuth ? (
+              <p className="landing-error">Для VK ID нужен HTTPS origin (например, GitHub Pages).</p>
+            ) : null}
+          </div>
+        </section>
+
+        <LandingPreview />
+      </div>
+
+      <footer className="landing-footer">
+        <span>Учебный проект</span>
+        <span aria-hidden="true">·</span>
+        <span>Midnight Broadcast UI</span>
+      </footer>
     </main>
   );
 });

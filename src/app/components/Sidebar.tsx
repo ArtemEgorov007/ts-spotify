@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { House, Library, LogOut, PanelLeftClose, Search, type LucideIcon } from 'lucide-react';
+import { BrandLogo } from '@/app/components/BrandLogo';
 import { ThemeToggle } from '@/app/components/ThemeToggle';
 import { logoutUser } from '@/modules/auth/authService';
 import { APP_ROUTES } from '@/app/config/routes';
@@ -51,17 +52,7 @@ export const Sidebar = observer(function Sidebar({ collapsed, onToggleMode }: Si
       aria-label="Основная навигация"
     >
       <div className="sidebar-header">
-        <div className="sidebar-brand" aria-label="ts-music">
-          <div className="sidebar-brand-logo">
-            <svg viewBox="0 0 24 24" className="music-logo" aria-hidden="true">
-              <path
-                fill="currentColor"
-                d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
-              />
-            </svg>
-          </div>
-          {!collapsed && <h2>ts-music</h2>}
-        </div>
+        <BrandLogo showTitle={!collapsed} className="sidebar-brand" />
         <button
           type="button"
           className="sidebar-mode-toggle"

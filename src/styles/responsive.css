@@ -183,7 +183,7 @@
   .track-row {
     grid-auto-columns: clamp(200px, 62vw, 248px);
     gap: 12px;
-    padding: 4px 4px 16px 0;
+    padding: 10px 4px 18px 0;
   }
 
   .track-catalog {
@@ -307,16 +307,11 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .auth-hero {
-    padding: 24px 16px 28px;
-    gap: 16px;
+  .landing-auth h1 {
+    font-size: 28px;
   }
 
-  .auth-hero h1 {
-    font-size: 26px;
-  }
-
-  .auth-hero > p {
+  .landing-auth-lead {
     font-size: 13px;
   }
 
@@ -399,14 +394,14 @@
 @media (hover: hover) {
   .track-card--featured .track-play-button {
     opacity: 0;
-    transform: translateY(12px);
+    transform: scale(0.92);
   }
 
   .track-card--featured:hover .track-play-button,
   .track-card--featured:focus-visible .track-play-button,
   .track-card--featured.track-card-active .track-play-button {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
   }
 
   .track-card--compact .track-play-button {

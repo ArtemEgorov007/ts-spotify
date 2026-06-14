@@ -32,27 +32,11 @@
   min-width: 0;
 }
 
-.sidebar-brand-logo {
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  transition: none;
-}
-
-.sidebar-brand:hover .sidebar-brand-logo {
+.sidebar-brand:hover .brand-logo-mark {
   transform: scale(1.05);
 }
 
-.music-logo {
-  width: 40px;
-  height: 40px;
-  color: var(--brand-green);
-  filter: drop-shadow(0 0 12px var(--brand-accent-glow));
-}
-
-.sidebar h2 {
+.sidebar-brand .brand-logo-title {
   margin: 0;
   font-size: 22px;
   font-family: var(--font-display);
@@ -254,7 +238,7 @@
   flex-direction: column;
 }
 
-.sidebar.sidebar-collapsed .sidebar h2 {
+.sidebar.sidebar-collapsed .brand-logo-title {
   display: none;
 }
 
@@ -417,7 +401,7 @@
   border-right-color: var(--border-subdued);
 }
 
-:root[data-theme='light'] .music-logo {
+:root[data-theme='light'] .sidebar-brand .brand-logo-mark .music-logo {
   color: var(--brand-green);
 }
 
