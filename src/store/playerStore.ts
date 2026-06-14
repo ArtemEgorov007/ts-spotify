@@ -3,12 +3,10 @@ import { Track } from '@/types/music.types';
 import { Playlist } from '@/types/playlist.types';
 import { mockPlaylists } from '@/shared/mock/media';
 
-function tracksMatch(left: Track[], right: Track[]) {
-  if (left.length !== right.length) {
-    return false;
-  }
+type QueueSource = 'home' | 'search' | 'playlist';
 
-  return left.every((track, index) => track.id === right[index]?.id);
+function tracksMatch(left: Track[], right: Track[]) {
+  return left.length === right.length && left.every((track, index) => track.id === right[index]?.id);
 }
 
 class PlayerStore {
@@ -28,11 +26,12 @@ class PlayerStore {
   deletePlaylistTargetId: string | null = null;
   homeFeedMoodKey: string | null = null;
   homeFeedTracks: Track[] = [];
-  queueSource: 'home' | 'search' | 'playlist' | null = null;
+  queueSource: QueueSource | null = null;
   queueSourceId: string | null = null;
   playbackError: string | null = null;
 
   private audio: HTMLAudioElement | null = null;
+  private loadedTrackId: string | null = null;
   private loadGeneration = 0;
 
   constructor() {
@@ -43,6 +42,7 @@ class PlayerStore {
     if (this.currentIndex < 0 || this.currentIndex >= this.queue.length) {
       return null;
     }
+
     return this.queue[this.currentIndex];
   }
 
@@ -62,7 +62,7 @@ class PlayerStore {
     tracks: Track[],
     startIndex = 0,
     autoplay = false,
-    source: 'home' | 'search' | 'playlist' | null = null,
+    source: QueueSource | null = null,
     sourceId: string | null = null,
   ) {
     this.queue = tracks;
@@ -83,8 +83,8 @@ class PlayerStore {
       return;
     }
 
-    this.currentIndex = Math.min(Math.max(startIndex, 0), tracks.length - 1);
-    this.loadTrack(tracks[this.currentIndex], true);
+    const index = Math.min(Math.max(startIndex, 0), tracks.length - 1);
+    this.startTrackAt(index, true);
   }
 
   setHomeFeed(tracks: Track[], moodKey: string, force = false) {
@@ -95,36 +95,9 @@ class PlayerStore {
     this.homeFeedMoodKey = moodKey;
     this.homeFeedTracks = tracks;
 
-    if (this.queueSource !== 'home') {
-      return;
+    if (this.queueSource === 'home') {
+      this.syncQueueWithTracks(tracks);
     }
-
-    this.syncQueueWithTracks(tracks, { keepPlayback: true });
-  }
-
-  playAt(index: number) {
-    if (index < 0 || index >= this.queue.length) {
-      return;
-    }
-
-    const queuedTrack = this.queue[index];
-    const isSameLoadedTrack =
-      index === this.currentIndex &&
-      queuedTrack &&
-      this.currentTrack?.id === queuedTrack.id &&
-      this.audio;
-
-    if (isSameLoadedTrack) {
-      if (this.isPlaying) {
-        this.pause();
-      } else {
-        this.play();
-      }
-      return;
-    }
-
-    this.currentIndex = index;
-    this.loadTrack(queuedTrack, true);
   }
 
   playFromHomeFeed(index: number) {
@@ -132,10 +105,7 @@ class PlayerStore {
       return;
     }
 
-    const sameHomeQueue =
-      this.queueSource === 'home' && tracksMatch(this.queue, this.homeFeedTracks);
-
-    if (sameHomeQueue) {
+    if (this.queueSource === 'home' && tracksMatch(this.queue, this.homeFeedTracks)) {
       this.playAt(index);
       return;
     }
@@ -153,12 +123,11 @@ class PlayerStore {
       return;
     }
 
-    const sameQueue =
+    if (
       this.queueSource === source &&
       this.queueSourceId === sourceId &&
-      tracksMatch(this.queue, tracks);
-
-    if (sameQueue) {
+      tracksMatch(this.queue, tracks)
+    ) {
       this.playAt(index);
       return;
     }
@@ -166,46 +135,19 @@ class PlayerStore {
     this.setQueue(tracks, index, true, source, sourceId);
   }
 
-  play(track?: Track) {
-    if (track) {
-      const idx = this.queue.findIndex((t) => t.id === track.id);
-      if (idx !== -1) {
-        this.currentIndex = idx;
-      } else {
-        this.queue = [track, ...this.queue];
-        this.currentIndex = 0;
-      }
-      this.loadTrack(track, true);
+  playAt(index: number) {
+    if (index < 0 || index >= this.queue.length) {
       return;
     }
 
-    if (!this.currentTrack) {
+    const track = this.queue[index];
+
+    if (this.canToggleTrack(track, index)) {
+      this.togglePlayback();
       return;
     }
 
-    if (!this.audio) {
-      this.loadTrack(this.currentTrack, true);
-      return;
-    }
-
-    void this.audio
-      .play()
-      .then(() => {
-        runInAction(() => {
-          this.isPlaying = true;
-          this.playbackError = null;
-        });
-      })
-      .catch(() => {
-        runInAction(() => {
-          this.isPlaying = false;
-        });
-      });
-  }
-
-  pause() {
-    this.audio?.pause();
-    this.isPlaying = false;
+    this.startTrackAt(index, true);
   }
 
   togglePlayback() {
@@ -214,15 +156,21 @@ class PlayerStore {
       return;
     }
 
-    if (!this.currentTrack) {
+    if (!this.currentTrack || !this.audio) {
       return;
     }
 
     if (this.isPlaying) {
       this.pause();
-    } else {
-      this.play();
+      return;
     }
+
+    void this.resumePlayback();
+  }
+
+  pause() {
+    this.audio?.pause();
+    this.isPlaying = false;
   }
 
   next() {
@@ -231,33 +179,23 @@ class PlayerStore {
     }
 
     if (this.isRepeat && this.audio && this.currentTrack) {
-      this.audio.currentTime = 0;
-      this.currentTime = 0;
-      void this.audio.play().catch(() => {
-        runInAction(() => {
-          this.isPlaying = false;
-        });
-      });
-      this.isPlaying = true;
+      this.seekTo(0);
+      void this.resumePlayback();
       return;
     }
 
     const activeIndex = this.currentIndex >= 0 ? this.currentIndex : 0;
-    let nextIndex: number;
+    let nextIndex = activeIndex;
 
     if (this.isShuffle) {
-      nextIndex = Math.floor(Math.random() * this.queue.length);
-      if (this.queue.length > 1) {
-        while (nextIndex === activeIndex) {
-          nextIndex = Math.floor(Math.random() * this.queue.length);
-        }
-      }
+      do {
+        nextIndex = Math.floor(Math.random() * this.queue.length);
+      } while (this.queue.length > 1 && nextIndex === activeIndex);
     } else {
       nextIndex = (activeIndex + 1) % this.queue.length;
     }
 
-    this.currentIndex = nextIndex;
-    this.loadTrack(this.queue[nextIndex], true);
+    this.startTrackAt(nextIndex, true);
   }
 
   prev() {
@@ -266,34 +204,57 @@ class PlayerStore {
     }
 
     if (this.currentTime > 3 && this.audio) {
-      this.audio.currentTime = 0;
-      this.currentTime = 0;
+      this.seekTo(0);
       return;
     }
 
     const activeIndex = this.currentIndex >= 0 ? this.currentIndex : 0;
-    let prevIndex: number;
+    let prevIndex = activeIndex;
 
     if (this.isShuffle) {
-      prevIndex = Math.floor(Math.random() * this.queue.length);
-      if (this.queue.length > 1) {
-        while (prevIndex === activeIndex) {
-          prevIndex = Math.floor(Math.random() * this.queue.length);
-        }
-      }
+      do {
+        prevIndex = Math.floor(Math.random() * this.queue.length);
+      } while (this.queue.length > 1 && prevIndex === activeIndex);
     } else {
       prevIndex = (activeIndex - 1 + this.queue.length) % this.queue.length;
     }
 
-    this.currentIndex = prevIndex;
-    this.loadTrack(this.queue[prevIndex], true);
+    this.startTrackAt(prevIndex, true);
+  }
+
+  playPlaylist(playlistId: string) {
+    const playlist = this.playlists.find((item) => item.id === playlistId);
+    if (!playlist || playlist.tracks.length === 0) {
+      return;
+    }
+
+    if (
+      this.queueSource === 'playlist' &&
+      this.queueSourceId === playlistId &&
+      tracksMatch(this.queue, playlist.tracks)
+    ) {
+      this.togglePlayback();
+      return;
+    }
+
+    this.setQueue(playlist.tracks, 0, true, 'playlist', playlistId);
+  }
+
+  seekTo(time: number) {
+    if (this.audio) {
+      this.audio.currentTime = time;
+    }
+
+    this.currentTime = time;
   }
 
   setVolume(volume: number) {
     this.volume = Math.min(1, Math.max(0, volume));
+
     if (this.audio) {
       this.audio.volume = this.volume;
     }
+
     if (this.volume > 0) {
       this.isMuted = false;
     }
@@ -303,16 +264,20 @@ class PlayerStore {
     if (this.isMuted) {
       this.isMuted = false;
       this.volume = this.previousVolume;
+
       if (this.audio) {
         this.audio.volume = this.volume;
       }
-    } else {
-      this.isMuted = true;
-      this.previousVolume = this.volume;
-      this.volume = 0;
-      if (this.audio) {
-        this.audio.volume = 0;
-      }
+
+      return;
+    }
+
+    this.isMuted = true;
+    this.previousVolume = this.volume;
+    this.volume = 0;
+
+    if (this.audio) {
+      this.audio.volume = 0;
     }
   }
 
@@ -337,13 +302,15 @@ class PlayerStore {
   }
 
   createPlaylist(title: string, description: string) {
-    const newPlaylist: Playlist = {
-      id: `p${Date.now()}`,
-      title,
-      description,
-      tracks: [],
-    };
-    this.playlists = [...this.playlists, newPlaylist];
+    this.playlists = [
+      ...this.playlists,
+      {
+        id: `p${Date.now()}`,
+        title,
+        description,
+        tracks: [],
+      },
+    ];
     this.showCreatePlaylistModal = false;
   }
 
@@ -357,7 +324,7 @@ class PlayerStore {
       this.queueSourceId = null;
     }
 
-    this.playlists = this.playlists.filter((p) => p.id !== id);
+    this.playlists = this.playlists.filter((playlist) => playlist.id !== id);
   }
 
   requestDeletePlaylist(id: string) {
@@ -379,43 +346,30 @@ class PlayerStore {
     return deletedId;
   }
 
-  playPlaylist(playlistId: string) {
-    const playlist = this.playlists.find((p) => p.id === playlistId);
-    if (!playlist || playlist.tracks.length === 0) {
+  destroy() {
+    this.stopAudio();
+  }
+
+  private canToggleTrack(track: Track, index: number) {
+    return (
+      index === this.currentIndex &&
+      this.loadedTrackId === track.id &&
+      Boolean(this.audio)
+    );
+  }
+
+  private startTrackAt(index: number, autoplay: boolean) {
+    const track = this.queue[index];
+    if (!track) {
       return;
     }
 
-    const samePlaylistQueue =
-      this.queueSource === 'playlist' &&
-      this.queueSourceId === playlistId &&
-      tracksMatch(this.queue, playlist.tracks);
-
-    if (samePlaylistQueue) {
-      if (this.isPlaying) {
-        this.pause();
-      } else if (this.currentTrack) {
-        this.play();
-      } else {
-        this.setQueue(playlist.tracks, 0, true, 'playlist', playlistId);
-      }
-      return;
-    }
-
-    this.setQueue(playlist.tracks, 0, true, 'playlist', playlistId);
+    this.currentIndex = index;
+    this.loadTrack(track, autoplay);
   }
 
-  seekTo(time: number) {
-    if (this.audio) {
-      this.audio.currentTime = time;
-    }
-    this.currentTime = time;
-  }
-
-  private syncQueueWithTracks(
-    tracks: Track[],
-    options: { keepPlayback: boolean },
-  ) {
-    const playingTrackId = options.keepPlayback ? this.currentTrack?.id : null;
+  private syncQueueWithTracks(tracks: Track[]) {
+    const playingTrackId = this.isPlaying ? this.loadedTrackId : this.currentTrack?.id ?? null;
     this.queue = tracks;
 
     if (!playingTrackId) {
@@ -438,8 +392,32 @@ class PlayerStore {
     this.currentTime = 0;
   }
 
+  private resumePlayback() {
+    if (!this.audio) {
+      if (this.currentTrack) {
+        this.loadTrack(this.currentTrack, true);
+      }
+      return;
+    }
+
+    void this.audio
+      .play()
+      .then(() => {
+        runInAction(() => {
+          this.isPlaying = true;
+          this.playbackError = null;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.isPlaying = false;
+        });
+      });
+  }
+
   private stopAudio() {
     if (!this.audio) {
+      this.loadedTrackId = null;
       return;
     }
 
@@ -449,26 +427,13 @@ class PlayerStore {
     this.audio.removeEventListener('loadedmetadata', this.onLoadedMetadata);
     this.audio.removeEventListener('error', this.onError);
     this.audio = null;
+    this.loadedTrackId = null;
   }
 
   private loadTrack(track: Track, autoplay: boolean) {
-    const sameTrackLoaded = this.currentTrack?.id === track.id && this.audio;
-
-    if (sameTrackLoaded) {
+    if (this.loadedTrackId === track.id && this.audio) {
       if (autoplay) {
-        void this.audio
-          ?.play()
-          .then(() => {
-            runInAction(() => {
-              this.isPlaying = true;
-              this.playbackError = null;
-            });
-          })
-          .catch(() => {
-            runInAction(() => {
-              this.isPlaying = false;
-            });
-          });
+        void this.resumePlayback();
       } else {
         this.pause();
       }
@@ -484,6 +449,7 @@ class PlayerStore {
     const generation = ++this.loadGeneration;
     const audio = new Audio(track.audioUrl);
     this.audio = audio;
+    this.loadedTrackId = track.id;
     audio.volume = this.isMuted ? 0 : this.volume;
     audio.preload = 'metadata';
 
@@ -492,39 +458,45 @@ class PlayerStore {
     audio.addEventListener('loadedmetadata', this.onLoadedMetadata);
     audio.addEventListener('error', this.onError);
 
-    if (autoplay) {
-      void audio
-        .play()
-        .then(() => {
-          runInAction(() => {
-            if (generation !== this.loadGeneration || this.audio !== audio) {
-              return;
-            }
-            this.isPlaying = true;
-            this.playbackError = null;
-          });
-        })
-        .catch(() => {
-          runInAction(() => {
-            if (generation !== this.loadGeneration || this.audio !== audio) {
-              return;
-            }
-            this.isPlaying = false;
-          });
-        });
-      this.isPlaying = true;
-    } else {
+    if (!autoplay) {
       this.isPlaying = false;
+      return;
     }
+
+    this.isPlaying = true;
+
+    void audio
+      .play()
+      .then(() => {
+        runInAction(() => {
+          if (generation !== this.loadGeneration || this.audio !== audio) {
+            return;
+          }
+
+          this.isPlaying = true;
+          this.playbackError = null;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          if (generation !== this.loadGeneration || this.audio !== audio) {
+            return;
+          }
+
+          this.isPlaying = false;
+        });
+      });
   }
 
   private onTimeUpdate = () => {
-    if (this.audio && !isNaN(this.audio.currentTime)) {
-      const time = this.audio.currentTime;
-      runInAction(() => {
-        this.currentTime = time;
-      });
+    if (!this.audio || Number.isNaN(this.audio.currentTime)) {
+      return;
     }
+
+    const time = this.audio.currentTime;
+    runInAction(() => {
+      this.currentTime = time;
+    });
   };
 
   private onEnded = () => {
@@ -532,12 +504,14 @@ class PlayerStore {
   };
 
   private onLoadedMetadata = () => {
-    if (this.audio) {
-      const duration = this.audio.duration;
-      runInAction(() => {
-        this.duration = duration;
-      });
+    if (!this.audio) {
+      return;
     }
+
+    const duration = this.audio.duration;
+    runInAction(() => {
+      this.duration = duration;
+    });
   };
 
   private onError = () => {
@@ -547,10 +521,6 @@ class PlayerStore {
       this.currentTime = 0;
     });
   };
-
-  destroy() {
-    this.stopAudio();
-  }
 }
 
 export const playerStore = new PlayerStore();

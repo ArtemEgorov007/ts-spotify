@@ -663,6 +663,48 @@
   height: 16px;
 }
 
+.wip-section {
+  position: relative;
+  min-height: 320px;
+}
+
+.wip-section-content {
+  filter: blur(7px);
+  opacity: 0.45;
+  pointer-events: none;
+  user-select: none;
+}
+
+.wip-section-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+  background: rgba(5, 7, 12, 0.35);
+  border: 1px dashed var(--border-highlight);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(2px);
+}
+
+.wip-section-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  color: var(--text-base);
+}
+
+.wip-section-description {
+  margin: 0;
+  max-width: 420px;
+  color: var(--text-subdued);
+  line-height: 1.6;
+}
+
 /* Playlist Grid */
 .playlist-grid {
   display: grid;
