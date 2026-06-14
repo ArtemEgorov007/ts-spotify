@@ -76,25 +76,6 @@
   --transition-normal: 0.2s ease;
   --transition-slow: 0.3s ease;
   
-  /* Legacy aliases for backward compatibility */
-  --bg: var(--bg-base);
-  --bg-glow: var(--bg-subdued);
-  --panel: var(--bg-elevated);
-  --panel-soft: var(--bg-highlight);
-  --panel-strong: var(--bg-base);
-  --line: var(--border-subdued);
-  --line-strong: var(--border-base);
-  --text: var(--text-base);
-  --muted: var(--text-subdued);
-  --accent: var(--brand-green);
-  --accent-text: var(--bg-base);
-  --danger: var(--error);
-  --chip-bg: var(--bg-strong);
-  --chip-hover: var(--bg-elevated);
-  --slider-track: var(--bg-strong);
-  --slider-fill: var(--brand-green);
-  --radius-control: var(--radius-lg);
-  --radius-card: var(--radius-xl);
 }
 
 /* Light Theme - Spotify-inspired light mode */
@@ -140,21 +121,4 @@
   --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.15);
   --shadow-glow: 0 0 20px rgba(30, 215, 96, 0.3);
   
-  /* Legacy aliases */
-  --bg: var(--bg-base);
-  --bg-glow: var(--bg-subdued);
-  --panel: var(--bg-elevated);
-  --panel-soft: var(--bg-highlight);
-  --panel-strong: var(--bg-base);
-  --line: var(--border-subdued);
-  --line-strong: var(--border-base);
-  --text: var(--text-base);
-  --muted: var(--text-subdued);
-  --accent: var(--brand-green);
-  --accent-text: var(--bg-base);
-  --danger: var(--error);
-  --chip-bg: var(--bg-strong);
-  --chip-hover: var(--bg-elevated);
-  --slider-track: var(--bg-strong);
-  --slider-fill: var(--brand-green);
 }
