@@ -226,56 +226,6 @@
     gap: 12px;
   }
 
-  /* Admin page */
-  .admin-page-wrapper {
-    padding: 0;
-  }
-
-  .admin-hero {
-    padding: 32px 20px;
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .admin-hero-content {
-    align-items: center;
-  }
-
-  .admin-hero-visual {
-    display: none;
-  }
-
-  .admin-hero h1 {
-    font-size: 28px;
-  }
-
-  .admin-hero-actions {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .btn-spotify,
-  .btn-admin-outline {
-    width: 100%;
-  }
-
-  .admin-stats-section,
-  .admin-content-grid {
-    padding: 20px;
-  }
-
-  .admin-stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-content-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .moderation-action-btn {
-    display: none;
-  }
-
   /* Search tags */
   .tag-row {
     flex-wrap: wrap;

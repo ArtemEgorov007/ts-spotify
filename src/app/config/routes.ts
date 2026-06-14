@@ -3,7 +3,6 @@ export const APP_ROUTES = {
   app: '/app',
   search: '/app/search',
   library: '/app/library',
-  admin: '/admin',
 } as const;
 
 export const APP_CHILD_ROUTES = {

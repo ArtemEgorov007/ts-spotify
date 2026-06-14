@@ -44,7 +44,7 @@
   display: none;
 }
 
-.role-chip-button {
+.role-chip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -52,15 +52,6 @@
   background: var(--bg-elevated);
   border: 1px solid var(--border-subdued);
   border-radius: var(--radius-full);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.role-chip-button:hover {
-  background: var(--bg-strong);
-  border-color: var(--border-base);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
 }
 
 .role-chip-full {
@@ -126,8 +117,4 @@
 /* Light theme */
 :root[data-theme='light'] .topbar {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, transparent 100%);
-}
-
-:root[data-theme='light'] .role-chip-button:hover {
-  background: var(--bg-highlight);
 }
