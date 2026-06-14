@@ -38,7 +38,6 @@ export const LandingPage = observer(function LandingPage() {
   const showLocalDemo = isLocalhost;
   const showVkAuth = hasHttpsOrigin;
   const showVkHint = isLocalhost && !hasHttpsOrigin;
-  const showStickyCta = isMobileShell && showLocalDemo;
 
   return (
     <main className="landing-page">
@@ -61,6 +60,18 @@ export const LandingPage = observer(function LandingPage() {
             Подборки, поиск и плеер в одном интерфейсе — демо-проект в духе Spotify с API Jamendo.
           </p>
 
+          {showLocalDemo ? (
+            <div className="landing-cta-stick-wrap">
+              <button
+                type="button"
+                className="btn btn-primary btn-lg landing-cta"
+                onClick={onLogin}
+              >
+                Начать слушать
+              </button>
+            </div>
+          ) : null}
+
           <ul className="landing-features">
             {LANDING_FEATURES.map((feature) => (
               <li key={feature}>
@@ -71,16 +82,6 @@ export const LandingPage = observer(function LandingPage() {
           </ul>
 
           <div className="landing-actions" id="landing-actions">
-            {showLocalDemo ? (
-              <button
-                type="button"
-                className="btn btn-primary btn-lg landing-cta"
-                onClick={onLogin}
-              >
-                Начать слушать
-              </button>
-            ) : null}
-
             {showVkAuth ? (
               <>
                 {showLocalDemo ? <div className="landing-divider">или</div> : null}
@@ -100,14 +101,6 @@ export const LandingPage = observer(function LandingPage() {
 
         <LandingPreview />
       </div>
-
-      {showStickyCta ? (
-        <div className="landing-sticky-cta">
-          <button type="button" className="btn btn-primary btn-lg" onClick={onLogin}>
-            Начать слушать
-          </button>
-        </div>
-      ) : null}
 
       <footer className="landing-footer">
         <span>Учебный проект</span>
