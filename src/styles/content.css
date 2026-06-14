@@ -199,37 +199,84 @@
   line-height: 1.5;
 }
 
-/* Track Grid - Horizontal Scroll */
-.track-grid {
+/* Home track feed — hybrid layout */
+.home-track-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  min-width: 0;
+}
+
+.track-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.track-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.track-section-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-base);
+  letter-spacing: -0.02em;
+}
+
+.track-section-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-subdued);
+}
+
+/* Featured row — horizontal scroll */
+.track-row {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(200px, 1fr);
+  grid-auto-columns: minmax(200px, 220px);
   gap: 16px;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 12px 4px 24px;
-  scroll-snap-type: x mandatory;
+  padding: 4px 4px 20px;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 4px;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--border-base) transparent;
 }
 
-.track-grid::-webkit-scrollbar {
+.track-row::-webkit-scrollbar {
   height: 10px;
 }
 
-.track-grid::-webkit-scrollbar-track {
+.track-row::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.track-grid::-webkit-scrollbar-thumb {
+.track-row::-webkit-scrollbar-thumb {
   background: var(--border-base);
   border-radius: var(--radius-full);
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
-.track-grid::-webkit-scrollbar-thumb:hover {
+.track-row::-webkit-scrollbar-thumb:hover {
   background-color: var(--border-highlight);
+}
+
+/* Catalog — responsive grid */
+.track-catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 18px;
+  padding: 4px 0 8px;
 }
 
 /* Track Card */
@@ -242,9 +289,10 @@
   flex-direction: column;
   align-items: stretch;
   gap: 12px;
-  min-height: 340px;
-  scroll-snap-align: start;
-  transition: all var(--transition-normal);
+  transition:
+    border-color var(--transition-normal),
+    background var(--transition-normal),
+    transform var(--transition-normal);
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -256,23 +304,41 @@
   -webkit-appearance: none;
 }
 
+.track-card--featured {
+  min-height: 320px;
+  scroll-snap-align: start;
+}
+
+.track-card--compact {
+  min-height: 0;
+  padding: 10px;
+  gap: 10px;
+}
+
+.track-card--featured:hover {
+  border-color: var(--border-base);
+  background: var(--panel-card-hover);
+  transform: translateY(-6px);
+}
+
+.track-card--compact:hover {
+  border-color: var(--border-base);
+  background: var(--panel-card-hover);
+  transform: translateY(-3px);
+}
+
 .track-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.35) 100%);
   opacity: 0;
   transition: opacity var(--transition-normal);
   pointer-events: none;
 }
 
-.track-card:hover {
-  border-color: var(--border-base);
-  background: var(--panel-card-hover);
-  transform: translateY(-8px);
+.track-card--featured:hover::before {
+  opacity: 1;
 }
 
 .track-card-active,
@@ -281,8 +347,11 @@
   background: rgba(var(--brand-accent-rgb), 0.08);
 }
 
-.track-card:hover::before {
-  opacity: 1;
+.track-card-cover {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
 .track-card img {
@@ -291,10 +360,16 @@
   aspect-ratio: 1;
   object-fit: cover;
   transition: transform var(--transition-slow);
+  display: block;
 }
 
-.track-card:hover img {
-  transform: scale(1.02);
+.track-card--compact .track-card-cover img {
+  border-radius: 0;
+}
+
+.track-card--featured:hover img,
+.track-card--compact:hover .track-card-cover img {
+  transform: scale(1.03);
 }
 
 .track-card strong {
@@ -311,6 +386,11 @@
   width: 100%;
 }
 
+.track-card--compact strong {
+  font-size: 14px;
+  -webkit-line-clamp: 2;
+}
+
 .track-card-artist {
   color: var(--text-subdued);
   font-size: 14px;
@@ -323,17 +403,16 @@
   width: 100%;
 }
 
+.track-card--compact .track-card-artist {
+  font-size: 13px;
+  -webkit-line-clamp: 1;
+}
+
 .track-card:hover .track-card-artist {
   color: var(--text-base);
 }
 
 .track-card .track-play-button {
-  margin-top: auto;
-  margin-left: auto;
-  width: 56px;
-  height: 56px;
-  min-width: 56px;
-  min-height: 56px;
   border: none;
   border-radius: var(--radius-full);
   background: var(--gradient-accent);
@@ -342,14 +421,34 @@
   place-items: center;
   padding: 0;
   pointer-events: none;
-  transition: all var(--transition-normal);
+  transition:
+    opacity var(--transition-normal),
+    transform var(--transition-normal);
   position: relative;
   z-index: 2;
   overflow: visible;
-  -webkit-line-clamp: unset;
-  line-clamp: unset;
-  -webkit-box-orient: unset;
   flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.track-card--featured .track-play-button {
+  margin-top: auto;
+  margin-left: auto;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+}
+
+.track-card--compact .track-play-button {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0;
 }
 
 .track-card .track-play-button svg {
@@ -358,8 +457,13 @@
   margin-left: 2px;
 }
 
-.track-card:hover .track-play-button,
-.track-card:focus-visible .track-play-button {
+.track-card--compact .track-play-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.track-card-active .track-play-button,
+.track-card[aria-current='true'] .track-play-button {
   opacity: 1;
   transform: translateY(0);
 }
@@ -1217,36 +1321,45 @@
 
 /* Mobile responsive */
 @media (max-width: 900px) {
-  .track-grid {
+  .track-row {
     grid-auto-columns: minmax(160px, 1fr);
     gap: 12px;
   }
 
-  .track-card {
+  .track-catalog {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .track-card--featured {
     min-height: 280px;
     padding: 12px;
   }
 
-  .track-card img {
+  .track-card--featured img {
     border-radius: var(--radius-md);
   }
 
-  .track-card strong {
+  .track-card--featured strong {
     font-size: 14px;
+  }
+
+  .track-card--compact strong {
+    font-size: 13px;
   }
 
   .track-card-artist {
     font-size: 12px;
   }
 
-  .track-card .track-play-button {
+  .track-card--featured .track-play-button {
     width: 48px;
     height: 48px;
     min-width: 48px;
     min-height: 48px;
   }
 
-  .track-card .track-play-button svg {
+  .track-card--featured .track-play-button svg {
     width: 20px;
     height: 20px;
   }
@@ -1267,21 +1380,22 @@
 
 /* Large screens */
 @media (min-width: 1920px) {
-  .track-grid {
-    grid-auto-columns: minmax(280px, 1fr);
+  .track-row {
+    grid-auto-columns: minmax(240px, 260px);
     gap: 24px;
   }
 
-  .track-card {
-    min-height: 380px;
+  .track-catalog {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 22px;
+  }
+
+  .track-card--featured {
+    min-height: 360px;
     padding: 20px;
   }
 
-  .track-card img {
-    border-radius: var(--radius-lg);
-  }
-
-  .track-card strong {
+  .track-card--featured strong {
     font-size: 18px;
   }
 
@@ -1289,14 +1403,14 @@
     font-size: 15px;
   }
 
-  .track-card .track-play-button {
+  .track-card--featured .track-play-button {
     width: 64px;
     height: 64px;
     min-width: 64px;
     min-height: 64px;
   }
 
-  .track-card .track-play-button svg {
+  .track-card--featured .track-play-button svg {
     width: 28px;
     height: 28px;
   }

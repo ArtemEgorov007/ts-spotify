@@ -180,16 +180,29 @@
     padding-bottom: calc(180px + env(safe-area-inset-bottom));
   }
 
-  /* Track grid - horizontal scroll */
-  .track-grid {
-    grid-auto-columns: minmax(180px, 70vw);
+  /* Track feed */
+  .track-row {
+    grid-auto-columns: minmax(180px, 72vw);
     gap: 12px;
-    padding: 10px 4px 20px 0;
+    padding: 4px 4px 16px 0;
   }
 
-  .track-card {
+  .track-catalog {
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 12px;
+  }
+
+  .track-section-title {
+    font-size: 20px;
+  }
+
+  .track-card--featured {
     min-height: 280px;
     padding: 12px;
+  }
+
+  .track-card--compact {
+    padding: 8px;
   }
 
   .track-card img {
@@ -270,12 +283,16 @@
     height: 40px;
   }
 
-  .track-grid {
+  .track-row {
     grid-auto-columns: minmax(160px, 65vw);
   }
 
-  .track-card {
+  .track-card--featured {
     min-height: 260px;
+  }
+
+  .track-catalog {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .auth-hero {
@@ -368,22 +385,35 @@
 
 /* Hover capabilities */
 @media (hover: hover) {
-  .track-card .track-play-button {
+  .track-card--featured .track-play-button {
     opacity: 0;
     transform: translateY(12px);
   }
 
-  .track-card:hover .track-play-button,
-  .track-card:focus-visible .track-play-button {
+  .track-card--featured:hover .track-play-button,
+  .track-card--featured:focus-visible .track-play-button,
+  .track-card--featured.track-card-active .track-play-button {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  .track-card--compact .track-play-button {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  .track-card--compact:hover .track-play-button,
+  .track-card--compact:focus-visible .track-play-button,
+  .track-card--compact.track-card-active .track-play-button {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
 @media (hover: none) {
   .track-card .track-play-button {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 

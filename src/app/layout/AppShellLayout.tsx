@@ -93,6 +93,35 @@ export function AppShellLayout() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
+  useEffect(() => {
+    const content = document.querySelector<HTMLElement>('.app-content-area');
+    if (!content) {
+      return;
+    }
+
+    const onWheel = (event: WheelEvent) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+
+      const horizontalStrip = target.closest<HTMLElement>('.track-row, .mood-chips');
+      if (!horizontalStrip) {
+        return;
+      }
+
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) {
+        return;
+      }
+
+      content.scrollTop += event.deltaY;
+      event.preventDefault();
+    };
+
+    content.addEventListener('wheel', onWheel, { passive: false });
+    return () => content.removeEventListener('wheel', onWheel);
+  }, []);
+
   const toggleSidebarMode = () => {
     setSidebarCollapsed((prev) => !prev);
   };

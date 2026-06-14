@@ -3,7 +3,8 @@
 .sidebar {
   position: sticky;
   top: 0;
-  height: calc(100vh - 90px);
+  height: 100dvh;
+  max-height: 100dvh;
   background: var(--panel-sidebar);
   border-right: 1px solid var(--border-subdued);
   padding: 0;

@@ -3,8 +3,10 @@
 .app-shell-layout {
   display: grid;
   grid-template-columns: 280px 1fr;
-  grid-template-rows: 1fr 90px;
-  min-height: 100vh;
+  grid-template-rows: 1fr;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
   background: var(--bg-base);
   transition: none;
   position: relative;
@@ -21,15 +23,18 @@
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
+  min-width: 0;
   padding-bottom: 90px;
 }
 
 .app-content-area {
   flex: 1;
   min-height: 0;
+  min-width: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  overscroll-behavior-y: contain;
   padding: clamp(16px, 2vw, 32px);
   padding-bottom: 32px;
   background: var(--gradient-hero);
@@ -39,8 +44,9 @@
 @media (max-width: 900px) {
   .app-shell-layout {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 90px;
-    min-height: 100dvh;
+    grid-template-rows: 1fr;
+    height: 100dvh;
+    max-height: 100dvh;
   }
 
   .app-shell-layout-collapsed {

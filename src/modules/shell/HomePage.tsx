@@ -12,6 +12,9 @@ import {
 } from '@/shared/api/jamendo';
 import { jamendoToTracks } from '@/shared/lib/jamendoMapper';
 import { mockTracks } from '@/shared/mock/media';
+import type { Track } from '@/types/music.types';
+
+const FEATURED_TRACK_COUNT = 8;
 
 function getInitialMood(): MoodPreset {
   const storedKey = playerStore.selectedHomeMoodKey ?? playerStore.homeFeedMoodKey;
@@ -29,6 +32,68 @@ function isStaleMoodRequest(mood: MoodPreset) {
   const { selectedHomeMoodKey } = playerStore;
   return selectedHomeMoodKey !== null && selectedHomeMoodKey !== mood.key;
 }
+
+type HomeTrackCardProps = {
+  track: Track;
+  index: number;
+  variant: 'featured' | 'compact';
+  onPlay: (index: number) => void;
+};
+
+const HomeTrackCard = observer(function HomeTrackCard({
+  track,
+  index,
+  variant,
+  onPlay,
+}: HomeTrackCardProps) {
+  const isActive = playerStore.isHomeTrackActive(track.id);
+  const playControl =
+    isActive && playerStore.isPlaying ? (
+      <span className="now-playing-indicator">
+        <span />
+        <span />
+        <span />
+      </span>
+    ) : (
+      <Play aria-hidden="true" />
+    );
+
+  return (
+    <button
+      type="button"
+      className={`track-card track-card--${variant}${isActive ? ' track-card-active' : ''}`}
+      onClick={() => onPlay(index)}
+      aria-label={
+        isActive && playerStore.isPlaying
+          ? `Пауза ${track.title} — ${track.artist}`
+          : `Воспроизвести ${track.title} — ${track.artist}`
+      }
+      aria-current={isActive ? 'true' : undefined}
+    >
+      {variant === 'compact' ? (
+        <>
+          <div className="track-card-cover">
+            <img src={track.coverUrl} alt="" loading="lazy" />
+            <span className="track-play-button" aria-hidden="true">
+              {playControl}
+            </span>
+          </div>
+          <strong>{track.title}</strong>
+          <span className="track-card-artist">{track.artist}</span>
+        </>
+      ) : (
+        <>
+          <img src={track.coverUrl} alt="" loading="lazy" />
+          <strong>{track.title}</strong>
+          <span className="track-card-artist">{track.artist}</span>
+          <span className="track-play-button" aria-hidden="true">
+            {playControl}
+          </span>
+        </>
+      )}
+    </button>
+  );
+});
 
 export const HomePage = observer(function HomePage() {
   const [selectedMood, setSelectedMood] = useState<MoodPreset>(getInitialMood);
@@ -101,6 +166,11 @@ export const HomePage = observer(function HomePage() {
     setReloadToken((token) => token + 1);
   };
 
+  const tracks = playerStore.homeFeedTracks;
+  const featuredTracks = tracks.slice(0, FEATURED_TRACK_COUNT);
+  const catalogTracks = tracks.length > FEATURED_TRACK_COUNT ? tracks.slice(FEATURED_TRACK_COUNT) : [];
+  const showCatalog = catalogTracks.length > 0;
+
   return (
     <section aria-labelledby="home-mood-heading">
       <fieldset className="mood-selector">
@@ -146,41 +216,55 @@ export const HomePage = observer(function HomePage() {
         </div>
       )}
 
-      {!loading && playerStore.homeFeedTracks.length > 0 && (
-        <div className="track-grid" aria-label="Подборка треков">
-          {playerStore.homeFeedTracks.map((track, index) => {
-            const isActive = playerStore.isHomeTrackActive(track.id);
+      {!loading && tracks.length > 0 && (
+        <div className="home-track-feed">
+          <section className="track-section" aria-labelledby="home-featured-heading">
+            <div className="track-section-header">
+              <h2 id="home-featured-heading" className="track-section-title">
+                {showCatalog ? 'Сейчас в эфире' : 'Подборка для тебя'}
+              </h2>
+              <p className="track-section-subtitle">
+                {showCatalog
+                  ? `Топ-треки для настроения «${selectedMood.label}»`
+                  : selectedMood.description}
+              </p>
+            </div>
+            <div className="track-row" aria-label="Избранные треки">
+              {featuredTracks.map((track, index) => (
+                <HomeTrackCard
+                  key={track.id}
+                  track={track}
+                  index={index}
+                  variant="featured"
+                  onPlay={handlePlay}
+                />
+              ))}
+            </div>
+          </section>
 
-            return (
-              <button
-                type="button"
-                className={`track-card${isActive ? ' track-card-active' : ''}`}
-                key={track.id}
-                onClick={() => handlePlay(index)}
-                aria-label={
-                  isActive && playerStore.isPlaying
-                    ? `Пауза ${track.title} — ${track.artist}`
-                    : `Воспроизвести ${track.title} — ${track.artist}`
-                }
-                aria-current={isActive ? 'true' : undefined}
-              >
-                <img src={track.coverUrl} alt="" loading="lazy" />
-                <strong>{track.title}</strong>
-                <span className="track-card-artist">{track.artist}</span>
-                <span className="track-play-button" aria-hidden="true">
-                  {isActive && playerStore.isPlaying ? (
-                    <span className="now-playing-indicator">
-                      <span />
-                      <span />
-                      <span />
-                    </span>
-                  ) : (
-                    <Play aria-hidden="true" />
-                  )}
-                </span>
-              </button>
-            );
-          })}
+          {showCatalog && (
+            <section className="track-section" aria-labelledby="home-catalog-heading">
+              <div className="track-section-header">
+                <h2 id="home-catalog-heading" className="track-section-title">
+                  Вся подборка
+                </h2>
+                <p className="track-section-subtitle">
+                  Ещё {catalogTracks.length} треков — листай сетку или включай любой
+                </p>
+              </div>
+              <div className="track-catalog" aria-label="Все треки подборки">
+                {catalogTracks.map((track, offset) => (
+                  <HomeTrackCard
+                    key={track.id}
+                    track={track}
+                    index={FEATURED_TRACK_COUNT + offset}
+                    variant="compact"
+                    onPlay={handlePlay}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       )}
     </section>
