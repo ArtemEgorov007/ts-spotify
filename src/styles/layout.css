@@ -60,7 +60,7 @@
 
   .app-content-area {
     padding: 16px;
-    padding-bottom: calc(176px + env(safe-area-inset-bottom));
+    padding-bottom: calc(188px + env(safe-area-inset-bottom));
   }
 }
 

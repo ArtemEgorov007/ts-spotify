@@ -368,58 +368,6 @@
   background: var(--bg-strong);
 }
 
-/* Mobile responsive */
-@media (max-width: 900px) {
-  .player-bar {
-    grid-template-columns: 1fr auto;
-    padding: 12px 16px;
-    height: auto;
-    min-height: 72px;
-  }
-
-  .player-right {
-    display: none;
-  }
-
-  .player-center {
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    right: 0;
-    padding: 8px 16px;
-    background: var(--panel-player);
-    border-bottom: 1px solid var(--border-subdued);
-  }
-
-  .player-progress {
-    display: none;
-  }
-
-  .player-controls {
-    gap: 12px;
-  }
-
-  .player-control-btn {
-    width: 36px;
-    height: 36px;
-  }
-
-  .player-control-btn svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .player-toggle {
-    width: 44px;
-    height: 44px;
-  }
-
-  .player-toggle svg {
-    width: 22px;
-    height: 22px;
-  }
-}
-
 @media (max-width: 600px) {
   .player-left {
     gap: 8px;
