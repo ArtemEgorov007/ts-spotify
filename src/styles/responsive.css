@@ -16,9 +16,9 @@
     gap: 8px;
     border: 1px solid var(--border-base);
     border-radius: var(--radius-xl);
-    background: var(--panel-overlay);
+    background: var(--panel-player);
     backdrop-filter: blur(20px);
-    z-index: 30;
+    z-index: 100;
     box-shadow: var(--shadow-xl);
     overflow: visible;
   }
@@ -177,18 +177,17 @@
   /* Content area */
   .app-content-area {
     padding: 16px;
-    padding-bottom: calc(180px + env(safe-area-inset-bottom));
+    padding-bottom: calc(176px + env(safe-area-inset-bottom));
   }
 
-  /* Track feed */
   .track-row {
-    grid-auto-columns: minmax(180px, 72vw);
+    grid-auto-columns: clamp(200px, 62vw, 248px);
     gap: 12px;
     padding: 4px 4px 16px 0;
   }
 
   .track-catalog {
-    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(156px, 1fr));
     gap: 12px;
   }
 
@@ -197,8 +196,14 @@
   }
 
   .track-card--featured {
-    min-height: 280px;
+    min-height: 0;
     padding: 12px;
+    gap: 10px;
+  }
+
+  .track-card--featured strong,
+  .track-card--featured .track-card-artist {
+    -webkit-line-clamp: 1;
   }
 
   .track-card--compact {
@@ -222,6 +227,13 @@
     height: 48px;
     min-width: 48px;
     min-height: 48px;
+  }
+
+  .track-card--featured .track-play-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .track-card .track-play-button svg {
@@ -284,11 +296,11 @@
   }
 
   .track-row {
-    grid-auto-columns: minmax(160px, 65vw);
+    grid-auto-columns: clamp(188px, 58vw, 220px);
   }
 
   .track-card--featured {
-    min-height: 260px;
+    min-height: 0;
   }
 
   .track-catalog {

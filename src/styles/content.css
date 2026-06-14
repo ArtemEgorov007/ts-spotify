@@ -205,6 +205,7 @@
   flex-direction: column;
   gap: 36px;
   min-width: 0;
+  padding-bottom: 8px;
 }
 
 .track-section {
@@ -305,7 +306,7 @@
 }
 
 .track-card--featured {
-  min-height: 320px;
+  min-height: 0;
   scroll-snap-align: start;
 }
 
@@ -438,6 +439,40 @@
   height: 56px;
   min-width: 56px;
   min-height: 56px;
+}
+
+@media (max-height: 820px) and (min-width: 901px) {
+  .home-track-feed {
+    gap: 24px;
+  }
+
+  .mood-selector {
+    margin-bottom: 16px;
+  }
+
+  .track-row {
+    grid-auto-columns: minmax(148px, 168px);
+    gap: 12px;
+    padding-bottom: 12px;
+  }
+
+  .track-card--featured {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .track-card--featured strong,
+  .track-card--featured .track-card-artist {
+    -webkit-line-clamp: 1;
+    font-size: 13px;
+  }
+
+  .track-card--featured .track-play-button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
 }
 
 .track-card--compact .track-play-button {
