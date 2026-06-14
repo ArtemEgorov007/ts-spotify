@@ -5,7 +5,6 @@ import { TopBar } from '@/app/components/TopBar';
 import { PlayerBar } from '@/modules/player/PlayerBar';
 import { CreatePlaylistModal } from '@/app/components/CreatePlaylistModal';
 import { playerStore } from '@/store/store';
-import { mockTracks } from '@/shared/mock/media';
 import { STORAGE_KEYS } from '@/app/config/storage';
 
 function readInitialSidebarCollapsed() {
@@ -14,12 +13,6 @@ function readInitialSidebarCollapsed() {
 
 export function AppShellLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(readInitialSidebarCollapsed);
-
-  useEffect(() => {
-    if (playerStore.queue.length === 0) {
-      playerStore.setQueue(mockTracks);
-    }
-  }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.sidebarCollapsed, String(sidebarCollapsed));

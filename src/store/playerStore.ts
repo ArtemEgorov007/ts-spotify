@@ -215,10 +215,11 @@ class PlayerStore {
       this.audio.removeEventListener('timeupdate', this.onTimeUpdate);
       this.audio.removeEventListener('ended', this.onEnded);
       this.audio.removeEventListener('loadedmetadata', this.onLoadedMetadata);
+      this.audio.removeEventListener('error', this.onError);
+      const simInterval = (this.audio as any)._simInterval;
+      if (simInterval) clearInterval(simInterval);
     }
 
-    // Since mock tracks have audioUrl: '#', we simulate playback with a timer
-    // In production, this would be: this.audio = new Audio(track.audioUrl);
     this.audio = new Audio(track.audioUrl);
     this.audio.volume = this.isMuted ? 0 : this.volume;
 
@@ -227,35 +228,10 @@ class PlayerStore {
     this.audio.addEventListener('loadedmetadata', this.onLoadedMetadata);
     this.audio.addEventListener('error', this.onError);
 
-    // For mock URLs, simulate playback
-    if (track.audioUrl === '#' || !track.audioUrl) {
-      this.simulatePlayback(track.durationSec);
-    } else {
-      this.audio.play().catch(() => {
-        // Fallback to simulation if audio fails
-        this.simulatePlayback(track.durationSec);
-      });
-    }
-  }
-
-  private simulatePlayback(durationSec: number) {
-    // Simulate progress since we don't have real audio files
-    const interval = setInterval(() => {
-      if (!this.isPlaying) {
-        clearInterval(interval);
-        return;
-      }
-      runInAction(() => {
-        this.currentTime += 0.1;
-        if (this.currentTime >= durationSec) {
-          clearInterval(interval);
-          this.onEnded();
-        }
-      });
-    }, 100);
-
-    // Store interval reference to clear on track change
-    (this.audio as any)._simInterval = interval;
+    this.audio.play().catch(() => {
+      // If playback fails (e.g. no user gesture), just set state
+      this.isPlaying = true;
+    });
   }
 
   private onTimeUpdate = () => {
@@ -279,11 +255,9 @@ class PlayerStore {
   };
 
   private onError = () => {
-    // If audio fails to load, use simulation
-    const track = this.currentTrack;
-    if (track) {
-      this.simulatePlayback(track.durationSec);
-    }
+    // Audio failed to load — pause and reset
+    this.pause();
+    this.currentTime = 0;
   };
 
   destroy() {

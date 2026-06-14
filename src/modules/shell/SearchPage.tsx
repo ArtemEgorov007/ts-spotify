@@ -1,49 +1,65 @@
 import { observer } from 'mobx-react-lite';
-import { useState, useMemo } from 'react';
-import { Search as SearchIcon } from 'lucide-react';
-import { mockTracks } from '@/shared/mock/media';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { Search as SearchIcon, Loader2 } from 'lucide-react';
+import { searchTracks, fetchTracksByMood, MOOD_PRESETS, type MoodPreset } from '@/shared/api/jamendo';
+import { jamendoToTracks } from '@/shared/lib/jamendoMapper';
 import { playerStore } from '@/store/store';
 import { Play } from 'lucide-react';
-
-const GENRES = ['Поп', 'Чилл', 'Фокус', 'Бег', 'Электро'];
+import { formatDuration } from '@/shared/lib/format';
 
 export const SearchPage = observer(function SearchPage() {
   const [query, setQuery] = useState('');
-  const [activeGenre, setActiveGenre] = useState<string | null>(null);
+  const [activeGenre, setActiveGenre] = useState<MoodPreset | null>(null);
+  const [results, setResults] = useState(playerStore.queue);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
 
-  const filteredTracks = useMemo(() => {
-    let tracks = mockTracks;
-
-    if (query.trim()) {
-      const q = query.toLowerCase().trim();
-      tracks = tracks.filter(
-        (t) =>
-          t.title.toLowerCase().includes(q) ||
-          t.artist.toLowerCase().includes(q),
-      );
+  // Debounced search
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults(playerStore.queue);
+      setSearched(false);
+      return;
     }
 
-    if (activeGenre) {
-      // Simple genre filtering — in production, tracks would have genre tags
-      const genreMap: Record<string, string[]> = {
-        'Поп': ['Ночной путь', 'Стеклянный горизонт'],
-        'Чилл': ['Послесвечение', 'Поздняя станция'],
-        'Фокус': ['Городские петли', 'Сигнальные волны'],
-        'Бег': ['Сигнальные волны', 'Ночной путь'],
-        'Электро': ['Городские петли', 'Стеклянный горизонт'],
-      };
-      const genreTrackTitles = genreMap[activeGenre] || [];
-      tracks = tracks.filter((t) => genreTrackTitles.includes(t.title));
-    }
+    const timer = setTimeout(() => {
+      setLoading(true);
+      setSearched(true);
+      searchTracks(query.trim(), 20)
+        .then((tracks) => {
+          setResults(jamendoToTracks(tracks));
+        })
+        .catch(() => {
+          setResults([]);
+        })
+        .finally(() => setLoading(false));
+    }, 400);
 
-    return tracks;
-  }, [query, activeGenre]);
+    return () => clearTimeout(timer);
+  }, [query]);
 
-  const handlePlay = (trackId: string) => {
-    const idx = filteredTracks.findIndex((t) => t.id === trackId);
-    playerStore.setQueue(filteredTracks, idx);
-    playerStore.play();
-  };
+  // Genre filter
+  useEffect(() => {
+    if (!activeGenre) return;
+    setLoading(true);
+    fetchTracksByMood(activeGenre, 20)
+      .then((tracks) => {
+        setResults(jamendoToTracks(tracks));
+        setSearched(true);
+      })
+      .catch(() => setResults([]))
+      .finally(() => setLoading(false));
+  }, [activeGenre]);
+
+  const handlePlay = useCallback(
+    (index: number) => {
+      playerStore.setQueue(results, index);
+      playerStore.play();
+    },
+    [results],
+  );
+
+  const displayTracks = activeGenre ? results : query.trim() ? results : playerStore.queue;
 
   return (
     <section>
@@ -56,7 +72,10 @@ export const SearchPage = observer(function SearchPage() {
           className="search-input"
           placeholder="Что хочешь послушать?"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setActiveGenre(null);
+          }}
           autoFocus
         />
         {query && (
@@ -72,27 +91,39 @@ export const SearchPage = observer(function SearchPage() {
       </div>
 
       <div className="tag-row">
-        {GENRES.map((genre) => (
+        {MOOD_PRESETS.map((mood) => (
           <button
-            key={genre}
+            key={mood.key}
             type="button"
-            className={`genre-tag ${activeGenre === genre ? 'active' : ''}`}
-            onClick={() => setActiveGenre(activeGenre === genre ? null : genre)}
+            className={`genre-tag ${activeGenre?.key === mood.key ? 'active' : ''}`}
+            onClick={() => {
+              setActiveGenre(activeGenre?.key === mood.key ? null : mood);
+              setQuery('');
+            }}
           >
-            {genre}
+            {mood.emoji} {mood.label}
           </button>
         ))}
       </div>
 
-      {filteredTracks.length === 0 ? (
-        <div className="search-empty">
-          <p>Ничего не найдено по запросу «{query}»</p>
+      {loading && (
+        <div className="loading-state">
+          <Loader2 className="loading-spinner" aria-hidden="true" />
+          <p>Ищем музыку…</p>
         </div>
-      ) : (
+      )}
+
+      {!loading && displayTracks.length === 0 && searched && (
+        <div className="search-empty">
+          <p>Ничего не найдено{query ? ` по запросу «${query}»` : ''}</p>
+        </div>
+      )}
+
+      {!loading && displayTracks.length > 0 && (
         <div className="results-list">
-          {filteredTracks.map((track) => (
+          {displayTracks.map((track, index) => (
             <div key={track.id} className="result-item">
-              <img src={track.coverUrl} alt={track.title} />
+              <img src={track.coverUrl} alt={track.title} loading="lazy" />
               <div className="result-item-info">
                 <strong>{track.title}</strong>
                 <p>{track.artist}</p>
@@ -100,12 +131,12 @@ export const SearchPage = observer(function SearchPage() {
               <button
                 type="button"
                 className="result-play-btn"
-                onClick={() => handlePlay(track.id)}
+                onClick={() => handlePlay(index)}
                 aria-label={`Воспроизвести ${track.title}`}
               >
                 <Play aria-hidden="true" />
               </button>
-              <span className="result-duration">{track.durationSec > 0 ? `${Math.floor(track.durationSec / 60)}:${String(track.durationSec % 60).padStart(2, '0')}` : ''}</span>
+              <span className="result-duration">{formatDuration(track.durationSec)}</span>
             </div>
           ))}
         </div>

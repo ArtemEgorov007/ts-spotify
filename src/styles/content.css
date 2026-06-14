@@ -1,5 +1,126 @@
 /* Spotify-style Content Pages */
 
+/* Mood Selector */
+.mood-selector {
+  margin-bottom: 28px;
+}
+
+.mood-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.mood-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-subdued);
+  border-radius: var(--radius-full);
+  padding: 10px 20px;
+  background: var(--bg-elevated);
+  color: var(--text-base);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mood-chip:hover {
+  border-color: var(--border-highlight);
+  background: var(--bg-strong);
+  transform: translateY(-2px);
+}
+
+.mood-chip.active {
+  border-color: var(--brand-green);
+  background: var(--brand-green);
+  color: var(--bg-base);
+}
+
+.mood-chip-emoji {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mood-description {
+  color: var(--text-subdued);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 0;
+  color: var(--text-subdued);
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  animation: spin 1s linear infinite;
+  color: var(--brand-green);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Error State */
+.error-state {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--text-subdued);
+}
+
+.error-state p {
+  font-size: 15px;
+}
+
+/* Now Playing Indicator */
+.now-playing-indicator {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 18px;
+}
+
+.now-playing-indicator span {
+  display: block;
+  width: 3px;
+  background: var(--bg-base);
+  border-radius: 1px;
+  animation: bar-bounce 0.8s ease-in-out infinite alternate;
+}
+
+.now-playing-indicator span:nth-child(1) {
+  height: 8px;
+  animation-delay: 0s;
+}
+
+.now-playing-indicator span:nth-child(2) {
+  height: 14px;
+  animation-delay: 0.2s;
+}
+
+.now-playing-indicator span:nth-child(3) {
+  height: 10px;
+  animation-delay: 0.4s;
+}
+
+@keyframes bar-bounce {
+  0% { height: 4px; }
+  100% { height: 18px; }
+}
+
 /* Section Subtitle */
 .section-subtitle {
   margin: 0 0 20px;
