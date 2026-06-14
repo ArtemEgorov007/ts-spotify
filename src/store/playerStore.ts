@@ -216,8 +216,6 @@ class PlayerStore {
       this.audio.removeEventListener('ended', this.onEnded);
       this.audio.removeEventListener('loadedmetadata', this.onLoadedMetadata);
       this.audio.removeEventListener('error', this.onError);
-      const simInterval = (this.audio as any)._simInterval;
-      if (simInterval) clearInterval(simInterval);
     }
 
     this.audio = new Audio(track.audioUrl);
@@ -236,8 +234,9 @@ class PlayerStore {
 
   private onTimeUpdate = () => {
     if (this.audio && !isNaN(this.audio.currentTime)) {
+      const time = this.audio.currentTime;
       runInAction(() => {
-        this.currentTime = this.audio.currentTime;
+        this.currentTime = time;
       });
     }
   };
@@ -248,8 +247,9 @@ class PlayerStore {
 
   private onLoadedMetadata = () => {
     if (this.audio) {
+      const duration = this.audio.duration;
       runInAction(() => {
-        this.duration = this.audio.duration;
+        this.duration = duration;
       });
     }
   };
@@ -262,10 +262,6 @@ class PlayerStore {
 
   destroy() {
     if (this.audio) {
-      const simInterval = (this.audio as any)._simInterval;
-      if (simInterval) {
-        clearInterval(simInterval);
-      }
       this.audio.pause();
       this.audio.removeEventListener('timeupdate', this.onTimeUpdate);
       this.audio.removeEventListener('ended', this.onEnded);

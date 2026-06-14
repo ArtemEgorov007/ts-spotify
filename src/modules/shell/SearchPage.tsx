@@ -1,10 +1,9 @@
 import { observer } from 'mobx-react-lite';
-import { useState, useMemo, useEffect, useCallback } from 'react';
-import { Search as SearchIcon, Loader2 } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Search as SearchIcon, Loader2, Play } from 'lucide-react';
 import { searchTracks, fetchTracksByMood, MOOD_PRESETS, type MoodPreset } from '@/shared/api/jamendo';
 import { jamendoToTracks } from '@/shared/lib/jamendoMapper';
 import { playerStore } from '@/store/store';
-import { Play } from 'lucide-react';
 import { formatDuration } from '@/shared/lib/format';
 
 export const SearchPage = observer(function SearchPage() {
@@ -59,7 +58,7 @@ export const SearchPage = observer(function SearchPage() {
     [results],
   );
 
-  const displayTracks = activeGenre ? results : query.trim() ? results : playerStore.queue;
+  const displayTracks = activeGenre || query.trim() ? results : playerStore.queue;
 
   return (
     <section>
