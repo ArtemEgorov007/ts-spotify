@@ -29,7 +29,7 @@ export function bootstrapAuthSession() {
 export function loginWithLocalDemo(navigate: NavigateFunction) {
   const localUser: VkSession = {
     username: 'local-user',
-    email: 'local@ts-music.dev',
+    email: 'local@sonora.dev',
     authMethod: 'local',
   };
 

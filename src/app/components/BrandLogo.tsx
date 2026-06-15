@@ -5,7 +5,7 @@ type BrandLogoProps = {
 
 export function BrandLogo({ showTitle = true, className = '' }: BrandLogoProps) {
   return (
-    <div className={`brand-logo${className ? ` ${className}` : ''}`} aria-label="ts-music">
+    <div className={`brand-logo${className ? ` ${className}` : ''}`} aria-label="Sonora">
       <div className="brand-logo-mark">
         <svg viewBox="0 0 24 24" className="music-logo" aria-hidden="true">
           <path
@@ -14,7 +14,7 @@ export function BrandLogo({ showTitle = true, className = '' }: BrandLogoProps) 
           />
         </svg>
       </div>
-      {showTitle ? <span className="brand-logo-title">ts-music</span> : null}
+      {showTitle ? <span className="brand-logo-title">Sonora</span> : null}
     </div>
   );
 }

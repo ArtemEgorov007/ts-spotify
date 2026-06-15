@@ -58,7 +58,7 @@ export const LandingPage = observer(function LandingPage() {
           <p className="landing-auth-kicker">Portfolio · React 19 · TypeScript</p>
           <h1 id="landing-title">Музыка под твоё настроение</h1>
           <p className="landing-auth-lead">
-            Подборки, поиск и плеер в одном интерфейсе — демо-проект в духе Spotify с API Jamendo.
+            Подборки, поиск и плеер в одном интерфейсе — учебный проект на React 19 с API Jamendo.
           </p>
         </section>
 
