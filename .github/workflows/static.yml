@@ -39,7 +39,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_BASE_PATH: /ts-spotify/
+          VITE_BASE_PATH: /sonora/
           VITE_VK_APP_ID: 54456011
         run: npm run build
 
