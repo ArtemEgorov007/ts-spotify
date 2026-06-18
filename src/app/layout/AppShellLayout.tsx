@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { observer } from 'mobx-react-lite';
 import { Sidebar } from '@/app/components/Sidebar';
 import { TopBar } from '@/app/components/TopBar';
 import { PlayerBar } from '@/modules/player/PlayerBar';
@@ -7,6 +8,9 @@ import { CreatePlaylistModal } from '@/app/components/CreatePlaylistModal';
 import { DeletePlaylistModal } from '@/app/components/DeletePlaylistModal';
 import { playerStore } from '@/store/store';
 import { STORAGE_KEYS } from '@/app/config/storage';
+import { AmbientBackdrop } from '@/shared/ui/AmbientBackdrop';
+import { useMoodAmbient } from '@/shared/hooks/useMoodAmbient';
+import type { MoodKey } from '@/shared/api/jamendo';
 
 function readInitialSidebarCollapsed() {
   return localStorage.getItem(STORAGE_KEYS.sidebarCollapsed) === 'true';
@@ -28,8 +32,12 @@ function isEditableTarget(target: EventTarget | null) {
   return Boolean(target.closest('button, a[href], [role="button"], [contenteditable="true"]'));
 }
 
-export function AppShellLayout() {
+export const AppShellLayout = observer(function AppShellLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(readInitialSidebarCollapsed);
+
+  const shellRef = useRef<HTMLDivElement | null>(null);
+  const moodKey = (playerStore.selectedHomeMoodKey ?? 'energy') as MoodKey;
+  useMoodAmbient(moodKey, shellRef);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.sidebarCollapsed, String(sidebarCollapsed));
@@ -127,7 +135,11 @@ export function AppShellLayout() {
   };
 
   return (
-    <div className={`app-shell-layout${sidebarCollapsed ? ' app-shell-layout-collapsed' : ''}`}>
+    <div
+      className={`app-shell-layout${sidebarCollapsed ? ' app-shell-layout-collapsed' : ''}`}
+      ref={shellRef}
+    >
+      <AmbientBackdrop />
       <a href="#main-content" className="skip-link">
         Перейти к содержимому
       </a>
@@ -145,4 +157,4 @@ export function AppShellLayout() {
       <DeletePlaylistModal />
     </div>
   );
-}
+});

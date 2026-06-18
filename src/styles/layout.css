@@ -4,10 +4,11 @@
   display: grid;
   grid-template-columns: 280px 1fr;
   grid-template-rows: 1fr;
+  column-gap: 0;
   height: 100dvh;
   max-height: 100dvh;
-  overflow: hidden;
-  background: var(--bg-base);
+  overflow: visible;
+  background: transparent;
   transition: none;
   position: relative;
 }
@@ -21,9 +22,12 @@
   grid-row: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: hidden;
   min-height: 0;
   min-width: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .app-content-area {
@@ -31,14 +35,14 @@
   min-height: 0;
   min-width: 0;
   position: relative;
-  z-index: 0;
-  overflow-x: hidden;
+  z-index: 1;
+  overflow-x: visible;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  padding: clamp(16px, 2vw, 32px);
-  padding-bottom: calc(108px + env(safe-area-inset-bottom));
-  background: var(--gradient-hero);
+  padding: var(--app-content-top) var(--app-gutter-x)
+    calc(var(--app-player-safe) + env(safe-area-inset-bottom));
+  background: transparent;
 }
 
 /* Responsive layout */
@@ -56,11 +60,6 @@
 
   .app-main {
     grid-column: 1;
-  }
-
-  .app-content-area {
-    padding: 16px;
-    padding-bottom: calc(188px + env(safe-area-inset-bottom));
   }
 }
 

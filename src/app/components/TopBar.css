@@ -4,17 +4,19 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  padding: 18px 28px;
+  flex-shrink: 0;
+  padding: 20px var(--app-gutter-x, clamp(20px, 2.5vw, 32px)) 18px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   gap: 16px;
-  background: linear-gradient(180deg, rgba(5, 7, 12, 0.88) 0%, transparent 100%);
-  backdrop-filter: blur(20px) saturate(1.2);
+  background: transparent;
   border-bottom: 1px solid transparent;
-  transition:
-    border-color var(--transition-normal),
-    background var(--transition-normal);
+  transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.topbar-scrolled {
+  border-bottom-color: var(--border-base);
 }
 
 .topbar-main {
@@ -28,7 +30,7 @@
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: var(--brand-green);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .topbar-title {
@@ -46,6 +48,7 @@
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
+  padding-bottom: 2px;
 }
 
 .topbar-action-btn {
@@ -116,7 +119,7 @@
 
 @media (max-width: 900px) {
   .topbar {
-    padding: 10px 16px;
+    padding: 16px var(--app-gutter-x, 20px) 14px;
     align-items: center;
   }
 
@@ -135,6 +138,7 @@
 
   .topbar-controls {
     gap: 8px;
+    padding-bottom: 0;
   }
 
   .topbar-action-theme,
@@ -164,8 +168,4 @@
   .role-chip-mobile {
     display: grid;
   }
-}
-
-:root[data-theme='light'] .topbar {
-  background: linear-gradient(180deg, rgba(246, 244, 239, 0.92) 0%, transparent 100%);
 }

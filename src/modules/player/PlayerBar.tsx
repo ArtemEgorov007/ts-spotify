@@ -39,7 +39,7 @@ export const PlayerBar = observer(function PlayerBar() {
             </div>
             <button
               type="button"
-              className={`player-icon-btn ${playerStore.isFavorite ? 'active' : ''}`}
+              className={`player-icon-btn player-icon-btn-heart ${playerStore.isFavorite ? 'active' : ''}`}
               aria-label={playerStore.isFavorite ? 'Убрать из избранного' : 'Добавить в избранное'}
               aria-pressed={playerStore.isFavorite}
               onClick={() => playerStore.toggleFavorite()}
@@ -74,7 +74,7 @@ export const PlayerBar = observer(function PlayerBar() {
           </button>
           <button
             type="button"
-            className="player-toggle"
+            className={`player-toggle${playerStore.isPlaying ? ' is-playing' : ''}`}
             onClick={() => playerStore.togglePlayback()}
             aria-label={playerStore.isPlaying ? 'Пауза' : 'Воспроизвести'}
             disabled={!track && playerStore.queue.length === 0}

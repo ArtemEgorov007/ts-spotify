@@ -8,6 +8,7 @@ import {
   type MoodPreset,
 } from '@/shared/api/jamendo';
 import { jamendoToTracks } from '@/shared/lib/jamendoMapper';
+import { MoodIcon } from '@/shared/ui/MoodIcon';
 import { playerStore } from '@/store/store';
 import { formatDuration } from '@/shared/lib/format';
 import type { Track } from '@/types/music.types';
@@ -75,7 +76,7 @@ export const SearchPage = observer(function SearchPage() {
   const displayTracks = searched ? results : [];
 
   return (
-    <section aria-labelledby="search-heading">
+    <section className="search-page" aria-labelledby="search-heading">
       <h2 id="search-heading" className="visually-hidden">
         Поиск музыки
       </h2>
@@ -124,7 +125,8 @@ export const SearchPage = observer(function SearchPage() {
             }}
             aria-pressed={activeGenre?.key === mood.key}
           >
-            {mood.emoji} {mood.label}
+            <MoodIcon moodKey={mood.key} active={activeGenre?.key === mood.key} size={16} />
+            {mood.label}
           </button>
         ))}
       </div>

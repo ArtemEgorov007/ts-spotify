@@ -8,7 +8,7 @@ import { formatTracksCount } from '@/shared/lib/format';
 
 export const LibraryPage = observer(function LibraryPage() {
   return (
-    <section>
+    <section className="library-page">
       <WipSection>
         <div className="library-header">
           <p className="section-subtitle">Твои плейлисты и сохранённые подборки.</p>

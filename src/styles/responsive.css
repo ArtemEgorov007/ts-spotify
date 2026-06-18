@@ -18,12 +18,12 @@
     padding: 0 12px;
     gap: 8px;
     border: 1px solid var(--border-base);
-    border-top: 1px solid var(--border-base);
-    border-radius: var(--radius-xl);
-    background: var(--panel-player);
-    backdrop-filter: blur(20px);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--panel-player) 90%, transparent);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
     z-index: 100;
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-xl), 0 0 0 1px rgba(var(--mood-a), 0.06);
     overflow: hidden;
     grid-template-columns: minmax(0, 1fr);
   }
@@ -175,16 +175,16 @@
     height: 18px;
   }
 
-  /* Content area */
-  .app-content-area {
-    padding: 16px;
-    padding-bottom: calc(188px + env(safe-area-inset-bottom));
+  /* Content area — gutter from layout.css */
+  .track-row--bleed {
+    margin-inline: calc(-1 * var(--app-gutter-x, 16px));
+    padding-inline: var(--app-gutter-x, 16px);
   }
 
   .track-row {
     grid-auto-columns: clamp(200px, 62vw, 248px);
     gap: 12px;
-    padding: 10px 4px 18px 0;
+    padding-block: 6px 16px;
   }
 
   .track-catalog {

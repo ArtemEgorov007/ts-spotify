@@ -11,6 +11,7 @@ import {
   type MoodPreset,
 } from '@/shared/api/jamendo';
 import { jamendoToTracks } from '@/shared/lib/jamendoMapper';
+import { MoodIcon } from '@/shared/ui/MoodIcon';
 import { mockTracks } from '@/shared/mock/media';
 import type { Track } from '@/types/music.types';
 
@@ -172,7 +173,7 @@ export const HomePage = observer(function HomePage() {
   const showCatalog = catalogTracks.length > 0;
 
   return (
-    <section aria-labelledby="home-mood-heading">
+    <section className="home-page" aria-labelledby="home-mood-heading">
       <fieldset className="mood-selector">
         <legend id="home-mood-heading" className="section-subtitle">
           Как ты сейчас?
@@ -186,9 +187,7 @@ export const HomePage = observer(function HomePage() {
               onClick={() => handleMoodSelect(mood)}
               aria-pressed={selectedMood.key === mood.key}
             >
-              <span className="mood-chip-emoji" aria-hidden="true">
-                {mood.emoji}
-              </span>
+              <MoodIcon moodKey={mood.key} active={selectedMood.key === mood.key} />
               <span className="mood-chip-label">{mood.label}</span>
             </button>
           ))}
@@ -229,7 +228,7 @@ export const HomePage = observer(function HomePage() {
                   : selectedMood.description}
               </p>
             </div>
-            <div className="track-row" aria-label="Избранные треки">
+            <div className="track-row track-row--bleed" aria-label="Избранные треки">
               {featuredTracks.map((track, index) => (
                 <HomeTrackCard
                   key={track.id}

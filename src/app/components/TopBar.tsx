@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 import { authStore, playerStore } from '@/store/store';
@@ -21,11 +21,27 @@ export const TopBar = observer(function TopBar() {
     () => getAppSectionTitle(location.pathname, playlistTitle),
     [location.pathname, playlistTitle],
   );
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const content = document.getElementById('main-content');
+    if (!content) {
+      return;
+    }
+
+    const updateScrollState = () => {
+      setIsScrolled(content.scrollTop > 8);
+    };
+
+    updateScrollState();
+    content.addEventListener('scroll', updateScrollState, { passive: true });
+    return () => content.removeEventListener('scroll', updateScrollState);
+  }, [location.pathname]);
 
   const onLogout = () => logoutUser(navigate);
 
   return (
-    <header className="topbar">
+    <header className={`topbar${isScrolled ? ' topbar-scrolled' : ''}`}>
       <div className="topbar-main">
         <p className="topbar-label">{playlistTitle ? 'Плейлист' : 'Раздел'}</p>
         <h1 className="topbar-title">{sectionTitle}</h1>

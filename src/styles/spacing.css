@@ -1,0 +1,46 @@
+/* App shell — единая шкала отступов */
+
+.app-main {
+  --app-gutter-x: clamp(20px, 2.5vw, 32px);
+  --app-aside-gap: 18px;
+  --app-page-gap: 36px;
+  --app-block-gap: 24px;
+  --app-stack-gap: 16px;
+  --app-tight-gap: 12px;
+  --app-content-top: 28px;
+  --app-player-safe: 120px;
+}
+
+@media (min-width: 901px) {
+  .app-main {
+    padding-inline-start: var(--app-aside-gap);
+  }
+}
+
+@media (max-width: 900px) {
+  .app-main {
+    --app-gutter-x: 20px;
+    --app-page-gap: 28px;
+    --app-block-gap: 20px;
+    --app-stack-gap: 14px;
+    --app-content-top: 16px;
+    --app-player-safe: 196px;
+  }
+}
+
+.app-page {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-page > section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-block-gap);
+  min-width: 0;
+}
+
+.app-page > section > p.section-subtitle:first-child {
+  margin-bottom: 0;
+}

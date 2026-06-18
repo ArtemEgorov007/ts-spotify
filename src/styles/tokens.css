@@ -1,62 +1,72 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
+/* Apple Music–inspired neutral stage. The brand/accent tokens below don't
+   carry a fixed hue — they're aliased to --mood-a/--mood-b, a CSS variable
+   pair tweened at runtime by useMoodAmbient (see src/shared/hooks). The
+   values here are just the first-paint fallback (matches the "Энергия"
+   mood) before the app shell or landing page picks a real one. Every
+   component that reads --brand-green / --brand-accent-rgb / --gradient-accent
+   re-skins automatically when the mood changes — no per-component styling. */
 :root {
-  /* Typography — editorial broadcast */
-  --font-body: 'IBM Plex Sans', 'Segoe UI', sans-serif;
-  --font-heading: 'Bricolage Grotesque', 'IBM Plex Sans', sans-serif;
-  --font-display: 'Bricolage Grotesque', 'IBM Plex Sans', sans-serif;
+  --mood-a: 255, 95, 109;
+  --mood-b: 255, 195, 113;
 
-  /* Surfaces — deep blue-black studio */
-  --bg-base: #05070c;
-  --bg-subdued: #0a0e16;
-  --bg-highlight: #101622;
-  --bg-elevated: #151b2b;
-  --bg-strong: #1e2638;
+  /* Typography */
+  --font-body: 'Inter', 'SF Pro Text', 'Segoe UI', sans-serif;
+  --font-heading: 'Sora', 'SF Pro Display', sans-serif;
+  --font-display: 'Sora', 'SF Pro Display', sans-serif;
 
-  /* Brand — phosphor lime + vinyl amber */
-  --brand-green: #d4ff4a;
-  --brand-green-hover: #e4ff78;
-  --brand-secondary: #ff9f43;
-  --brand-accent-rgb: 212, 255, 74;
-  --brand-accent-soft: rgba(var(--brand-accent-rgb), 0.14);
-  --brand-accent-medium: rgba(var(--brand-accent-rgb), 0.28);
-  --brand-accent-glow: rgba(var(--brand-accent-rgb), 0.45);
-  --brand-on-accent: #0a0c10;
+  /* Surfaces — neutral near-black, so color always reads as the mood, not the brand */
+  --bg-base: #0b0b0d;
+  --bg-subdued: #111113;
+  --bg-highlight: #17171a;
+  --bg-elevated: #1c1c1f;
+  --bg-strong: #242429;
+
+  /* Brand — live, mood-driven */
+  --brand-green: rgb(var(--mood-a));
+  --brand-green-hover: rgb(var(--mood-b));
+  --brand-secondary: rgb(var(--mood-b));
+  --brand-accent-rgb: var(--mood-a);
+  --brand-accent-soft: rgba(var(--mood-a), 0.14);
+  --brand-accent-medium: rgba(var(--mood-a), 0.28);
+  --brand-accent-glow: rgba(var(--mood-a), 0.45);
+  --brand-on-accent: #0b0b0d;
 
   /* Text */
-  --text-base: #f4f6fb;
-  --text-subdued: #929cb0;
-  --text-placeholder: #5f687a;
+  --text-base: #f5f5f7;
+  --text-subdued: #98989f;
+  --text-placeholder: #6e6e76;
 
   /* Interactive */
-  --interactive-normal: #929cb0;
-  --interactive-hover: #f4f6fb;
-  --interactive-active: #d4ff4a;
+  --interactive-normal: #98989f;
+  --interactive-hover: #f5f5f7;
+  --interactive-active: rgb(var(--mood-a));
 
   /* Borders */
-  --border-subdued: rgba(244, 246, 251, 0.07);
-  --border-base: rgba(244, 246, 251, 0.11);
-  --border-highlight: rgba(244, 246, 251, 0.2);
+  --border-subdued: rgba(255, 255, 255, 0.08);
+  --border-base: rgba(255, 255, 255, 0.13);
+  --border-highlight: rgba(255, 255, 255, 0.22);
 
-  /* Functional */
-  --success: #d4ff4a;
+  /* Functional — kept independent of mood so status always reads correctly */
+  --success: #34d399;
   --warning: #ffb347;
-  --error: #ff6b6b;
+  --error: #ff5f6d;
   --notice: #6b9dff;
 
   /* Panels */
-  --panel-card: #121826;
-  --panel-card-hover: #1a2234;
-  --panel-sidebar: rgba(5, 7, 12, 0.92);
-  --panel-player: rgba(10, 14, 22, 0.94);
-  --panel-overlay: rgba(5, 7, 12, 0.82);
+  --panel-card: #141416;
+  --panel-card-hover: #1b1b1e;
+  --panel-sidebar: rgba(11, 11, 13, 0.92);
+  --panel-player: rgba(17, 17, 19, 0.94);
+  --panel-overlay: rgba(11, 11, 13, 0.82);
 
   /* Gradients & atmosphere */
-  --gradient-hero: linear-gradient(180deg, #0a0e16 0%, var(--bg-base) 100%);
+  --gradient-hero: linear-gradient(180deg, #111113 0%, var(--bg-base) 100%);
   --gradient-card:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 100%), #121826;
-  --gradient-sidebar: linear-gradient(180deg, #0a0e16 0%, #05070c 100%);
-  --gradient-accent: linear-gradient(135deg, var(--brand-green) 0%, #b8e034 100%);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 100%), #141416;
+  --gradient-sidebar: linear-gradient(180deg, #111113 0%, #0b0b0d 100%);
+  --gradient-accent: linear-gradient(135deg, rgb(var(--mood-a)) 0%, rgb(var(--mood-b)) 100%);
 
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
@@ -65,7 +75,7 @@
   --shadow-xl: 0 24px 56px rgba(0, 0, 0, 0.6);
   --shadow-glow: 0 0 32px var(--brand-accent-glow);
 
-  /* Radius — slightly editorial */
+  /* Radius */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
@@ -87,55 +97,81 @@
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Light — warm paper studio */
+/* Light */
 :root[data-theme='light'] {
-  --bg-base: #f6f4ef;
-  --bg-subdued: #eeebe4;
-  --bg-highlight: #e5e1d8;
+  --bg-base: #f5f5f7;
+  --bg-subdued: #ececed;
+  --bg-highlight: #e2e2e4;
   --bg-elevated: #ffffff;
-  --bg-strong: #ddd8cc;
+  --bg-strong: #d8d8da;
 
-  --brand-green: #6b8f00;
-  --brand-green-hover: #5a7800;
-  --brand-secondary: #e07a2f;
-  --brand-accent-rgb: 107, 143, 0;
-  --brand-accent-soft: rgba(var(--brand-accent-rgb), 0.1);
-  --brand-accent-medium: rgba(var(--brand-accent-rgb), 0.2);
-  --brand-accent-glow: rgba(var(--brand-accent-rgb), 0.25);
-  --brand-on-accent: #ffffff;
+  --brand-on-accent: #0b0b0d;
 
-  --text-base: #12141a;
-  --text-subdued: #5c6370;
-  --text-placeholder: #8a919e;
+  --text-base: #1d1d1f;
+  --text-subdued: #6e6e73;
+  --text-placeholder: #98989d;
 
-  --interactive-normal: #5c6370;
-  --interactive-hover: #12141a;
-  --interactive-active: #6b8f00;
+  --interactive-normal: #6e6e73;
+  --interactive-hover: #1d1d1f;
+  --interactive-active: rgb(var(--mood-a));
 
-  --border-subdued: rgba(18, 20, 26, 0.08);
-  --border-base: rgba(18, 20, 26, 0.12);
-  --border-highlight: rgba(18, 20, 26, 0.22);
+  --border-subdued: rgba(0, 0, 0, 0.07);
+  --border-base: rgba(0, 0, 0, 0.12);
+  --border-highlight: rgba(0, 0, 0, 0.22);
+
+  --success: #1f9d6f;
+  --warning: #b9790a;
+  --error: #d92d3f;
+  --notice: #3568d4;
 
   --panel-card: #ffffff;
-  --panel-card-hover: #f0ece4;
-  --panel-sidebar: rgba(246, 244, 239, 0.95);
+  --panel-card-hover: #f4f4f5;
+  --panel-sidebar: rgba(255, 255, 255, 0.95);
   --panel-player: rgba(255, 255, 255, 0.96);
-  --panel-overlay: rgba(246, 244, 239, 0.9);
+  --panel-overlay: rgba(245, 245, 247, 0.9);
 
   --gradient-hero:
-    radial-gradient(
-      ellipse 100% 70% at 0% -10%,
-      rgba(var(--brand-accent-rgb), 0.12) 0%,
-      transparent 50%
-    ),
-    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(224, 122, 47, 0.08) 0%, transparent 45%),
+    radial-gradient(ellipse 100% 70% at 0% -10%, rgba(var(--mood-a), 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(var(--mood-b), 0.1) 0%, transparent 45%),
     linear-gradient(180deg, #ffffff 0%, var(--bg-base) 100%);
-  --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, #f0ece4 100%);
-  --gradient-sidebar: linear-gradient(180deg, #ffffff 0%, #f6f4ef 100%);
+  --gradient-card: linear-gradient(145deg, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0) 100%), #ffffff;
+  --gradient-sidebar: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%);
 
-  --shadow-sm: 0 1px 3px rgba(18, 20, 26, 0.06);
-  --shadow-md: 0 8px 24px rgba(18, 20, 26, 0.08);
-  --shadow-lg: 0 16px 40px rgba(18, 20, 26, 0.1);
-  --shadow-xl: 0 24px 56px rgba(18, 20, 26, 0.12);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 24px 56px rgba(0, 0, 0, 0.12);
   --shadow-glow: 0 0 24px var(--brand-accent-glow);
+}
+
+/* Custom properties inherit as the parent's *computed* value, not a live
+   reference — so an alias declared once at :root freezes using :root's own
+   --mood-a and never reacts to --mood-a being overridden lower in the tree.
+   useMoodAmbient sets --mood-a/--mood-b on .app-shell-layout (real app) and
+   .landing-page (marketing page) via JS, so the alias must be re-declared on
+   those same two elements to recompute fresh for their descendants. */
+.app-shell-layout,
+.landing-page {
+  --brand-green: rgb(var(--mood-a));
+  --brand-green-hover: rgb(var(--mood-b));
+  --brand-secondary: rgb(var(--mood-b));
+  --brand-accent-rgb: var(--mood-a);
+  --brand-accent-soft: rgba(var(--mood-a), 0.14);
+  --brand-accent-medium: rgba(var(--mood-a), 0.28);
+  --brand-accent-glow: rgba(var(--mood-a), 0.45);
+  --interactive-active: rgb(var(--mood-a));
+  --gradient-accent: linear-gradient(135deg, rgb(var(--mood-a)) 0%, rgb(var(--mood-b)) 100%);
+}
+
+/* Some moods (mint, peach) are pale enough that --brand-green reads as
+   near-invisible text on a white page. --gradient-accent and the soft/glow
+   backgrounds stay at full brightness (they're fills, not text), but
+   --brand-green itself — used everywhere as plain text/icon color — gets
+   darkened toward the mood hue instead of straight rgb(--mood-a) so it stays
+   legible on var(--bg-elevated)/white in light mode. */
+:root[data-theme='light'] .app-shell-layout,
+:root[data-theme='light'] .landing-page {
+  --brand-green: color-mix(in srgb, rgb(var(--mood-a)) 45%, black 55%);
+  --brand-green-hover: color-mix(in srgb, rgb(var(--mood-b)) 45%, black 55%);
+  --brand-secondary: color-mix(in srgb, rgb(var(--mood-b)) 45%, black 55%);
 }

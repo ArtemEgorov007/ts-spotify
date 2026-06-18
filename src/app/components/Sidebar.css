@@ -2,17 +2,26 @@
 
 .sidebar {
   position: sticky;
-  top: 0;
-  height: calc(100dvh - 90px);
-  max-height: calc(100dvh - 90px);
-  background: var(--panel-sidebar);
-  border-right: 1px solid var(--border-subdued);
+  top: 16px;
+  z-index: 11;
+  margin: 16px 0 16px 16px;
+  height: calc(100dvh - 116px);
+  max-height: calc(100dvh - 116px);
+  background: color-mix(in srgb, var(--panel-sidebar) 38%, transparent);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--border-base);
+  border-radius: 20px;
+  box-shadow: var(--shadow-xl), 0 0 0 1px rgba(var(--mood-a), 0.06);
   padding: 0;
   display: flex;
   flex-direction: column;
   width: 280px;
   flex-shrink: 0;
-  transition: none;
+  transition:
+    box-shadow 0.4s ease,
+    width var(--transition-normal);
+  overflow: hidden;
 }
 
 .sidebar-header {
@@ -300,9 +309,10 @@
   .sidebar {
     position: fixed;
     top: auto;
+    margin: 0;
     bottom: max(8px, env(safe-area-inset-bottom));
-    left: 0;
-    right: 0;
+    left: 10px;
+    right: 10px;
     z-index: 20;
     width: auto;
     max-width: none;
@@ -396,11 +406,6 @@
 }
 
 /* Light theme adjustments */
-:root[data-theme='light'] .sidebar {
-  background: var(--panel-sidebar);
-  border-right-color: var(--border-subdued);
-}
-
 :root[data-theme='light'] .sidebar-brand .brand-logo-mark .music-logo {
   color: var(--brand-green);
 }

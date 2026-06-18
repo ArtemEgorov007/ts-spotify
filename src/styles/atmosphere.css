@@ -2,6 +2,7 @@
 
 body {
   position: relative;
+  isolation: isolate;
 }
 
 #root {
@@ -135,46 +136,127 @@ body {
   }
 }
 
-/* Landing — minimal static glow only */
+/* Ambient wash — portaled to <body>, fixed under #root. Mood tint on :root. */
 .landing-backdrop {
-  position: absolute;
+  position: fixed;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  z-index: 0;
+}
+
+.landing-backdrop::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 55% at 12% -8%, rgba(var(--mood-a), 0.14) 0%, transparent 58%),
+    radial-gradient(ellipse 70% 50% at 88% 108%, rgba(var(--mood-b), 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 40% at 50% 42%, rgba(var(--mood-a), 0.06) 0%, transparent 70%);
 }
 
 .landing-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.35;
+  filter: blur(88px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .landing-orb {
+    will-change: transform;
+  }
 }
 
 .landing-orb-1 {
-  width: 320px;
-  height: 320px;
-  top: -100px;
-  left: -60px;
-  background: rgba(var(--brand-accent-rgb), 0.12);
+  width: min(440px, 52vw);
+  height: min(440px, 52vw);
+  top: -16vh;
+  left: -10vw;
+  background: rgba(var(--mood-a), 0.3);
+  animation: orb-drift-1 26s ease-in-out infinite;
 }
 
 .landing-orb-2 {
-  width: 280px;
-  height: 280px;
-  bottom: -80px;
-  right: -40px;
-  background: rgba(255, 159, 67, 0.08);
+  width: min(340px, 40vw);
+  height: min(340px, 40vw);
+  bottom: -12vh;
+  right: -4vw;
+  background: rgba(var(--mood-b), 0.2);
+  animation: orb-drift-2 32s ease-in-out infinite;
 }
 
 .landing-orb-3 {
-  width: 420px;
-  height: 420px;
-  left: 45%;
-  bottom: -180px;
-  background: rgba(var(--brand-accent-rgb), 0.08);
+  width: min(460px, 52vw);
+  height: min(460px, 52vw);
+  left: 38vw;
+  bottom: -20vh;
+  background: rgba(var(--mood-a), 0.14);
+  animation: orb-drift-3 38s ease-in-out infinite;
+}
+
+.landing-orb-4 {
+  width: min(280px, 34vw);
+  height: min(280px, 34vw);
+  top: 24vh;
+  left: 10vw;
+  background: rgba(var(--mood-b), 0.16);
+  animation: orb-drift-4 30s ease-in-out infinite;
+}
+
+@keyframes orb-drift-1 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate(30px, 20px) scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes orb-drift-2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-24px, -18px) scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes orb-drift-3 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translate(-18px, -26px) scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes orb-drift-4 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(16px, -20px) scale(1.12);
+    opacity: 0.95;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .landing-orb {
+    animation: none;
+    opacity: 1;
+  }
+
   .app-page > section,
   .track-card,
   .playlist-card,
